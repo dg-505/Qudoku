@@ -1,0 +1,16 @@
+# Ignore build and output directories
+/build/
+/release/
+/Code/build/
+
+# Ignore teset sudoku files
+/Code/data/*
+!/Code/data/example.txt
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+*CMakeLists.txt.user*
+
+# Ignore LinuxDeployQt
+/util/linuxdeployqt-continuous-x86_64.AppImage

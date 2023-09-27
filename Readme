@@ -1,0 +1,35 @@
+Repository structure:
+"Code" contains the source code of the program
+
+"util" contains:
+ - some auxiliary files e.g. needed to create a Setup for Windows, an AppImage for Linux
+ - source files for the icons
+
+
+Workflow to create a new release on Windows (tested on Windows 10 22H2):
+1.) Compile the source code with your preferred method (tested with Qt Creator)
+2.) Run the shell script "util/icons/createIcons.sh" if the icons got changed
+3.) Run the shell script "util/createInstaller.sh" to create a Setup file in the "release" directory
+    When asked, specifiy the directory where the compiled "Qudoku.exe" is located
+4.) Execute "release/Qudoku_setup.exe" to install the application
+
+
+
+Workflow to create a new release on Linux (tested on Ubuntu 22.04.3):
+1.) Compile the source code using your preferred method (tested using the terminal). Needs Qt installed.
+    To compile on Ubuntu 22.04.3 I needed some additional steps:
+    sudo apt install sudo apt install libgl1-mesa-dev # install some OpenGL dependencies
+    sudo apt install libxcb-cursor0 # install some xcb dependencies for the X11 window manager
+
+    Compilation:
+    cmake -DCMAKE_PREFIX_PATH=/PATH/TO/Qt/6.5.2/gcc_64 /PATH/TO/Code/CMakeLists.txt
+    make
+
+
+Tools needed to create a Windows installer:
+
+WinDeployQt (is part of the Qt framework):
+installed in "C:/Qt/6.5.2/mingw_64/bin/windeployqt6.exe"
+
+InnoSetup Compiler:
+installed in ""C:/Program Files (x86)/Inno Setup 6/ISCC.exe"

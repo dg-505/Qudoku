@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/Qudoku.ico</file>
+        <file>res/first.png</file>
+        <file>res/prev.png</file>
+        <file>res/next.png</file>
+        <file>res/last.png</file>
+    </qresource>
+</RCC>
