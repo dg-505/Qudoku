@@ -1,5 +1,5 @@
 #define Name "Qudoku"
-#define Version "2023-09-23_22-48"
+#define Version "1.0"
 #define ExeName "Qudoku.exe"
 
 [Setup]

@@ -4,20 +4,20 @@ rem clean up previously created setup files
 del "..\release\Qudoku_setup.exe"
 rmdir /s /q "..\release\WindowsInstaller"
 
-powershell -ExecutionPolicy Bypass -File getExePath.ps1 > buildPath.txt
-set /p buildPath=<buildPath.txt
+for /f %%A in ('powershell -ExecutionPolicy Bypass -File getExePath.ps1') do set "exePath=%%A"
+rem set /p exePath=<exePath.txt
 
-if not "%buildPath%"=="" (
-    echo No file selected! Aborting...
-    cmd /k
-)
+rem if not "%exePath%"=="" (
+rem     echo No file selected! Aborting...
+rem     cmd /k
+rem )
 
 rem copy required files to Installer directory
 mkdir "..\release\WindowsInstaller"
 mkdir "..\release\WindowsInstaller\data"
 mkdir "..\release\WindowsInstaller\ico"
-copy "%buildPath%\Qudoku.exe" "..\release\WindowsInstaller"
-copy "%buildPath%\version.txt" "..\release\WindowsInstaller"
+copy "%exePath%" "..\release\WindowsInstaller"
+rem copy "%exePath%\version.txt" "..\release\WindowsInstaller"
 copy ".\icons\Qudoku.ico" "..\release\WindowsInstaller\ico"
 copy ".\icons\uninstall.ico" "..\release\WindowsInstaller\ico"
 copy "..\Code\data\example.txt" "..\release\WindowsInstaller\data"

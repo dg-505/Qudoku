@@ -1059,8 +1059,8 @@ namespace sudoku
                 }
 
                 uint8_t const numCandsBeforePairs = this->countCandidates();
-                // this->processNakedPairs(run);  // Check Naked Pairs
-                // this->processHiddenPairs(run); // Check Hidden Pairs
+                this->processNakedPairs(run);  // Check Naked Pairs
+                this->processHiddenPairs(run); // Check Hidden Pairs
                 uint8_t const numCandsAfterPairs = this->countCandidates();
 
                 // If Pair techniques didn't produce Singles -> search for Naked and Hidden Triples
@@ -1076,7 +1076,7 @@ namespace sudoku
                     }
 
                     uint8_t numCandsBeforeTriples = this->countCandidates();
-                    // this->processNakedTriples(run);  // Check Naked Triples
+                    this->processNakedTriples(run);  // Check Naked Triples
                     this->processHiddenTriples(run); // Check Hidden Triples
                     uint8_t numCandsAfterTriples = this->countCandidates();
 
