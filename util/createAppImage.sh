@@ -20,7 +20,7 @@ esac
 	cp ./icons/Qudoku_256.png ../release/AppImage
 	export PATH=/home/joni/Qt/6.5.2/gcc_64/bin/:$PATH
 	./linuxdeployqt-continuous-x86_64.AppImage ../release/AppImage/Qudoku -appimage
-	mv Qudoku-x86_64.AppImage ../release
+	mv Qudoku*.AppImage ../release
 else 
 	gnome-terminal -e "bash -c './createAppImage.sh; read -p \"Press Enter to exit...\"'"
 fi

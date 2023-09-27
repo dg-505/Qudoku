@@ -261,7 +261,7 @@ namespace sudoku
     std::string MainGUI::loadButtonClicked()
     {
         // Read the data directory from the Qudoku.ini file created during installation
-        QString const filepath = QFileDialog::getOpenFileName(this, QStringLiteral("Open Sudoku from file"), (QSettings("./Qudoku.ini", QSettings::IniFormat)).value("DIRS/DataDir").toString());
+        QString const filepath = QFileDialog::getOpenFileName(this, QStringLiteral("Open Sudoku from file"), (QSettings(QStringLiteral("./Qudoku.ini"), QSettings::IniFormat)).value("DIRS/DataDir").toString());
         if (filepath.isEmpty())
         {
             // User cancelled file selection
@@ -289,7 +289,7 @@ namespace sudoku
             return "";
         }
 
-        if (sudokuString.length() != order * order)
+        if (sudokuString.length() != static_cast<uint8_t>(order * order))
         {
             QMessageBox::critical(nullptr, QStringLiteral("Invalid number of entries"), QStringLiteral("Error reading \"%1\":\nInvalid number of entries (%2).\n\nNumber of entries must be 81.").arg(filepath).arg(sudokuString.length()));
             for (auto* field : *fields)
