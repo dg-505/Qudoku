@@ -22,33 +22,33 @@ namespace sudoku
             Field();
 
             // Konstruktor: leeres Feld (mit ID, aber ohne Wert)
-            Field(const uint8_t fID);
+            explicit Field(uint8_t fID);
 
             // Konstruktor: besetzt ein Feld f mit den zugehoerigen IDs und dem Wert val
-            Field(const uint8_t fID, const uint8_t val);
+            Field(uint8_t fID, uint8_t val);
 
             // copy constructor
             Field(const Field& other);
 
             // Destructor
-            ~Field();
+            ~Field() = default;
 
             Field& operator=(const Field& other);
 
             // void setField(const uint8_t f, const uint8_t v);
 
             // Row-ID, Col-ID und Block-ID aus Feld-ID bestimmen
-            const uint8_t getRIDfromFID(const uint8_t& fID) const;
-            const uint8_t getCIDfromFID(const uint8_t& fID) const;
-            const uint8_t getBIDfromFID(const uint8_t& fID) const;
+            [[nodiscard]] const uint8_t getRIDfromFID(uint8_t fID) const;
+            [[nodiscard]] const uint8_t getCIDfromFID(uint8_t fID) const;
+            [[nodiscard]] const uint8_t getBIDfromFID(uint8_t fID) const;
 
             // Getter
-            const uint8_t* getFID() const;
-            const uint8_t* getRID() const;
-            const uint8_t* getCID() const;
-            const uint8_t* getBID() const;
+            [[nodiscard]] const uint8_t* getFID() const;
+            [[nodiscard]] const uint8_t* getRID() const;
+            [[nodiscard]] const uint8_t* getCID() const;
+            [[nodiscard]] const uint8_t* getBID() const;
             std::vector<uint8_t>* getCandidates();
-            const uint8_t* getVal() const;
+            [[nodiscard]] const uint8_t* getVal() const;
 
             // set candidates and value
             void setCandidates(const std::vector<uint8_t>* cands);

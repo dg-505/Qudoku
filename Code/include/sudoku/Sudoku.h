@@ -31,7 +31,7 @@ namespace sudoku
             //Sudoku();
             Sudoku(const uint8_t* vals, QLogTextBrowser& logTextArea);
             //Sudoku(const uint8_t start[][3]);
-            ~Sudoku();
+            ~Sudoku() = default;
 
             //Field* createEmptyGrid();
             // Field** getArray();
@@ -64,7 +64,7 @@ namespace sudoku
             void processNakedSingles(uint8_t run);
 
             bool fieldContainsCandidate(std::vector<uint8_t>* candidates, uint8_t cand);
-            uint8_t* candidateOccurrencesInUnit(array<Field*, order> unit);
+            array<uint8_t, order> candidateOccurrencesInUnit(array<Field*, order> unit);
             HiddenSingle* firstHiddenSingle();
             void processHiddenSingles(uint8_t run);
 
@@ -85,6 +85,12 @@ namespace sudoku
 
             HiddenSubset* firstHiddenTriple();
             void processHiddenTriples(uint8_t run);
+
+            static std::vector<Field*> findFieldsInUnitContainingCandidateI(const array<Field*, order>& unit, uint8_t cand);
+            void removeCandidateIFromUnit(uint8_t cand, const std::vector<Field*>& containingCandidateI, uint8_t unitIdOfFirst, const std::string& type);
+            void eliminateBRCfromLine(const uint8_t& run, uint8_t blockID, uint8_t cand, const std::vector<Field*>& containingCandidateI, const std::string& type, uint8_t lineIdOfFirst, bool allCandidatesInSameLine);
+            void performBlockRowChecks(uint8_t run);
+            void performRowBlockChecks(uint8_t run);
 
             void solve(const std::string& name);
 

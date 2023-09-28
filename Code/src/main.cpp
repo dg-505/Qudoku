@@ -57,7 +57,6 @@ int main(int argc, char* argv[])
     versionFile << version << std::endl;
     versionFile.close();
 */
-#pragma unroll
     Q_INIT_RESOURCE(resources);
 
     const QApplication app(argc, argv);

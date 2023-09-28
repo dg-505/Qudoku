@@ -35,7 +35,7 @@ namespace sudoku
           exitButton(new QPushButton(this))
     {
         // Main window properties
-        setFixedSize(912, 612);
+        setFixedSize(1012, 612);
         setObjectName("MainGUI");
         setWindowTitle(QStringLiteral("Qudoku - Qt based cross platform sudoku solver"));
         QMainWindow::setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
@@ -46,10 +46,10 @@ namespace sudoku
         QFont const logFont(QStringLiteral("Liberation Mono"), 10, QFont::Bold, false);
 
         logScrollArea->setObjectName("logScrollArea");
-        logScrollArea->setGeometry(512, 0, 400, 612);
+        logScrollArea->setGeometry(512, 0, 500, 612);
 
         logTextBrowser->setObjectName("logTextBrowser");
-        logTextBrowser->setGeometry(0, 0, 400, 612);
+        logTextBrowser->setGeometry(0, 0, 500, 612);
         // logTextBrowser->setStyleSheet(defaultStyleSheet);
         logTextBrowser->setStyleSheet(QStringLiteral("color: black; background: white"));
         logTextBrowser->setWordWrapMode(QTextOption::NoWrap);
@@ -74,7 +74,6 @@ namespace sudoku
         for (uint8_t rID = 1; rID <= order; rID++)
         {
             uint16_t posX = 0;
-#pragma unroll
             for (uint8_t cID = 1; cID <= order; cID++)
             {
                 //                std::stringstream objectName;
@@ -238,7 +237,6 @@ namespace sudoku
 
         QWidget::setTabOrder(loadButton, saveButton);
         QWidget::setTabOrder(saveButton, fields->at(0));
-#pragma unroll
         for (uint8_t fID = 1; fID < order * order; fID++)
         {
             QWidget::setTabOrder(fields->at(fID - 1), fields->at(fID));

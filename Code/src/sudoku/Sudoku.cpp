@@ -133,10 +133,6 @@ namespace sudoku
         }
     }
 
-    Sudoku::~Sudoku()
-    {
-    }
-
     vector<array<array<Field, order>, order>>* Sudoku::getSteps()
     {
         return &_steps;
@@ -376,9 +372,9 @@ namespace sudoku
         return std::find(candidates->begin(), candidates->end(), cand) != candidates->end();
     }
 
-    uint8_t* Sudoku::candidateOccurrencesInUnit(array<Field*, order> unit)
+    array<uint8_t, order> Sudoku::candidateOccurrencesInUnit(array<Field*, order> unit)
     {
-        uint8_t* candidateOccurrencesInUnit = new uint8_t[order](); // Initialize array elements to 0
+        array<uint8_t, order> candidateOccurrencesInUnit{}; // Initialize array elements to 0
         for (uint8_t cand = 1; cand <= order; cand++)
         {
             uint8_t count = 0;
@@ -410,7 +406,7 @@ namespace sudoku
                     unit = getColByColID(unitID);
                 else if (type == "Block")
                     unit = getBlockByBlockID(unitID);
-                uint8_t* candsInUnit = candidateOccurrencesInUnit(unit);
+                array<uint8_t, order> candsInUnit = candidateOccurrencesInUnit(unit);
                 // Finde Zahlen "i", die nur 1x vorkommen
                 for (uint8_t i = 1; i <= order; i++)
                 {
@@ -441,7 +437,6 @@ namespace sudoku
             HiddenSingle* firstHiddenSingle = this->firstHiddenSingle();
             if (firstHiddenSingle == nullptr)
                 break;
-
             std::vector<uint8_t> const cand(1, *firstHiddenSingle->getCandidate());
             firstHiddenSingle->getField()->setCandidates(&cand);
             this->filldAndEliminate(firstHiddenSingle->getField());
@@ -539,7 +534,6 @@ namespace sudoku
                 }
             }
         }
-        //        this->_logTextArea->append("firstNakedPair() == nullptr");
         return nullptr;
     }
 
@@ -629,7 +623,7 @@ namespace sudoku
                     unit = getColByColID(unitID);
                 else if (type == "Block")
                     unit = getBlockByBlockID(unitID);
-                uint8_t* candidateOccurrences = candidateOccurrencesInUnit(unit);
+                array<uint8_t, order> candidateOccurrences = candidateOccurrencesInUnit(unit);
                 for (uint8_t i1 = 1; i1 <= order-1; i1++) // Alle Zahlenpaare {1,2} bis {8,9}
                 {
                     for (uint8_t i2 = i1 + 1; i2 <= order; i2++)
@@ -715,8 +709,8 @@ namespace sudoku
                 this->addStepToList(run, msg);
                 this->_logTextArea->append(msg);
             }
-            //            this->print();
-            //            this->printFields();
+            // this->print();
+            // this->printFields();
         }
     }
 
@@ -824,7 +818,6 @@ namespace sudoku
                 }
             }
         }
-        // this->_logTextArea->append("firstNakedTriple() == nullptr");
         return nullptr;
     }
 
@@ -902,8 +895,11 @@ namespace sudoku
                 return;
             }
         }
+        // this->print();
+        // this->printFields();
     }
 
+    // Hidden Triple methods
     HiddenSubset* Sudoku::firstHiddenTriple()
     {
         for (const std::string& type : {"Row", "Col", "Block"})
@@ -917,7 +913,7 @@ namespace sudoku
                     unit = getColByColID(unitID);
                 else if (type == "Block")
                     unit = getBlockByBlockID(unitID);
-                uint8_t* candidateOccurrences = candidateOccurrencesInUnit(unit);
+                array<uint8_t, order> candidateOccurrences = candidateOccurrencesInUnit(unit);
                 for (uint8_t i = 1; i <= order - 2; i++) // Alle Zahlen-Tripel {1,2,3} bis {7,8,9}
                 {
                     for (uint8_t j = i + 1; j <= order - 1; j++)
@@ -931,7 +927,7 @@ namespace sudoku
                                     for (uint8_t m = l + 1; m <= order - 1; m++)
                                     {
                                         //                                    loop:
-                                        for (uint8_t n = m + 1; n <= 9; n++)
+                                        for (uint8_t n = m + 1; n <= order; n++)
                                         {
                                             // i,j,k are only allowed in fields l,m,n
                                             Field* fl = unit[l - 1];
@@ -973,7 +969,6 @@ namespace sudoku
         return nullptr;
     }
 
-    // Hidden Triple methods
     void Sudoku::processHiddenTriples(uint8_t run)
     {
         this->_logTextArea->append("\nSearch for HiddenTriples");
@@ -1009,9 +1004,171 @@ namespace sudoku
             {
                 return;
             }
-            // this.print();
-            // this.printFields();
         }
+        // this->print();
+        // this->printFields();
+    }
+
+    // Intersections / Locked Candidates
+    // Sub-methods for RBC and BRC
+    std::vector<Field*> Sudoku::findFieldsInUnitContainingCandidateI(const array<Field*, order>& unit, uint8_t cand)
+    {
+        std::vector<Field*> containingCandidateI{};
+        for (Field* field : unit) // collect all Fields containing candidate i
+        {
+            if (std::find(field->getCandidates()->begin(), field->getCandidates()->end(), cand) != field->getCandidates()->end())
+            {
+                containingCandidateI.push_back(field);
+            }
+        }
+        return containingCandidateI;
+    }
+
+    void Sudoku::removeCandidateIFromUnit(uint8_t cand, const std::vector<Field*>& containingCandidateI, uint8_t unitIdOfFirst, const std::string& type)
+    {
+        array<Field*, order> unit;
+        if (type == "Row")
+            unit = getRowByRowID(unitIdOfFirst);
+        else if (type == "Col")
+            unit = getColByColID(unitIdOfFirst);
+        else if (type == "Block")
+            unit = getBlockByBlockID(unitIdOfFirst);
+        for (Field* field : unit)
+        {
+            if (std::find(field->getCandidates()->begin(), field->getCandidates()->end(), cand) != field->getCandidates()->end() &&
+                !(std::find(containingCandidateI.begin(), containingCandidateI.end(), field) != containingCandidateI.end()))
+            {
+                field->getCandidates()->erase(std::remove(field->getCandidates()->begin(), field->getCandidates()->end(), cand), field->getCandidates()->end());
+            }
+        }
+    }
+
+    void Sudoku::eliminateBRCfromLine(const uint8_t& run, uint8_t blockID, uint8_t cand, const std::vector<Field*>& containingCandidateI, const std::string& type, uint8_t lineIdOfFirst, bool allCandidatesInSameLine)
+    {
+        if (allCandidatesInSameLine) // eliminate all other candidtes in the block
+        {
+            const uint8_t numCandsBeforeBRC = this->countCandidates();
+            this->removeCandidateIFromUnit(cand, containingCandidateI, lineIdOfFirst, type);
+            if (this->countCandidates() < numCandsBeforeBRC)
+            {
+                QString msg = "Block-in-" + QString::fromStdString(type) + " with {" + QString::number(cand) + "} in Block " + QString::number(blockID) + ": Only in " + QString::fromStdString(type) + " " + QString::number(lineIdOfFirst);
+                this->_logTextArea->append(msg);
+                this->addStepToList(run, msg);
+            }
+        }
+    }
+
+    // Block-Row-Checks (Pointing)
+    void Sudoku::performBlockRowChecks(uint8_t run)
+    {
+        this->_logTextArea->append(QStringLiteral("\nPerform Block-Line-Checks"));
+        for (uint8_t blockID = 1; blockID <= order; blockID++)
+        {
+            const std::array<Field*, order> block = this->getBlockByBlockID(blockID);
+            for (uint8_t cand = 1; cand <= order; cand++)
+            {
+                std::vector<Field*> containingCandidateI = this->findFieldsInUnitContainingCandidateI(block, cand);
+                if (!containingCandidateI.empty())
+                {
+                    for (const std::string& type : {"Row", "Col"})
+                    {
+                        if (type == "Row")
+                        {
+                            const uint8_t rowIdOfFirst = *containingCandidateI[0]->getRID();
+                            bool allCandidatesInSameRow = false;
+                            for (Field* field : containingCandidateI)
+                            {
+                                if (*field->getRID() == rowIdOfFirst)
+                                {
+                                    allCandidatesInSameRow = true;
+                                }
+                                else
+                                {
+                                    allCandidatesInSameRow = false;
+                                    break;
+                                }
+                            }
+                            this->eliminateBRCfromLine(run, blockID, cand, containingCandidateI, type, rowIdOfFirst, allCandidatesInSameRow);
+                        }
+                        else if (type == "Col")
+                        {
+                            const uint8_t colIdOfFirst = *containingCandidateI[0]->getCID();
+                            bool allCandidatesInSameCol = false;
+                            for (Field* field : containingCandidateI)
+                            {
+                                if (*field->getCID() == colIdOfFirst)
+                                {
+                                    allCandidatesInSameCol = true;
+                                }
+                                else
+                                {
+                                    allCandidatesInSameCol = false;
+                                    break;
+                                }
+                            }
+                            this->eliminateBRCfromLine(run, blockID, cand, containingCandidateI, type, colIdOfFirst, allCandidatesInSameCol);
+                        }
+                    }
+                }
+            }
+        }
+        // this->print();
+        // this->printFields();
+    }
+
+    // Row-Block-Checks (Claiming)
+    void Sudoku::performRowBlockChecks(uint8_t run)
+    {
+        this->_logTextArea->append(QStringLiteral("\nPerform Line-Block-Checks"));
+        for (const std::string& type : {"Row", "Col"})
+        {
+            for (uint8_t lineID = 1; lineID <= order; lineID++) // Iterate over each row/col
+            {
+                array<Field*, order> unit;
+                if (type == "Row")
+                    unit = getRowByRowID(lineID);
+                else if (type == "Col")
+                    unit = getColByColID(lineID);
+                else if (type == "Block")
+                    unit = getBlockByBlockID(lineID);
+                for (uint8_t i = 1; i <= order; i++)
+                {
+                    std::vector<Field*> containingCandidateI = this->findFieldsInUnitContainingCandidateI(unit, i);
+                    if (!containingCandidateI.empty()) // proceed only if there exists at least one field with candidate i
+                    {
+                        const uint8_t blockIdOfFirst = *containingCandidateI[0]->getBID();
+                        bool allCandidatesInSameBlock = false;
+                        for (Field* field : containingCandidateI)
+                        {
+                            if (*field->getBID() == blockIdOfFirst)
+                            {
+                                allCandidatesInSameBlock = true;
+                            }
+                            else
+                            {
+                                allCandidatesInSameBlock = false;
+                                break;
+                            }
+                        }
+                        if (allCandidatesInSameBlock)
+                        {
+                            const uint8_t numCandsBeforeRBC = this->countCandidates();
+                            this->removeCandidateIFromUnit(i, containingCandidateI, blockIdOfFirst, "Block"); // remove candidate i from block
+                            if (this->countCandidates() < numCandsBeforeRBC)
+                            {
+                                const QString msg = QString::fromStdString(type) + "-in-Block with {" + QString::number(i) + "} in " +
+                                                    QString::fromStdString(type) + " " + QString::number(lineID) + ": " +
+                                                    "Only in Block " + QString::number(blockIdOfFirst);
+                                this->_logTextArea->append(msg);
+                                this->addStepToList(run, msg);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // this->print();
+        // this->printFields();
     }
 
     // Main Solving routine
@@ -1064,7 +1221,7 @@ namespace sudoku
                 uint8_t const numCandsAfterPairs = this->countCandidates();
 
                 // If Pair techniques didn't produce Singles -> search for Naked and Hidden Triples
-                if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && this->getFreeFields().size() > 0)
+                if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && !this->getFreeFields().empty())
                 {
                     if (numCandsAfterPairs < numCandsBeforePairs)
                     {
@@ -1092,10 +1249,48 @@ namespace sudoku
                             this->_logTextArea->append("\nNo Triples found.\nProceeding with LockedCandidates...");
                         }
 
-                        // int numCandsBeforeLockedCands = this.countCandidates();
-                        // this.performRowBlockChecks(run, steps); // Peform Row-Block-Checks
-                        // this.performBlockRowChecks(run, steps); // Perfom Block-Row-Checks
-                        // int numCandsAfterLockedCands = this.countCandidates();
+                        uint8_t numCandsBeforeLockedCands = this->countCandidates();
+                        this->performBlockRowChecks(run); // Perfom Block-Row-Checks (Pointing)
+                        this->performRowBlockChecks(run); // Peform Row-Block-Checks (Claiming)
+                        uint8_t numCandsAfterLockedCands = this->countCandidates();
+
+                        // If pair/triple/LockedCands didn't produce Singles -> go for further technique
+                        if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && !this->getFreeFields().empty())
+                        {
+                            if (numCandsAfterLockedCands < numCandsBeforeLockedCands)
+                            {
+                                this->_logTextArea->append("\nLockedCandidates didn't produce Singles.\nNeed further techniques...");
+                            }
+                            else
+                            {
+                                this->_logTextArea->append("\nNo LockedCandidates found.\nNeed further techniques...");
+                            }
+
+                            int numCandsBeforeFurtherTechnique = this->countCandidates();
+                            // TODO implement further techniques
+                            int numCandsAfterFurtherTechnique = this->countCandidates();
+
+                            // If further technique didn't produce Singles -> go for another further technique
+                            if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && !this->getFreeFields().empty())
+                            {
+                                if (numCandsAfterFurtherTechnique < numCandsBeforeFurtherTechnique)
+                                {
+                                    this->_logTextArea->append("\nFurther technique didn't produce Singles.\nNo further techniques implemented...");
+                                }
+                                else
+                                {
+                                    this->_logTextArea->append("\nNo more further technique.\nNo further techniques implemented...");
+                                }
+                            }
+                            else
+                            {
+                                this->_logTextArea->append("\nFurther technique produced Singles.\nProceeding with next run...");
+                            }
+                        }
+                        else
+                        {
+                            this->_logTextArea->append("\nLockedCandidates produced Singles.\nProceeding with next run...");
+                        }
                     }
                     else
                     {
@@ -1109,7 +1304,7 @@ namespace sudoku
             }
             else
             {
-                if (this->getFreeFields().size() > 0)
+                if (!this->getFreeFields().empty())
                 {
                     this->_logTextArea->append("\nNo more HiddenSingles, but new NakedSingles.\nProceeding with next run...");
                 }
@@ -1136,7 +1331,7 @@ namespace sudoku
             }
         }
 
-        if (this->getFreeFields().size() == 0)
+        if (this->getFreeFields().empty())
         {
             this->_logTextArea->append("SUDOKU '" + QString::fromStdString(name) + "' SUCESSFULLY SOLVED!\n");
         }

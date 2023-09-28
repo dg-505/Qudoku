@@ -12,16 +12,16 @@ namespace sudoku
 {
     // Default constructor
     Field::Field()
-        : _fID(), _rID(), _cID(), _bID(), _candidates(), _val() {}
+        : _fID(), _rID(), _cID(), _bID()
+    {
+    }
 
     // Konstruktor: leeres Feld (mit ID, aber ohne Wert)
     Field::Field(const uint8_t fID)
         : _fID(fID),
           _rID(getRIDfromFID(fID)),
           _cID(getCIDfromFID(fID)),
-          _bID(getBIDfromFID(fID)),
-          _candidates(order),
-          _val(0)
+          _bID(getBIDfromFID(fID))
     {
     }
 
@@ -31,7 +31,6 @@ namespace sudoku
           _rID(getRIDfromFID(fID)),
           _cID(getCIDfromFID(fID)),
           _bID(getBIDfromFID(fID)),
-          _candidates(order),
           _val(val)
     {
         // cout << "Field: val=" << _val << endl;
@@ -56,9 +55,6 @@ namespace sudoku
     {
     }
 
-    // Destructor
-    Field::~Field() {}
-
     // assignment operator=
     Field& Field::operator=(const Field& other)
     {
@@ -77,15 +73,15 @@ namespace sudoku
     // void Field::setField(const uint8_t f, const uint8_t v)
 
     // Row-ID, Col-ID und Block-ID aus Feld-ID bestimmen
-    const uint8_t Field::getRIDfromFID(const uint8_t& fID) const
+    const uint8_t Field::getRIDfromFID(uint8_t fID) const
     {
         return (fID - 1) / order + 1;
     }
-    const uint8_t Field::getCIDfromFID(const uint8_t& fID) const
+    const uint8_t Field::getCIDfromFID(uint8_t fID) const
     {
         return (fID - 1) % order + 1;
     }
-    const uint8_t Field::getBIDfromFID(const uint8_t& fID) const
+    const uint8_t Field::getBIDfromFID(uint8_t fID) const
     {
         return ((getRIDfromFID(fID) - 1) / 3) * 3 + (getCIDfromFID(fID) - 1) / 3 + 1;
     }
@@ -139,11 +135,11 @@ namespace sudoku
         {
             candidatesList.append(QString::number(c));
         }
-        logTextArea.append(QString("Field-ID %1: (%2,%3) : %4 , %5")
+        logTextArea.append(QStringLiteral("Field-ID %1: (%2,%3) : %4 , %5")
                                .arg(_fID)
                                .arg(_rID)
                                .arg(_cID)
                                .arg(_val)
-                               .arg("[" + candidatesList.join(", ") + "]"));
+                               .arg("[" + candidatesList.join(QStringLiteral(", ")) + "]"));
     }
 } // namespace sudoku
