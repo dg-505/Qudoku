@@ -1,64 +1,39 @@
-//#include <algorithm>
-//#include <iterator>
-// #include <vector>
+#include "sudoku/Sudoku.h"
 #include <QtCore/QString>
 #include <QtCore/QTextStream>
-//#include <iomanip>
-//#include <iostream>
-
-//#include "HiddenSingle.hpp"
-//#include "Main.hpp"
-//#include "gui/QLogTextBrowser.h"
-//#include "sudoku/NakedPair.h"
-//#include "sudoku/NakedTriple.h"
-#include "sudoku/Sudoku.h"
-
-//using std::cout;
-//using std::endl;
-// using std::vector;
 
 namespace sudoku
 {
-    Sudoku::Sudoku(const uint8_t* vals, QLogTextBrowser& logTextArea)
+    Sudoku::Sudoku(const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser& logTextArea)
         : _logTextArea(&logTextArea)
     {
-        // _logTextArea->append("Constructor!");
-        // cout << "   field @        |fID @                |rID@                |cID@                |bID@                |cands@               |val@                |" << endl;
         // Fill values
         uint8_t fID = 1;
-        for (uint8_t rID = 1; rID <= order; rID++)
+        for (uint8_t rID = 1; rID <= global::order; rID++)
         {
-            for (uint8_t cID = 1; cID <= order; cID++)
+            for (uint8_t cID = 1; cID <= global::order; cID++)
             {
-                // cout << "Constructor: val=" << vals[id-1] << endl;
-                _grid[rID - 1][cID - 1] = Field(fID, vals[fID - 1]);
-                // cout << "S: " << &_grid[r - 1][c - 1] << " | ";
-                // cout << "" << std::fixed << std::setw(2) << *_grid[r - 1][c - 1].getFID() << " @ " << _grid[r - 1][c - 1].getFID() << " | ";
-                // cout << "" << *_grid[r - 1][c - 1].getRID() << " @ " << _grid[r - 1][c - 1].getRID() << " | ";
-                // cout << "" << *_grid[r - 1][c - 1].getCID() << " @ " << _grid[r - 1][c - 1].getCID() << " | ";
-                // cout << "" << *_grid[r - 1][c - 1].getBID() << " @ " << _grid[r - 1][c - 1].getBID() << " | ";
-                // cout << "" << _grid[r - 1][c - 1].candidates2QString().toStdString() << " @ " << _grid[r - 1][c - 1].getCandidates() << " | ";
-                // cout << "" << *_grid[r - 1][c - 1].getVal() << " @ " << _grid[r - 1][c - 1].getVal() << " | ";
-                // cout << endl;
+                _grid.at(rID - 1).at(cID - 1) = Field(fID, vals->at(fID - 1));
                 fID++;
             }
         }
 
         // Fill candidates
         // Initially: 1-9 are possible candidates.
-        for (uint8_t rID = 1; rID <= order; rID++)
+        for (uint8_t rID = 1; rID <= global::order; rID++)
         {
-            for (uint8_t cID = 1; cID <= order; cID++)
+            for (uint8_t cID = 1; cID <= global::order; cID++)
             {
-                Field* f = &_grid[rID - 1][cID - 1];
-                if (*f->getVal() == 0)
+                Field* field = &_grid.at(rID - 1).at(cID - 1);
+                if (*field->getVal() == 0)
                 {
                     std::vector<uint8_t> candidates;
-                    for (uint8_t cand = 1; cand <= order; cand++)
+                    candidates.reserve(global::order);
+                    for (uint8_t cand = 1; cand <= global::order; cand++)
                     {
                         candidates.push_back(cand);
                     }
-                    f->setCandidates(&candidates);
+                    field->setCandidates(&candidates);
                 }
             }
         }
@@ -67,206 +42,173 @@ namespace sudoku
         // remove existing vals from cands
 
         // rows
-        for (uint8_t rID = 1; rID <= order; rID++)
+        for (uint8_t rID = 1; rID <= global::order; rID++)
         {
-            for (uint8_t cID = 1; cID <= order; cID++)
+            for (uint8_t cID = 1; cID <= global::order; cID++)
             {
-                Field* field = &_grid[rID - 1][cID - 1];
-                vector<uint8_t>* candidates = field->getCandidates();
+                Field* field = &_grid.at(rID - 1).at(cID - 1);
+                std::vector<uint8_t>* candidates = field->getCandidates();
 
-                array<Field*, order> row = getRowByFieldID(*field->getFID());
-                for (uint8_t rID = 1; rID <= order; rID++)
+                std::array<Field*, global::order> row = getRowByFieldID(*field->getFID());
+                for (uint8_t rID = 1; rID <= global::order; rID++)
                 {
-                    const uint8_t* val = row[rID - 1]->getVal();
+                    const uint8_t* val = row.at(rID - 1)->getVal();
                     if (*val != 0)
                     {
-                        // cout << "FOUND " << *val << endl;
                         candidates->erase(std::remove(candidates->begin(), candidates->end(), *val), candidates->end());
                     }
                 }
-                // cout << "(" << f->getRID() << "," << f->getCID() << "): " << f->candidates2QString().toStdString() << endl;
             }
         }
 
         // cols
-        for (uint8_t cID = 1; cID <= order; cID++)
+        for (uint8_t cID = 1; cID <= global::order; cID++)
         {
-            for (uint8_t rID = 1; rID <= order; rID++)
+            for (uint8_t rID = 1; rID <= global::order; rID++)
             {
-                Field* field = &_grid[rID - 1][cID - 1];
-                vector<uint8_t>* candidates = field->getCandidates();
+                Field* field = &_grid.at(rID - 1).at(cID - 1);
+                std::vector<uint8_t>* candidates = field->getCandidates();
 
-                array<Field*, order> col = getColByFieldID(*field->getFID());
-                for (uint8_t cID = 1; cID <= order; cID++)
+                std::array<Field*, global::order> col = getColByFieldID(*field->getFID());
+                for (uint8_t cID = 1; cID <= global::order; cID++)
                 {
-                    const uint8_t* val = col[cID - 1]->getVal();
+                    const uint8_t* val = col.at(cID - 1)->getVal();
                     if (*val != 0)
                     {
-                        // cout << "FOUND " << *val << endl;
                         candidates->erase(std::remove(candidates->begin(), candidates->end(), *val), candidates->end());
                     }
                 }
-                // cout << "(" << f->getRID() << "," << f->getCID() << "): " << f->candidates2QString().toStdString() << endl;
             }
         }
 
         // blocks
-        for (uint8_t rID = 1; rID <= order; rID++)
+        for (uint8_t rID = 1; rID <= global::order; rID++)
         {
-            for (uint8_t cID = 1; cID <= order; cID++)
+            for (uint8_t cID = 1; cID <= global::order; cID++)
             {
-                Field* field = &_grid[rID - 1][cID - 1];
-                vector<uint8_t>* candidates = field->getCandidates();
+                Field* field = &_grid.at(rID - 1).at(cID - 1);
+                std::vector<uint8_t>* candidates = field->getCandidates();
 
-                array<Field*, order> block = getBlockByFieldID(*field->getFID());
-                for (uint8_t bID = 1; bID <= order; bID++)
+                std::array<Field*, global::order> block = getBlockByFieldID(*field->getFID());
+                for (uint8_t bID = 1; bID <= global::order; bID++)
                 {
-                    const uint8_t* val = block[bID - 1]->getVal();
+                    const uint8_t* val = block.at(bID - 1)->getVal();
                     if (*val != 0)
                     {
-                        // cout << "FOUND " << *val << endl;
                         candidates->erase(std::remove(candidates->begin(), candidates->end(), *val), candidates->end());
                     }
                 }
-                // cout << "(" << f->getRID() << "," << f->getCID() << "): " << f->candidates2QString().toStdString() << endl;
             }
         }
     }
 
-    vector<array<array<Field, order>, order>>* Sudoku::getSteps()
+    auto Sudoku::getGrid() -> std::array<std::array<Field, global::order>, global::order>*
+    {
+        return &_grid;
+    }
+
+    auto Sudoku::getSteps() -> std::vector<std::array<std::array<Field, global::order>, global::order>>*
     {
         return &_steps;
     }
 
-    QLogTextBrowser* Sudoku::getLogTextArea()
+    auto Sudoku::getLogTextArea() -> QLogTextBrowser*
     {
         return _logTextArea;
     }
 
-    vector<uint8_t>* Sudoku::getFoundInRunNo()
+    auto Sudoku::getFoundInRunNo() -> std::vector<uint8_t>*
     {
         return &_foundInRunNo;
     }
 
-    vector<QString>* Sudoku::getFoundByType()
+    auto Sudoku::getFoundByType() -> std::vector<QString>*
     {
         return &_foundByType;
     }
 
-    //Field* Sudoku::createEmptyGrid()
-    //{
-    //    Field* grid[9][9];
-    //    uint8_t id = 1;
-    //    for (uint8_t r = 1; r <= 9; r++)
-    //    {
-    //        for (uint8_t c = 1; c <= 9; c++)
-    //        {
-    //            grid[r - 1][c - 1] = Field(id);
-    //            id++;
-    //        }
-    //    }
-    //    _foundInRunNo.clear();
-    //    _foundByType.clear();
-    //    return grid;
-    //}
-
-    Field* Sudoku::getFieldByCoord(const uint8_t& rID, const uint8_t& cID)
+    auto Sudoku::getFieldByCoord(const uint8_t rID, const uint8_t cID) -> Field*
     {
-        // cout << "Sudoku: val = " << _grid[rID - 1][cID - 1].getVal() << endl;
-        return &_grid[rID - 1][cID - 1];
+        return &_grid.at(rID - 1).at(cID - 1);
     }
 
-    Field* Sudoku::getFieldByFieldID(const uint8_t& fID)
+    auto Sudoku::getFieldByFieldID(uint8_t fID) -> Field*
     {
-        const uint8_t rID = (fID - 1) / order + 1;
-        const uint8_t cID = (fID - 1) % order + 1;
+        const uint8_t rID = (fID - 1) / global::order + 1;
+        const uint8_t cID = (fID - 1) % global::order + 1;
         return getFieldByCoord(rID, cID);
     }
 
-    array<Field*, order> Sudoku::getRowByRowID(const uint8_t& rID)
+    auto Sudoku::getRowByRowID(const uint8_t rID) -> std::array<Field*, global::order>
     {
-        array<Field*, order> row;
-        for (uint8_t cID = 1; cID <= order; cID++)
+        std::array<Field*, global::order> row{};
+        for (uint8_t cID = 1; cID <= global::order; cID++)
         {
-            row[cID - 1] = &_grid[rID - 1][cID - 1];
+            row.at(cID - 1) = &_grid.at(rID - 1).at(cID - 1);
         }
         return row;
     }
 
-    array<Field*, order> Sudoku::getRowByFieldID(const uint8_t& fID)
+    auto Sudoku::getRowByFieldID(const uint8_t fID) -> std::array<Field*, global::order>
     {
-        const uint8_t rID = (fID - 1) / order + 1;
+        const uint8_t rID = (fID - 1) / global::order + 1;
         return getRowByRowID(rID);
     }
 
-    array<Field*, order> Sudoku::getColByColID(const uint8_t& cID)
+    auto Sudoku::getColByColID(const uint8_t cID) -> std::array<Field*, global::order>
     {
 
-        array<Field*, order> col;
-        for (uint8_t rID = 1; rID <= order; rID++)
+        std::array<Field*, global::order> col{};
+        for (uint8_t rID = 1; rID <= global::order; rID++)
         {
-            col[rID - 1] = &_grid[rID - 1][cID - 1];
+            col.at(rID - 1) = &_grid.at(rID - 1).at(cID - 1);
         }
         return col;
     }
 
-    array<Field*, order> Sudoku::getColByFieldID(const uint8_t& fID)
+    auto Sudoku::getColByFieldID(const uint8_t fID) -> std::array<Field*, global::order>
     {
-        const uint8_t cID = (fID - 1) % order + 1;
+        const uint8_t cID = (fID - 1) % global::order + 1;
         return getColByColID(cID);
     }
 
-    // Field** Sudoku::getBlockByUpperLeftField(uint8_t r0, uint8_t c0)
-    // {
-    //    Field** block = new Field*[3];
-    //    for (uint8_t i = 0; i < 3; i++)
-    //    {
-    //        block[i] = new Field[3];
-    //        for (uint8_t j = 0; j < 3; j++)
-    //        {
-    //            block[i][j] = grid[r0 + i][c0 + j];
-    //        }
-    //    }
-    //    return block;
-    // }
-
-    array<Field*, order> Sudoku::getBlockByBlockID(const uint8_t& bID)
+    auto Sudoku::getBlockByBlockID(const uint8_t bID) -> std::array<Field*, global::order>
     {
-        array<Field*, order> block;
+        std::array<Field*, global::order> block{};
 
-        uint8_t const r0 = (bID - 1) / 3 * 3;
-        uint8_t const c0 = (bID - 1) % 3 * 3;
+        const uint8_t row0 = (bID - 1) / 3 * 3;
+        const uint8_t col0 = (bID - 1) % 3 * 3;
 
-        uint8_t i = 0;
-        for (uint8_t r = r0; r < r0 + 3; r++)
+        uint8_t num = 0;
+        for (uint8_t row = row0; row < row0 + 3; row++)
         {
-            for (uint8_t c = c0; c < c0 + 3; c++)
+            for (uint8_t col = col0; col < col0 + 3; col++)
             {
-                block[i] = &_grid[r][c];
-                i++;
+                block.at(num) = &_grid.at(row).at(col);
+                num++;
             }
         }
         return block;
     }
 
-    array<Field*, order> Sudoku::getBlockByFieldID(const uint8_t& fID)
+    auto Sudoku::getBlockByFieldID(const uint8_t fID) -> std::array<Field*, global::order>
     {
         // clang-format off
-        if      (fID ==  1 || fID ==  2 || fID ==  3 || fID == 10 || fID == 11 || fID == 12 || fID == 19 || fID == 20 || fID == 21) return getBlockByBlockID(1);
-        else if (fID ==  4 || fID ==  5 || fID ==  6 || fID == 13 || fID == 14 || fID == 15 || fID == 22 || fID == 23 || fID == 24) return getBlockByBlockID(2);
-        else if (fID ==  7 || fID ==  8 || fID ==  9 || fID == 16 || fID == 17 || fID == 18 || fID == 25 || fID == 26 || fID == 27) return getBlockByBlockID(3);
-        else if (fID == 28 || fID == 29 || fID == 30 || fID == 37 || fID == 38 || fID == 39 || fID == 46 || fID == 47 || fID == 48) return getBlockByBlockID(4);
-        else if (fID == 31 || fID == 32 || fID == 33 || fID == 40 || fID == 41 || fID == 42 || fID == 49 || fID == 50 || fID == 51) return getBlockByBlockID(5);
-        else if (fID == 34 || fID == 35 || fID == 36 || fID == 43 || fID == 44 || fID == 45 || fID == 52 || fID == 53 || fID == 54) return getBlockByBlockID(6);
-        else if (fID == 55 || fID == 56 || fID == 57 || fID == 64 || fID == 65 || fID == 66 || fID == 73 || fID == 74 || fID == 75) return getBlockByBlockID(7);
-        else if (fID == 58 || fID == 59 || fID == 60 || fID == 67 || fID == 68 || fID == 69 || fID == 76 || fID == 77 || fID == 78) return getBlockByBlockID(8);
-        else                                                                                                                        return getBlockByBlockID(9);
+        if (fID ==  1 || fID ==  2 || fID ==  3 || fID == 10 || fID == 11 || fID == 12 || fID == 19 || fID == 20 || fID == 21) { return getBlockByBlockID(1); } // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+        if (fID ==  4 || fID ==  5 || fID ==  6 || fID == 13 || fID == 14 || fID == 15 || fID == 22 || fID == 23 || fID == 24) { return getBlockByBlockID(2); } // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+        if (fID ==  7 || fID ==  8 || fID ==  9 || fID == 16 || fID == 17 || fID == 18 || fID == 25 || fID == 26 || fID == 27) { return getBlockByBlockID(3); } // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+        if (fID == 28 || fID == 29 || fID == 30 || fID == 37 || fID == 38 || fID == 39 || fID == 46 || fID == 47 || fID == 48) { return getBlockByBlockID(4); } // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+        if (fID == 31 || fID == 32 || fID == 33 || fID == 40 || fID == 41 || fID == 42 || fID == 49 || fID == 50 || fID == 51) { return getBlockByBlockID(5); } // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+        if (fID == 34 || fID == 35 || fID == 36 || fID == 43 || fID == 44 || fID == 45 || fID == 52 || fID == 53 || fID == 54) { return getBlockByBlockID(6); } // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+        if (fID == 55 || fID == 56 || fID == 57 || fID == 64 || fID == 65 || fID == 66 || fID == 73 || fID == 74 || fID == 75) { return getBlockByBlockID(7); } // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+        if (fID == 58 || fID == 59 || fID == 60 || fID == 67 || fID == 68 || fID == 69 || fID == 76 || fID == 77 || fID == 78) { return getBlockByBlockID(8); } // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
+                                                                                                                               { return getBlockByBlockID(9); } // NOLINT(cppcoreguidelines-avoid-magic-numbers, readability-magic-numbers)
         // clang-format on
     }
 
-    vector<Field*> Sudoku::getFreeFields()
+    auto Sudoku::getFreeFields() -> std::vector<Field*>
     {
-        vector<Field*> freeFields;
+        std::vector<Field*> freeFields;
         for (auto& row : _grid)
         {
             for (auto& field : row)
@@ -280,14 +222,14 @@ namespace sudoku
         return freeFields;
     }
 
-    uint8_t Sudoku::countCandidates()
+    auto Sudoku::countCandidates() -> uint8_t
     {
         uint8_t numCands = 0;
-        for (uint8_t rID = 1; rID <= order; rID++)
+        for (uint8_t rID = 1; rID <= global::order; rID++)
         {
-            for (uint8_t cID = 1; cID <= order; cID++)
+            for (uint8_t cID = 1; cID <= global::order; cID++)
             {
-                numCands += _grid[rID - 1][cID - 1].getCandidates()->size();
+                numCands += _grid.at(rID - 1).at(cID - 1).getCandidates()->size();
             }
         }
         return numCands;
@@ -298,13 +240,11 @@ namespace sudoku
         // set the value of f to val
         if (field->getCandidates()->size() > 1)
         {
-            QString const errorMessage = "Error filling Field (" + QString::number(*field->getRID()) + "," + QString::number(*field->getCID()) + "): Field has more than one candidate!";
+            const QString errorMessage = "Error filling Field (" + QString::number(*field->getRID()) + "," + QString::number(*field->getCID()) + "): Field has more than one candidate!";
             this->_logTextArea->append(errorMessage);
-            // Display an error message
-            // QMessageBox::critical(logTextArea, "Error filling Field", errorMessage);
             return;
         }
-        uint8_t const val = (*field->getCandidates())[0];
+        const uint8_t val = (*field->getCandidates())[0];
         field->setVal(&val);
 
         // eliminate candidate "val" from units
@@ -331,13 +271,13 @@ namespace sudoku
     }
 
     // Naked Single methods
-    Field* Sudoku::firstNakedSingle()
+    auto Sudoku::firstNakedSingle() -> Field*
     {
-        for (uint8_t rID = 1; rID <= order; rID++)
+        for (uint8_t rID = 1; rID <= global::order; rID++)
         {
-            for (uint8_t cID = 1; cID <= order; cID++)
+            for (uint8_t cID = 1; cID <= global::order; cID++)
             {
-                Field* field = &_grid[rID - 1][cID - 1];
+                Field* field = &_grid.at(rID - 1).at(cID - 1);
                 if (field->getCandidates()->size() == 1)
                 {
                     return field;
@@ -347,16 +287,18 @@ namespace sudoku
         return nullptr;
     }
 
-    void Sudoku::processNakedSingles(uint8_t run)
+    void Sudoku::processNakedSingles(const uint8_t run)
     {
-        this->_logTextArea->append("Search for NakedSingles");
+        this->_logTextArea->append(QStringLiteral("Search for NakedSingles"));
         while (true)
         {
             Field* firstNakedSingle = this->firstNakedSingle();
             if (firstNakedSingle == nullptr)
+            {
                 break;
+            }
             this->filldAndEliminate(firstNakedSingle);
-            QString const msg =
+            const QString msg =
                 "NakedSingle {" + QString::number(*firstNakedSingle->getVal()) +
                 "} in Field (" + QString::number(*firstNakedSingle->getRID()) + "," +
                 QString::number(*firstNakedSingle->getCID()) + ")";
@@ -367,55 +309,49 @@ namespace sudoku
         // this->printFields();
     }
 
-    bool Sudoku::fieldContainsCandidate(std::vector<uint8_t>* candidates, uint8_t cand)
+    auto Sudoku::fieldContainsCandidate(std::vector<uint8_t>* candidates, const uint8_t cand) -> bool
     {
         return std::find(candidates->begin(), candidates->end(), cand) != candidates->end();
     }
 
-    array<uint8_t, order> Sudoku::candidateOccurrencesInUnit(array<Field*, order> unit)
+    auto Sudoku::candidateOccurrencesInUnit(std::array<Field*, global::order> unit) -> std::array<uint8_t, global::order>
     {
-        array<uint8_t, order> candidateOccurrencesInUnit{}; // Initialize array elements to 0
-        for (uint8_t cand = 1; cand <= order; cand++)
+        std::array<uint8_t, global::order> candidateOccurrencesInUnit{}; // Initialize array elements to 0
+        for (uint8_t cand = 1; cand <= global::order; cand++)
         {
             uint8_t count = 0;
-            for (uint8_t unitID = 1; unitID <= order; unitID++)
+            for (uint8_t unitID = 1; unitID <= global::order; unitID++)
             {
-                if (fieldContainsCandidate(unit[unitID - 1]->getCandidates(), cand))
+                if (fieldContainsCandidate(unit.at(unitID - 1)->getCandidates(), cand))
                 {
                     count++;
                 }
             }
-            candidateOccurrencesInUnit[cand - 1] = count;
+            candidateOccurrencesInUnit.at(cand - 1) = count;
         }
         return candidateOccurrencesInUnit;
     }
 
-    HiddenSingle* Sudoku::firstHiddenSingle()
+    auto Sudoku::firstHiddenSingle() -> HiddenSingle*
     {
         // Reihenfolge: Erst Reihen, dann Spalten, dann Bloecke
         // nach HiddenSingle durchsuchen
-        std::string const types[] = {"Row", "Col", "Block"};
+        const std::array<std::string, 3> types{"Row", "Col", "Block"};
         for (const std::string& type : types)
         {
-            for (uint8_t unitID = 1; unitID <= order; unitID++)
+            for (uint8_t unitID = 1; unitID <= global::order; unitID++)
             {
-                array<Field*, order> unit;
-                if (type == "Row")
-                    unit = getRowByRowID(unitID);
-                else if (type == "Col")
-                    unit = getColByColID(unitID);
-                else if (type == "Block")
-                    unit = getBlockByBlockID(unitID);
-                array<uint8_t, order> candsInUnit = candidateOccurrencesInUnit(unit);
+                auto unit = this->getUnit(type, unitID);
+                std::array<uint8_t, global::order> candsInUnit = candidateOccurrencesInUnit(unit);
                 // Finde Zahlen "i", die nur 1x vorkommen
-                for (uint8_t i = 1; i <= order; i++)
+                for (uint8_t i = 1; i <= global::order; i++)
                 {
-                    if (candsInUnit[i - 1] == 1)
+                    if (candsInUnit.at(i - 1) == 1)
                     {
                         // Pruefe Felder in Reihe i: Welches Feld enthaelt Zahl "num"?
-                        for (uint8_t fID = 1; fID <= order; fID++)
+                        for (uint8_t fID = 1; fID <= global::order; fID++)
                         {
-                            Field* field = unit[fID - 1];
+                            Field* field = unit.at(fID - 1);
                             if (fieldContainsCandidate(field->getCandidates(), i))
                             {
                                 // Kandidat fuer Feld f ist nur Zahl i
@@ -429,19 +365,21 @@ namespace sudoku
         return nullptr;
     }
 
-    void Sudoku::processHiddenSingles(uint8_t run)
+    void Sudoku::processHiddenSingles(const uint8_t run)
     {
-        this->_logTextArea->append("\nSearch for HiddenSingles");
+        this->_logTextArea->append(QStringLiteral("\nSearch for HiddenSingles"));
         while (true)
         {
             HiddenSingle* firstHiddenSingle = this->firstHiddenSingle();
             if (firstHiddenSingle == nullptr)
+            {
                 break;
-            std::vector<uint8_t> const cand(1, *firstHiddenSingle->getCandidate());
+            }
+            const std::vector<uint8_t> cand(1, *firstHiddenSingle->getCandidate());
             firstHiddenSingle->getField()->setCandidates(&cand);
             this->filldAndEliminate(firstHiddenSingle->getField());
 
-            QString const msg =
+            const QString msg =
                 "HiddenSingle {" +
                 QString::number(*firstHiddenSingle->getField()->getVal()) + "} in " +
                 QString::fromStdString(*firstHiddenSingle->getType()) + " " +
@@ -457,60 +395,42 @@ namespace sudoku
     }
 
     // Naked Pair methods
-    NakedPair* Sudoku::firstNakedPair(std::vector<NakedPair*>& deadNakedPairs)
+    auto Sudoku::firstNakedPair(std::vector<NakedPair*>& deadNakedPairs) -> NakedPair*
     {
         for (const std::string& type : {"Row", "Col", "Block"})
         {
-            // this->_logTextArea->append("firstNakedPair()::type = " + QString::fromStdString(type));
-            for (uint8_t unitID = 1; unitID <= order; unitID++) // go over all units
+            for (uint8_t unitID = 1; unitID <= global::order; unitID++) // go over all units
             {
-                array<Field*, order> unit;
-                if (type == "Row")
-                    unit = getRowByRowID(unitID);
-                else if (type == "Col")
-                    unit = getColByColID(unitID);
-                else if (type == "Block")
-                    unit = getBlockByBlockID(unitID);
-
+                auto unit = this->getUnit(type, unitID);
                 uint8_t numFreeFieldsInUnit = 0; // In der jeweiligen Unit muessen > 2 freie Felder sein
-                for (uint8_t fID = 1; fID <= order; fID++)
+                for (uint8_t fID = 1; fID <= global::order; fID++)
                 {
-                    if (*unit[fID - 1]->getVal() == 0)
+                    if (*unit.at(fID - 1)->getVal() == 0)
+                    {
                         numFreeFieldsInUnit++;
+                    }
                 }
 
-                for (uint8_t i1 = 1; i1 <= order-1; i1++) // Alle Zahlenpaare {1,2} bis {8,9}
+                for (uint8_t i_1 = 1; i_1 <= global::order - 1; i_1++) // Alle Zahlenpaare {1,2} bis {8,9}
                 {
-                    for (uint8_t i2 = i1 + 1; i2 <= order; i2++)
+                    for (uint8_t i_2 = i_1 + 1; i_2 <= global::order; i_2++)
                     {
-                        for (uint8_t fID1 = 1; fID1 <= order-1; fID1++) // Alle Feld-Kombinationen in unit
+                        for (uint8_t fID1 = 1; fID1 <= global::order - 1; fID1++) // Alle Feld-Kombinationen in unit
                         {
-                            for (uint8_t fID2 = fID1 + 1; fID2 <= order; fID2++)
+                            for (uint8_t fID2 = fID1 + 1; fID2 <= global::order; fID2++)
                             {
-                                //                                this->_logTextArea->append("type=" + QString::fromStdString(type) + " , {i,j}={" + QString::number(i) + "," + QString::number(j) + "} , Felder " + QString::number(k) + "," + QString::number(l));
-                                Field* fk = unit[fID1 - 1];
-                                Field* fl = unit[fID2 - 1];
-                                //                                if (run == 1)
-                                //                                {
-                                //                                    this->_logTextArea->append(QString::fromStdString(type));
-                                //                                    fk->printField(*_logTextArea);
-                                //                                    fl->printField(*_logTextArea);
-                                //                                    this->_logTextArea->append("numFreeFieldsInInut = " + QString::number(numFreeFieldsInUnit));
-                                //                                }
+                                Field* field1 = unit.at(fID1 - 1);
+                                Field* field2 = unit.at(fID2 - 1);
                                 // Kandidatenlisten der beiden Felder muessen Laenge 2 haben und
                                 // die einzigen Kandidaten muessen die Zahlen i und j sein
-                                uint8_t candsij[] = {i1, i2};
-                                if (fk->getCandidates()->size() == 2 &&
-                                    fl->getCandidates()->size() == 2 &&
-                                    // containsAll(fk->getCandidates(), {i, j}) &&
-                                    // containsAll(fl->getCandidates(), {i, j}) &&
-                                    //                                    std::includes(fk->getCandidates()->begin(), fk->getCandidates()->end(), candsij.begin(), candsij.end()) &&
-                                    //                                    std::includes(fl->getCandidates()->begin(), fl->getCandidates()->end(), candsij.begin(), candsij.end()) &&
-                                    std::equal(fk->getCandidates()->begin(), fk->getCandidates()->end(), candsij) &&
-                                    std::equal(fl->getCandidates()->begin(), fl->getCandidates()->end(), candsij) &&
+                                std::array<uint8_t, 2> cands{i_1, i_2};
+                                if (field1->getCandidates()->size() == 2 &&
+                                    field2->getCandidates()->size() == 2 &&
+                                    std::equal(field1->getCandidates()->begin(), field1->getCandidates()->end(), cands.begin(), cands.end()) &&
+                                    std::equal(field2->getCandidates()->begin(), field2->getCandidates()->end(), cands.begin(), cands.end()) &&
                                     numFreeFieldsInUnit > 2)
                                 {
-                                    NakedPair* firstNakedPair = new NakedPair(fk, fl, i1, i2, type);
+                                    auto* firstNakedPair = new NakedPair(field1, field2, i_1, i_2, type);
                                     bool isDead = false;
                                     for (NakedPair* dead : deadNakedPairs)
                                     {
@@ -519,7 +439,6 @@ namespace sudoku
                                             dead->getType() == firstNakedPair->getType())
                                         {
                                             isDead = true;
-                                            // this->_logTextArea->append("IS DEAD!");
                                         }
                                     }
                                     if (!isDead)
@@ -537,21 +456,21 @@ namespace sudoku
         return nullptr;
     }
 
-    void Sudoku::eliminateCandidatesOfNakedPairInUnit(NakedPair* nakedPair, std::array<Field*, order> unit)
+    void Sudoku::eliminateCandidatesOfNakedPairInUnit(NakedPair* nakedPair, const std::array<Field*, global::order>& unit)
     {
-        for (Field* f : unit)
+        for (Field* field : unit)
         {
-            if (f->getFID() == nakedPair->getField1()->getFID() ||
-                f->getFID() == nakedPair->getField2()->getFID() ||
-                *f->getVal() != 0)
+            if (field->getFID() == nakedPair->getField1()->getFID() ||
+                field->getFID() == nakedPair->getField2()->getFID() ||
+                *field->getVal() != 0)
             {
                 continue;
             }
 
-            std::vector<uint8_t>* candidates = f->getCandidates();
+            std::vector<uint8_t>* candidates = field->getCandidates();
             std::vector<uint8_t>* candidatesToRemove = nakedPair->getField1()->getCandidates();
 
-            for (uint8_t const candidate : *candidatesToRemove)
+            for (const uint8_t candidate : *candidatesToRemove)
             {
                 candidates->erase(std::remove(candidates->begin(), candidates->end(), candidate), candidates->end());
             }
@@ -561,37 +480,35 @@ namespace sudoku
     void Sudoku::eliminateNakedPair(NakedPair* nakedPair)
     {
         if (*nakedPair->getField1()->getRID() == *nakedPair->getField2()->getRID())
+        {
             eliminateCandidatesOfNakedPairInUnit(nakedPair, getRowByFieldID(*nakedPair->getField1()->getFID()));
+        }
         if (*nakedPair->getField1()->getCID() == *nakedPair->getField2()->getCID())
+        {
             eliminateCandidatesOfNakedPairInUnit(nakedPair, getColByFieldID(*nakedPair->getField1()->getFID()));
+        }
         if (*nakedPair->getField1()->getBID() == *nakedPair->getField2()->getBID())
+        {
             eliminateCandidatesOfNakedPairInUnit(nakedPair, getBlockByFieldID(*nakedPair->getField1()->getFID()));
+        }
     }
 
-    void Sudoku::processNakedPairs(uint8_t run)
+    void Sudoku::processNakedPairs(const uint8_t run)
     {
-        this->_logTextArea->append("\nSearch for NakedPairs");
+        this->_logTextArea->append(QStringLiteral("\nSearch for NakedPairs"));
         std::vector<NakedPair*> deadNakedPairs;
         while (true)
         {
             NakedPair* firstNakedPair = this->firstNakedPair(deadNakedPairs);
             if (firstNakedPair == nullptr)
+            {
                 break;
-
-            uint8_t const numCandsBeforeEliminatingFirstNakedPair = this->countCandidates();
-            //            this->_logTextArea->append("NOW ELIMINATING: NakedPair {" +
-            //                                       QString::number(firstNakedPair->getCandidate1()) + "," +
-            //                                       QString::number(firstNakedPair->getCandidate2()) + "} in " +
-            //                                       QString::fromStdString(firstNakedPair->getType()) + " " +
-            //                                       QString::number(firstNakedPair->getUnitNumber()) + ": Fields (" +
-            //                                       QString::number(*firstNakedPair->getField1()->getRID()) + "," +
-            //                                       QString::number(*firstNakedPair->getField1()->getCID()) + ");(" +
-            //                                       QString::number(*firstNakedPair->getField2()->getRID()) + "," +
-            //                                       QString::number(*firstNakedPair->getField2()->getCID()) + ")");
+            }
+            const uint8_t numCandsBeforeEliminatingFirstNakedPair = this->countCandidates();
             this->eliminateNakedPair(firstNakedPair);
             if (this->countCandidates() < numCandsBeforeEliminatingFirstNakedPair)
             {
-                QString const msg =
+                const QString msg =
                     "NakedPair {" +
                     QString::number(firstNakedPair->getCandidate1()) + "," +
                     QString::number(firstNakedPair->getCandidate2()) + "} in " +
@@ -610,51 +527,36 @@ namespace sudoku
     }
 
     // Hidden Pair methods
-    HiddenSubset* Sudoku::firstHiddenPair()
+    auto Sudoku::firstHiddenPair() -> HiddenSubset*
     {
         for (const std::string& type : {"Row", "Col", "Block"})
         {
-            for (uint8_t unitID = 1; unitID <= order; unitID++) // go over all units
+            for (uint8_t unitID = 1; unitID <= global::order; unitID++) // go over all units
             {
-                array<Field*, order> unit;
-                if (type == "Row")
-                    unit = getRowByRowID(unitID);
-                else if (type == "Col")
-                    unit = getColByColID(unitID);
-                else if (type == "Block")
-                    unit = getBlockByBlockID(unitID);
-                array<uint8_t, order> candidateOccurrences = candidateOccurrencesInUnit(unit);
-                for (uint8_t i1 = 1; i1 <= order-1; i1++) // Alle Zahlenpaare {1,2} bis {8,9}
+                auto unit = this->getUnit(type, unitID);
+                std::array<uint8_t, global::order> candidateOccurrences = candidateOccurrencesInUnit(unit);
+                for (uint8_t i_1 = 1; i_1 <= global::order - 1; i_1++) // Alle Zahlenpaare {1,2} bis {8,9}
                 {
-                    for (uint8_t i2 = i1 + 1; i2 <= order; i2++)
+                    for (uint8_t i_2 = i_1 + 1; i_2 <= global::order; i_2++)
                     {
                         // Wenn i und j genau 2 mal vorkommen
-                        if (candidateOccurrences[i1 - 1] == 2 && candidateOccurrences[i2 - 1] == 2)
+                        if (candidateOccurrences.at(i_1 - 1) == 2 && candidateOccurrences.at(i_2 - 1) == 2)
                         {
                             // Finde Felder, in denen i und j vorkommen
                             std::vector<Field*> hiddenPairFields;
-                            for (Field* f : unit)
+                            for (Field* field : unit)
                             {
-                                if (std::find(f->getCandidates()->begin(), f->getCandidates()->end(), i1) != f->getCandidates()->end() &&
-                                    std::find(f->getCandidates()->begin(), f->getCandidates()->end(), i2) != f->getCandidates()->end())
+                                if (std::find(field->getCandidates()->begin(), field->getCandidates()->end(), i_1) != field->getCandidates()->end() &&
+                                    std::find(field->getCandidates()->begin(), field->getCandidates()->end(), i_2) != field->getCandidates()->end())
                                 {
-                                    hiddenPairFields.push_back(f);
+                                    hiddenPairFields.push_back(field);
                                 }
                             }
                             if (hiddenPairFields.size() == 2 && hiddenPairFields.at(0) != nullptr && hiddenPairFields.at(1) != nullptr &&
                                 (hiddenPairFields.at(0)->getCandidates()->size() > 2 || hiddenPairFields.at(1)->getCandidates()->size() > 2))
                             {
-                                std::vector<uint8_t> const cands({i1, i2});
-                                HiddenSubset* firstHiddenPair = new HiddenSubset(hiddenPairFields, cands, type);
-                                //                                this->_logTextArea->append("HIDDEN PAIR {" +
-                                //                                                           QString::number(firstHiddenPair->getCandidates().at(0)) + "," +
-                                //                                                           QString::number(firstHiddenPair->getCandidates().at(1)) + "} in " +
-                                //                                                           QString::fromStdString(firstHiddenPair->getType()) + " " +
-                                //                                                           QString::number(firstHiddenPair->getUnitNumber()) + ": Fields (" +
-                                //                                                           QString::number(*firstHiddenPair->getFields().at(0)->getRID()) + "," +
-                                //                                                           QString::number(*firstHiddenPair->getFields().at(0)->getCID()) + ");(" +
-                                //                                                           QString::number(*firstHiddenPair->getFields().at(1)->getRID()) + "," +
-                                //                                                           QString::number(*firstHiddenPair->getFields().at(1)->getCID()) + ")");
+                                const std::vector<uint8_t> cands{i_1, i_2};
+                                auto* firstHiddenPair = new HiddenSubset(hiddenPairFields, cands, type);
                                 return firstHiddenPair;
                             }
                         }
@@ -672,32 +574,24 @@ namespace sudoku
         candidates.erase(newEnd, candidates.end());
     }
 
-    void Sudoku::processHiddenPairs(uint8_t run)
+    void Sudoku::processHiddenPairs(const uint8_t run)
     {
-        this->_logTextArea->append("\nSearch for HiddenPairs");
+        this->_logTextArea->append(QStringLiteral("\nSearch for HiddenPairs"));
         while (true)
         {
             HiddenSubset* firstHiddenPair = this->firstHiddenPair();
             if (firstHiddenPair == nullptr)
+            {
                 break;
-
-            uint8_t const numCandsBeforeEliminatingHiddenPair = this->countCandidates();
-
-            //            this->_logTextArea->append("Before Eliminating:");
-            //            firstHiddenPair->getFields().at(0)->printField(*_logTextArea);
-            //            firstHiddenPair->getFields().at(1)->printField(*_logTextArea);
-
-            std::vector<uint8_t> const hiddenPairCandidates = firstHiddenPair->getCandidates();
+            }
+            const uint8_t numCandsBeforeEliminatingHiddenPair = this->countCandidates();
+            const std::vector<uint8_t> hiddenPairCandidates = firstHiddenPair->getCandidates();
             retainAll(*firstHiddenPair->getFields().at(0)->getCandidates(), hiddenPairCandidates);
             retainAll(*firstHiddenPair->getFields().at(1)->getCandidates(), hiddenPairCandidates);
 
-            //            this->_logTextArea->append("After Eliminating:");
-            //            firstHiddenPair->getFields().at(0)->printField(*_logTextArea);
-            //            firstHiddenPair->getFields().at(1)->printField(*_logTextArea);
-
             if (this->countCandidates() < numCandsBeforeEliminatingHiddenPair)
             {
-                QString const msg = "HiddenPair {" +
+                const QString msg = "HiddenPair {" +
                                     QString::number(firstHiddenPair->getCandidates().at(0)) + "," +
                                     QString::number(firstHiddenPair->getCandidates().at(1)) + "} in " +
                                     QString::fromStdString(firstHiddenPair->getType()) + " " +
@@ -715,82 +609,75 @@ namespace sudoku
     }
 
     // Naked Triple methods
-    NakedTriple* Sudoku::firstNakedTriple(std::vector<NakedTriple*>& deadNakedTriples)
+    auto Sudoku::firstNakedTriple(std::vector<NakedTriple*>& deadNakedTriples) -> NakedTriple*
     {
         for (const std::string& type : {"Row", "Col", "Block"})
         {
-            for (uint8_t unitID = 1; unitID <= order; unitID++) // go over all units
+            for (uint8_t unitID = 1; unitID <= global::order; unitID++) // go over all units
             {
-                array<Field*, order> unit;
-                if (type == "Row")
-                    unit = getRowByRowID(unitID);
-                else if (type == "Col")
-                    unit = getColByColID(unitID);
-                else if (type == "Block")
-                    unit = getBlockByBlockID(unitID);
-
+                auto unit = this->getUnit(type, unitID);
                 uint8_t numFreeFieldsInUnit = 0; // In der jeweiligen Unit muessen > 3 freie Felder sein
-                for (uint8_t fID = 1; fID <= order; fID++)
+                for (uint8_t fID = 1; fID <= global::order; fID++)
                 {
-                    if (*unit[fID - 1]->getVal() == 0)
+                    if (*unit.at(fID - 1)->getVal() == 0)
+                    {
                         numFreeFieldsInUnit++;
+                    }
                 }
 
-                for (uint8_t i=1; i<=order-2; i++) // Alle Zahlen-Tripel {1,2,3} bis {7,8,9}
+                for (uint8_t i_1 = 1; i_1 <= global::order - 2; i_1++) // Alle Zahlen-Tripel {1,2,3} bis {7,8,9}
                 {
-                    for (uint8_t j=i+1; j<=order-1; j++)
+                    for (uint8_t i_2 = i_1 + 1; i_2 <= global::order - 1; i_2++)
                     {
-                        for (uint8_t k=j+1; k<=order; k++)
+                        for (uint8_t i_3 = i_2 + 1; i_3 <= global::order; i_3++)
                         {
                             std::vector<uint8_t> nonMatchCands;
                             // Kandidatenlisten aller drei Felder duerfen ausschliesslich die Zahlen i,j,k enthalten
-                            for (uint8_t c=1; c<=order; c++)
+                            for (uint8_t cand = 1; cand <= global::order; cand++)
                             {
-                                if (c!=i && c!=j && c!=k)
+                                if (cand != i_1 && cand != i_2 && cand != i_3)
                                 {
-                                    nonMatchCands.push_back(c);
+                                    nonMatchCands.push_back(cand);
                                 }
                             }
-                            for (uint8_t l=1; l<=order-2; l++) // Alle Feld-Kombinationen in unit
+                            for (uint8_t fID1 = 1; fID1 <= global::order - 2; fID1++) // Alle Feld-Kombinationen in unit
                             {
-                                for (uint8_t m=l+1; m<=order-1; m++)
+                                for (uint8_t fID2 = fID1 + 1; fID2 <= global::order - 1; fID2++)
                                 {
-                                    for (uint8_t n=m+1; n<=order; n++)
+                                    for (uint8_t fID3 = fID2 + 1; fID3 <= global::order; fID3++)
                                     {
-                                        Field* fl = unit[l-1];
-                                        Field* fm = unit[m-1];
-                                        Field* fn = unit[n-1];
-                                        if (*fl->getVal()==0 && *fm->getVal()==0 && *fn->getVal()==0)
+                                        Field* field1 = unit.at(fID1 - 1);
+                                        Field* field2 = unit.at(fID2 - 1);
+                                        Field* field3 = unit.at(fID3 - 1);
+                                        if (*field1->getVal() == 0 && *field2->getVal() == 0 && *field3->getVal() == 0)
                                         {
                                             bool flIsNakedTriple = true;
-                                            for (uint8_t c : nonMatchCands)
+                                            for (const uint8_t cand : nonMatchCands)
                                             {
-                                                if (std::find(fl->getCandidates()->begin(), fl->getCandidates()->end(), c) != fl->getCandidates()->end())
+                                                if (std::find(field1->getCandidates()->begin(), field1->getCandidates()->end(), cand) != field1->getCandidates()->end())
                                                 {
                                                     flIsNakedTriple = false;
                                                 }
                                             }
                                             bool fmIsNakedTriple = true;
-                                            for (uint8_t c : nonMatchCands)
+                                            for (const uint8_t cand : nonMatchCands)
                                             {
-                                                if (std::find(fm->getCandidates()->begin(), fm->getCandidates()->end(), c) != fm->getCandidates()->end())
+                                                if (std::find(field2->getCandidates()->begin(), field2->getCandidates()->end(), cand) != field2->getCandidates()->end())
                                                 {
                                                     fmIsNakedTriple = false;
                                                 }
                                             }
                                             bool fnIsNakedTriple = true;
-                                            for (uint8_t c : nonMatchCands)
+                                            for (const uint8_t cand : nonMatchCands)
                                             {
-                                                if (std::find(fn->getCandidates()->begin(), fn->getCandidates()->end(), c) != fn->getCandidates()->end())
+                                                if (std::find(field3->getCandidates()->begin(), field3->getCandidates()->end(), cand) != field3->getCandidates()->end())
                                                 {
                                                     fnIsNakedTriple = false;
                                                 }
                                             }
                                             if (flIsNakedTriple && fmIsNakedTriple && fnIsNakedTriple && numFreeFieldsInUnit > 3)
                                             {
-                                                // this->_logTextArea->append("FOUND NAKED TRIPLE " + QString::fromStdString(type) + " " + QString::number(unitID) + " : " + QString::number(i) + " " + QString::number(j) + " " + QString::number(k));
-                                                // this->_logTextArea->append("Fields " + QString::number(*fl->getRID()) + " " + QString::number(*fl->getCID()) + " , " + QString::number(*fm->getRID()) + " " + QString::number(*fm->getCID()) + " , " + QString::number(*fn->getRID()) + " " + QString::number(*fn->getCID()));
-                                                NakedTriple* firstNakedTriple = new NakedTriple(fl,fm,fn, i,j,k, type);
+                                                auto* firstNakedTriple = new NakedTriple(field1, field2, field3, i_1, i_2, i_3, type);
                                                 bool isDead = false;
                                                 for (NakedTriple* dead : deadNakedTriples)
                                                 {
@@ -800,7 +687,6 @@ namespace sudoku
                                                         dead->getType() == firstNakedTriple->getType())
                                                     {
                                                         isDead = true;
-                                                        // this->_logTextArea->append("IS DEAD!");
                                                     }
                                                 }
                                                 if (!isDead)
@@ -821,20 +707,21 @@ namespace sudoku
         return nullptr;
     }
 
-
-    void Sudoku::eliminateCandidatesOfNakedTripleInUnit(NakedTriple* nakedTriple, std::array<Field*, order> unit)
+    void Sudoku::eliminateCandidatesOfNakedTripleInUnit(NakedTriple* nakedTriple, const std::array<Field*, global::order>& unit)
     {
-        for (Field* f : unit)
+        for (Field* field : unit)
         {
-            if (f->getFID() == nakedTriple->getField1()->getFID() ||
-                f->getFID() == nakedTriple->getField2()->getFID() ||
-                f->getFID() == nakedTriple->getField3()->getFID() ||
-                *f->getVal() != 0)
+            if (field->getFID() == nakedTriple->getField1()->getFID() ||
+                field->getFID() == nakedTriple->getField2()->getFID() ||
+                field->getFID() == nakedTriple->getField3()->getFID() ||
+                *field->getVal() != 0)
+            {
                 continue;
-            std::vector<uint8_t>* candidates = f->getCandidates();
+            }
+            std::vector<uint8_t>* candidates = field->getCandidates();
             std::vector<uint8_t>* candidatesToRemove = nakedTriple->getField1()->getCandidates();
 
-            for (uint8_t const candidate : *candidatesToRemove)
+            for (const uint8_t candidate : *candidatesToRemove)
             {
                 candidates->erase(std::remove(candidates->begin(), candidates->end(), candidate), candidates->end());
             }
@@ -857,9 +744,9 @@ namespace sudoku
         }
     }
 
-    void Sudoku::processNakedTriples(uint8_t run)
+    void Sudoku::processNakedTriples(const uint8_t run)
     {
-        this->_logTextArea->append("\nSearch for NakedTriples");
+        this->_logTextArea->append(QStringLiteral("\nSearch for NakedTriples"));
         std::vector<NakedTriple*> deadNakedTriples;
         while (true)
         {
@@ -869,12 +756,12 @@ namespace sudoku
                 break;
             }
 
-            uint8_t const numCandsBeforeEliminatingFirstNakedTriple = this->countCandidates();
+            const uint8_t numCandsBeforeEliminatingFirstNakedTriple = this->countCandidates();
             this->eliminateNakedTriple(firstNakedTriple);
 
             if (this->countCandidates() < numCandsBeforeEliminatingFirstNakedTriple)
             {
-                QString const msg =
+                const QString msg =
                     "NakedTriple {" +
                     QString::number(firstNakedTriple->getCandidate1()) + "," +
                     QString::number(firstNakedTriple->getCandidate2()) + "," +
@@ -900,62 +787,55 @@ namespace sudoku
     }
 
     // Hidden Triple methods
-    HiddenSubset* Sudoku::firstHiddenTriple()
+    auto Sudoku::firstHiddenTriple() -> HiddenSubset*
     {
         for (const std::string& type : {"Row", "Col", "Block"})
         {
-            for (uint8_t unitID = 1; unitID <= order; unitID++) // go over all units
+            for (uint8_t unitID = 1; unitID <= global::order; unitID++) // go over all units
             {
-                array<Field*, order> unit;
-                if (type == "Row")
-                    unit = getRowByRowID(unitID);
-                else if (type == "Col")
-                    unit = getColByColID(unitID);
-                else if (type == "Block")
-                    unit = getBlockByBlockID(unitID);
-                array<uint8_t, order> candidateOccurrences = candidateOccurrencesInUnit(unit);
-                for (uint8_t i = 1; i <= order - 2; i++) // Alle Zahlen-Tripel {1,2,3} bis {7,8,9}
+                auto unit = this->getUnit(type, unitID);
+                std::array<uint8_t, global::order> candidateOccurrences = candidateOccurrencesInUnit(unit);
+                for (uint8_t i_1 = 1; i_1 <= global::order - 2; i_1++) // Alle Zahlen-Tripel {1,2,3} bis {7,8,9}
                 {
-                    for (uint8_t j = i + 1; j <= order - 1; j++)
+                    for (uint8_t i_2 = i_1 + 1; i_2 <= global::order - 1; i_2++)
                     {
-                        for (uint8_t k = j + 1; k <= order; k++)
+                        for (uint8_t i_3 = i_2 + 1; i_3 <= global::order; i_3++)
                         {
-                            if (candidateOccurrences[i - 1] > 0 && candidateOccurrences[j - 1] > 0 && candidateOccurrences[k - 1] > 0)
+                            if (candidateOccurrences.at(i_1 - 1) > 0 && candidateOccurrences.at(i_2 - 1) > 0 && candidateOccurrences.at(i_3 - 1) > 0)
                             {
-                                for (uint8_t l = 1; l <= order - 2; l++) // Alle Feld-Kombinationen in unit
+                                for (uint8_t fID1 = 1; fID1 <= global::order - 2; fID1++) // Alle Feld-Kombinationen in unit
                                 {
-                                    for (uint8_t m = l + 1; m <= order - 1; m++)
+                                    for (uint8_t fID2 = fID1 + 1; fID2 <= global::order - 1; fID2++)
                                     {
                                         //                                    loop:
-                                        for (uint8_t n = m + 1; n <= order; n++)
+                                        for (uint8_t fID3 = fID2 + 1; fID3 <= global::order; fID3++)
                                         {
                                             // i,j,k are only allowed in fields l,m,n
-                                            Field* fl = unit[l - 1];
-                                            Field* fm = unit[m - 1];
-                                            Field* fn = unit[n - 1];
+                                            Field* field1 = unit.at(fID1 - 1);
+                                            Field* field2 = unit.at(fID2 - 1);
+                                            Field* field3 = unit.at(fID3 - 1);
 
-                                            if ((*fl->getVal() != 0 || *fm->getVal() != 0 || *fn->getVal() != 0) ||
-                                                (fl->getCandidates()->size() <= 3 && fm->getCandidates()->size() <= 3 && fn->getCandidates()->size() <= 3))
+                                            if ((*field1->getVal() != 0 || *field2->getVal() != 0 || *field3->getVal() != 0) ||
+                                                (field1->getCandidates()->size() <= 3 && field2->getCandidates()->size() <= 3 && field3->getCandidates()->size() <= 3))
                                             {
                                                 continue;
                                             }
                                             bool isHiddenTriple = true;
-                                            for (Field* f : unit)
+                                            for (Field* field : unit)
                                             {
-                                                if (f != fl && f != fm && f != fn)
+                                                if (field != field1 && field != field2 && field != field3)
                                                 {
-                                                    if (std::find(f->getCandidates()->begin(), f->getCandidates()->end(), i) != f->getCandidates()->end() ||
-                                                        std::find(f->getCandidates()->begin(), f->getCandidates()->end(), j) != f->getCandidates()->end() ||
-                                                        std::find(f->getCandidates()->begin(), f->getCandidates()->end(), k) != f->getCandidates()->end())
+                                                    if (std::find(field->getCandidates()->begin(), field->getCandidates()->end(), i_1) != field->getCandidates()->end() ||
+                                                        std::find(field->getCandidates()->begin(), field->getCandidates()->end(), i_2) != field->getCandidates()->end() ||
+                                                        std::find(field->getCandidates()->begin(), field->getCandidates()->end(), i_3) != field->getCandidates()->end())
                                                     {
                                                         isHiddenTriple = false;
-                                                        //                                                        goto loop;
                                                     }
                                                 }
                                             }
                                             if (isHiddenTriple)
                                             {
-                                                return new HiddenSubset(std::vector<Field*>({fl, fm, fn}), std::vector<uint8_t>({i, j, k}), type);
+                                                return new HiddenSubset(std::vector<Field*>({field1, field2, field3}), std::vector<uint8_t>({i_1, i_2, i_3}), type);
                                             }
                                         }
                                     }
@@ -969,9 +849,9 @@ namespace sudoku
         return nullptr;
     }
 
-    void Sudoku::processHiddenTriples(uint8_t run)
+    void Sudoku::processHiddenTriples(const uint8_t run)
     {
-        this->_logTextArea->append("\nSearch for HiddenTriples");
+        this->_logTextArea->append(QStringLiteral("\nSearch for HiddenTriples"));
         while (true)
         {
             HiddenSubset* firstHiddenTriple = this->firstHiddenTriple();
@@ -979,13 +859,15 @@ namespace sudoku
             {
                 break;
             }
-            int numCandsBeforeEliminatingHiddenTriple = this->countCandidates();
-            std::vector<uint8_t> const hiddenTripleCanidates = firstHiddenTriple->getCandidates();
-            for (Field* f : firstHiddenTriple->getFields())
-                retainAll(*f->getCandidates(), hiddenTripleCanidates);
+            const int numCandsBeforeEliminatingHiddenTriple = this->countCandidates();
+            const std::vector<uint8_t> hiddenTripleCanidates = firstHiddenTriple->getCandidates();
+            for (Field* field : firstHiddenTriple->getFields())
+            {
+                retainAll(*field->getCandidates(), hiddenTripleCanidates);
+            }
             if (this->countCandidates() < numCandsBeforeEliminatingHiddenTriple)
             {
-                QString const msg = "HiddenTriple {" +
+                const QString msg = "HiddenTriple {" +
                                     QString::number(firstHiddenTriple->getCandidates().at(0)) + "," +
                                     QString::number(firstHiddenTriple->getCandidates().at(1)) + "," +
                                     QString::number(firstHiddenTriple->getCandidates().at(2)) + "} in " +
@@ -1011,7 +893,7 @@ namespace sudoku
 
     // Intersections / Locked Candidates
     // Sub-methods for RBC and BRC
-    std::vector<Field*> Sudoku::findFieldsInUnitContainingCandidateI(const array<Field*, order>& unit, uint8_t cand)
+    auto Sudoku::findFieldsInUnitContainingCandidateI(const std::array<Field*, global::order>& unit, const uint8_t cand) -> std::vector<Field*>
     {
         std::vector<Field*> containingCandidateI{};
         for (Field* field : unit) // collect all Fields containing candidate i
@@ -1024,15 +906,9 @@ namespace sudoku
         return containingCandidateI;
     }
 
-    void Sudoku::removeCandidateIFromUnit(uint8_t cand, const std::vector<Field*>& containingCandidateI, uint8_t unitIdOfFirst, const std::string& type)
+    void Sudoku::removeCandidateIFromUnit(const uint8_t cand, const std::vector<Field*>& containingCandidateI, const uint8_t unitIdOfFirst, const std::string& type)
     {
-        array<Field*, order> unit;
-        if (type == "Row")
-            unit = getRowByRowID(unitIdOfFirst);
-        else if (type == "Col")
-            unit = getColByColID(unitIdOfFirst);
-        else if (type == "Block")
-            unit = getBlockByBlockID(unitIdOfFirst);
+        auto unit = this->getUnit(type, unitIdOfFirst);
         for (Field* field : unit)
         {
             if (std::find(field->getCandidates()->begin(), field->getCandidates()->end(), cand) != field->getCandidates()->end() &&
@@ -1043,7 +919,7 @@ namespace sudoku
         }
     }
 
-    void Sudoku::eliminateBRCfromLine(const uint8_t& run, uint8_t blockID, uint8_t cand, const std::vector<Field*>& containingCandidateI, const std::string& type, uint8_t lineIdOfFirst, bool allCandidatesInSameLine)
+    void Sudoku::eliminateBRCfromLine(const uint8_t run, const uint8_t blockID, const uint8_t cand, const std::vector<Field*>& containingCandidateI, const std::string& type, const uint8_t lineIdOfFirst, const bool allCandidatesInSameLine)
     {
         if (allCandidatesInSameLine) // eliminate all other candidtes in the block
         {
@@ -1051,7 +927,7 @@ namespace sudoku
             this->removeCandidateIFromUnit(cand, containingCandidateI, lineIdOfFirst, type);
             if (this->countCandidates() < numCandsBeforeBRC)
             {
-                QString msg = "Block-in-" + QString::fromStdString(type) + " with {" + QString::number(cand) + "} in Block " + QString::number(blockID) + ": Only in " + QString::fromStdString(type) + " " + QString::number(lineIdOfFirst);
+                const QString msg = "Block-in-" + QString::fromStdString(type) + " with {" + QString::number(cand) + "} in Block " + QString::number(blockID) + ": Only in " + QString::fromStdString(type) + " " + QString::number(lineIdOfFirst);
                 this->_logTextArea->append(msg);
                 this->addStepToList(run, msg);
             }
@@ -1059,13 +935,13 @@ namespace sudoku
     }
 
     // Block-Row-Checks (Pointing)
-    void Sudoku::performBlockRowChecks(uint8_t run)
+    void Sudoku::performBlockRowChecks(const uint8_t run)
     {
         this->_logTextArea->append(QStringLiteral("\nPerform Block-Line-Checks"));
-        for (uint8_t blockID = 1; blockID <= order; blockID++)
+        for (uint8_t blockID = 1; blockID <= global::order; blockID++)
         {
-            const std::array<Field*, order> block = this->getBlockByBlockID(blockID);
-            for (uint8_t cand = 1; cand <= order; cand++)
+            const std::array<Field*, global::order> block = this->getBlockByBlockID(blockID);
+            for (uint8_t cand = 1; cand <= global::order; cand++)
             {
                 std::vector<Field*> containingCandidateI = this->findFieldsInUnitContainingCandidateI(block, cand);
                 if (!containingCandidateI.empty())
@@ -1117,21 +993,15 @@ namespace sudoku
     }
 
     // Row-Block-Checks (Claiming)
-    void Sudoku::performRowBlockChecks(uint8_t run)
+    void Sudoku::performRowBlockChecks(const uint8_t run)
     {
         this->_logTextArea->append(QStringLiteral("\nPerform Line-Block-Checks"));
         for (const std::string& type : {"Row", "Col"})
         {
-            for (uint8_t lineID = 1; lineID <= order; lineID++) // Iterate over each row/col
+            for (uint8_t lineID = 1; lineID <= global::order; lineID++) // Iterate over each row/col
             {
-                array<Field*, order> unit;
-                if (type == "Row")
-                    unit = getRowByRowID(lineID);
-                else if (type == "Col")
-                    unit = getColByColID(lineID);
-                else if (type == "Block")
-                    unit = getBlockByBlockID(lineID);
-                for (uint8_t i = 1; i <= order; i++)
+                auto unit = this->getUnit(type, lineID);
+                for (uint8_t i = 1; i <= global::order; i++)
                 {
                     std::vector<Field*> containingCandidateI = this->findFieldsInUnitContainingCandidateI(unit, i);
                     if (!containingCandidateI.empty()) // proceed only if there exists at least one field with candidate i
@@ -1181,152 +1051,150 @@ namespace sudoku
 
         uint8_t run = 0;
 
-        addStepToList(run, "Initial status");
+        addStepToList(run, QStringLiteral("Initial status"));
 
-        std::chrono::high_resolution_clock::time_point t1;
-        std::chrono::high_resolution_clock::time_point const t0 = std::chrono::high_resolution_clock::now();
+        std::chrono::high_resolution_clock::time_point t_1;
+        const std::chrono::high_resolution_clock::time_point t_0 = std::chrono::high_resolution_clock::now();
 
         // Main solving loop
-        // while (this->getFreeFields().size() > 0)
         while (true)
         {
             run++;
 
-            auto freeFieldsBeforeRun = this->getFreeFields().size();
-            auto numCandsBeforeRun = this->countCandidates();
+            const auto freeFieldsBeforeRun = this->getFreeFields().size();
+            const auto numCandsBeforeRun = this->countCandidates();
 
-            this->_logTextArea->append("BEGIN Run No. " + QString::number(run) + ":");
-            this->_logTextArea->append(QString::number(freeFieldsBeforeRun) + " free fields, " + QString::number(numCandsBeforeRun) + " candidates\n");
+            this->_logTextArea->append("BEGIN Run No. " + QString::number(run) + ":\n");
 
             // Process Singles
             this->processNakedSingles(run);  // Check Naked Singles
             this->processHiddenSingles(run); // Check Hidden Singles
-            auto freeFieldsAfterSingles = this->getFreeFields().size();
+            const auto freeFieldsAfterSingles = this->getFreeFields().size();
 
             // If no (more) Singles exist -> Search for Naked and Hidden Pairs
-            if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && this->getFreeFields().size() > 0)
+            if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && !this->getFreeFields().empty())
             {
                 if (freeFieldsAfterSingles < freeFieldsBeforeRun)
                 {
-                    this->_logTextArea->append("\nNo further Singles found.\nProceeding with Pairs...");
+                    this->_logTextArea->append(QStringLiteral("\nNo further Singles found.\nProceeding with Pairs..."));
                 }
                 else
                 {
-                    this->_logTextArea->append("\nNo Singles found.\nProceeding with pairs...");
+                    this->_logTextArea->append(QStringLiteral("\nNo Singles found.\nProceeding with pairs..."));
                 }
 
-                uint8_t const numCandsBeforePairs = this->countCandidates();
+                const uint8_t numCandsBeforePairs = this->countCandidates();
                 this->processNakedPairs(run);  // Check Naked Pairs
                 this->processHiddenPairs(run); // Check Hidden Pairs
-                uint8_t const numCandsAfterPairs = this->countCandidates();
+                const uint8_t numCandsAfterPairs = this->countCandidates();
 
                 // If Pair techniques didn't produce Singles -> search for Naked and Hidden Triples
                 if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && !this->getFreeFields().empty())
                 {
                     if (numCandsAfterPairs < numCandsBeforePairs)
                     {
-                        this->_logTextArea->append("\nPair techniques didn't produce Singles.\nProceeding with Triples...");
+                        this->_logTextArea->append(QStringLiteral("\nPair techniques didn't produce Singles.\nProceeding with Triples..."));
                     }
                     else
                     {
-                        this->_logTextArea->append("\nNo Pairs found.\nProceeding with Triples...");
+                        this->_logTextArea->append(QStringLiteral("\nNo Pairs found.\nProceeding with Triples..."));
                     }
 
-                    uint8_t numCandsBeforeTriples = this->countCandidates();
+                    const uint8_t numCandsBeforeTriples = this->countCandidates();
                     this->processNakedTriples(run);  // Check Naked Triples
                     this->processHiddenTriples(run); // Check Hidden Triples
-                    uint8_t numCandsAfterTriples = this->countCandidates();
+                    const uint8_t numCandsAfterTriples = this->countCandidates();
 
                     // If pair/triple techniques didn't produce Singles -> go for Row-Block-Checks and Block-Row-Checks
-                    if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && this->getFreeFields().size() > 0)
+                    if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && !this->getFreeFields().empty())
                     {
                         if (numCandsAfterTriples < numCandsBeforeTriples)
                         {
-                            this->_logTextArea->append("\nTriple techniques didn't produce Singles.\nProceeding with LockedCandidates...");
+                            this->_logTextArea->append(QStringLiteral("\nTriple techniques didn't produce Singles.\nProceeding with LockedCandidates..."));
                         }
                         else
                         {
-                            this->_logTextArea->append("\nNo Triples found.\nProceeding with LockedCandidates...");
+                            this->_logTextArea->append(QStringLiteral("\nNo Triples found.\nProceeding with LockedCandidates..."));
                         }
 
-                        uint8_t numCandsBeforeLockedCands = this->countCandidates();
+                        const uint8_t numCandsBeforeLockedCands = this->countCandidates();
                         this->performBlockRowChecks(run); // Perfom Block-Row-Checks (Pointing)
                         this->performRowBlockChecks(run); // Peform Row-Block-Checks (Claiming)
-                        uint8_t numCandsAfterLockedCands = this->countCandidates();
+                        const uint8_t numCandsAfterLockedCands = this->countCandidates();
 
                         // If pair/triple/LockedCands didn't produce Singles -> go for further technique
                         if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && !this->getFreeFields().empty())
                         {
                             if (numCandsAfterLockedCands < numCandsBeforeLockedCands)
                             {
-                                this->_logTextArea->append("\nLockedCandidates didn't produce Singles.\nNeed further techniques...");
+                                this->_logTextArea->append(QStringLiteral("\nLockedCandidates didn't produce Singles.\nNeed further techniques..."));
                             }
                             else
                             {
-                                this->_logTextArea->append("\nNo LockedCandidates found.\nNeed further techniques...");
+                                this->_logTextArea->append(QStringLiteral("\nNo LockedCandidates found.\nNeed further techniques..."));
                             }
 
-                            int numCandsBeforeFurtherTechnique = this->countCandidates();
-                            // TODO implement further techniques
-                            int numCandsAfterFurtherTechnique = this->countCandidates();
+                            const uint8_t numCandsBeforeFurtherTechnique = this->countCandidates();
+                            // to do implement further techniques
+                            const uint8_t numCandsAfterFurtherTechnique = this->countCandidates();
 
                             // If further technique didn't produce Singles -> go for another further technique
                             if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && !this->getFreeFields().empty())
                             {
                                 if (numCandsAfterFurtherTechnique < numCandsBeforeFurtherTechnique)
                                 {
-                                    this->_logTextArea->append("\nFurther technique didn't produce Singles.\nNo further techniques implemented...");
+                                    this->_logTextArea->append(QStringLiteral("\nFurther technique didn't produce Singles.\nNo further techniques implemented..."));
                                 }
                                 else
                                 {
-                                    this->_logTextArea->append("\nNo more further technique.\nNo further techniques implemented...");
+                                    this->_logTextArea->append(QStringLiteral("\nNo more further technique.\nNo further techniques implemented..."));
                                 }
                             }
                             else
                             {
-                                this->_logTextArea->append("\nFurther technique produced Singles.\nProceeding with next run...");
+                                this->_logTextArea->append(QStringLiteral("\nFurther technique produced Singles.\nProceeding with next run..."));
                             }
                         }
                         else
                         {
-                            this->_logTextArea->append("\nLockedCandidates produced Singles.\nProceeding with next run...");
+                            this->_logTextArea->append(QStringLiteral("\nLockedCandidates produced Singles.\nProceeding with next run..."));
                         }
                     }
                     else
                     {
-                        this->_logTextArea->append("\nTriple techniques produced Singles.\nProceeding with next run...");
+                        this->_logTextArea->append(QStringLiteral("\nTriple techniques produced Singles.\nProceeding with next run..."));
                     }
                 }
                 else
                 {
-                    this->_logTextArea->append("\nPair techniques produced Singles.\nProceeding with next run...");
+                    this->_logTextArea->append(QStringLiteral("\nPair techniques produced Singles.\nProceeding with next run..."));
                 }
             }
             else
             {
                 if (!this->getFreeFields().empty())
                 {
-                    this->_logTextArea->append("\nNo more HiddenSingles, but new NakedSingles.\nProceeding with next run...");
+                    this->_logTextArea->append(QStringLiteral("\nNo more HiddenSingles, but new NakedSingles.\nProceeding with next run..."));
                 }
             }
 
-            auto freeFieldsAfterRun = this->getFreeFields().size();
-            auto numCandsAfterRun = this->countCandidates();
+            const auto freeFieldsAfterRun = this->getFreeFields().size();
+            const auto numCandsAfterRun = this->countCandidates();
 
             this->_logTextArea->append("\nEND Run No. " + QString::number(run) + ":");
             this->_logTextArea->append(QString::number(freeFieldsAfterRun) + " free fields, " + QString::number(numCandsAfterRun) + " candidates\n‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒\n");
 
             if (numCandsAfterRun == 0)
             {
-                t1 = std::chrono::high_resolution_clock::now();
-                this->_logTextArea->append("Finished: No free fields remaining\n");
+                t_1 = std::chrono::high_resolution_clock::now();
+                this->_logTextArea->append(QStringLiteral("Finished: No free fields remaining\n"));
                 break;
             }
 
             if (numCandsBeforeRun == numCandsAfterRun)
             {
-                t1 = std::chrono::high_resolution_clock::now();
-                this->_logTextArea->append("Abort: No more solving techniques implemented\n");
+                t_1 = std::chrono::high_resolution_clock::now();
+                this->_logTextArea->append(QStringLiteral("Abort: No more solving techniques implemented\n"));
                 break;
             }
         }
@@ -1338,16 +1206,16 @@ namespace sudoku
         else
         {
             this->_logTextArea->append("SOLVING SUDOKU '" + QString::fromStdString(name) + "' FAILED!\n");
-            this->_logTextArea->append("\nAbort status:");
-            // this->print();
-            // this->printFields();
+            this->_logTextArea->append(QStringLiteral("\nAbort status:"));
+            this->print();
+            this->printFields();
             this->_logTextArea->append("\nAbort with " + QString::number(this->getFreeFields().size()) + " free fields and " + QString::number(this->countCandidates()) + " candidates\n");
         }
 
-        this->_logTextArea->append("Elapsed time: " + QString::number(std::chrono::duration<double, std::milli>(t1 - t0).count(), 'f', 1) + " ms\n");
+        this->_logTextArea->append("Elapsed time: " + QString::number(std::chrono::duration<double, std::milli>(t_1 - t_0).count(), 'f', 1) + " ms\n");
     }
 
-    void Sudoku::addStepToList(uint8_t run, const QString& type)
+    void Sudoku::addStepToList(const uint8_t run, const QString& type)
     {
         _steps.push_back(_grid);
         _foundInRunNo.push_back(run);
@@ -1361,35 +1229,34 @@ namespace sudoku
 
         printStream << "col  1  2  3   4  5  6   7  8  9  " << Qt::endl;
         printStream << "row ----------------------------- " << Qt::endl;
-        uint8_t i = 1;
-        for (uint8_t rID = 1; rID <= order; ++rID)
+        uint8_t rowID = 1;
+        for (uint8_t rID = 1; rID <= global::order; ++rID)
         {
-            QString str = " " + QString::number(i) + " |";
-            uint8_t j = 1;
-            for (uint8_t cID = 1; cID <= order; ++cID)
+            QString str = " " + QString::number(rowID) + " |";
+            uint8_t colID = 1;
+            for (uint8_t cID = 1; cID <= global::order; ++cID)
             {
-                //const Field* f = &_grid[r - 1][c - 1];
-                const uint8_t* val = _grid[rID - 1][cID - 1].getVal();
-                if (*val != 0)
+                const uint8_t val = *_grid.at(rID - 1).at(cID - 1).getVal();
+                if (val != 0)
                 {
-                    str += " " + QString::number(*val) + " ";
+                    str += " " + QString::number(val) + " ";
                 }
                 else
                 {
-                    str += "   ";
+                    str += QStringLiteral("   ");
                 }
-                if (j % 3 == 0 && j != order)
+                if (colID % 3 == 0 && colID != global::order)
                 {
-                    str += "|";
+                    str += QStringLiteral("|");
                 }
-                j++;
+                colID++;
             }
             printStream << str << "|" << Qt::endl;
-            if (i % 3 == 0 && i != order)
+            if (rowID % 3 == 0 && rowID != global::order)
             {
                 printStream << "   |---------+---------+---------|" << Qt::endl;
             }
-            i++;
+            rowID++;
         }
         printStream << "    ----------------------------- " << Qt::endl;
         printStream << Qt::endl;
@@ -1401,15 +1268,48 @@ namespace sudoku
     {
         QString printString;
         QTextStream printStream(&printString);
-        for (uint8_t rID = 1; rID <= order; rID++)
+        for (uint8_t rID = 1; rID <= global::order; rID++)
         {
-            for (uint8_t cID = 1; cID <= order; cID++)
+            for (uint8_t cID = 1; cID <= global::order; cID++)
             {
-                _grid[rID - 1][cID - 1].printField(*_logTextArea);
+                _grid.at(rID - 1).at(cID - 1).printField(*_logTextArea);
             }
         }
         printStream << Qt::endl;
         _logTextArea->append(printString);
     }
 
+    auto Sudoku::getUnit(const std::string& type, uint8_t unitID) -> std::array<Field*, global::order>
+    {
+        if (type == "Row")
+        {
+            return this->getRowByRowID(unitID);
+        }
+        if (type == "Col")
+        {
+            return this->getColByColID(unitID);
+        }
+        if (type == "Block")
+        {
+            return this->getBlockByBlockID(unitID);
+        }
+        return std::array<Field*, global::order>{};
+    }
+
+    auto Sudoku::getUnitNumber(Field* field, const std::string& type) -> uint8_t
+    {
+        if (type == "Row")
+        {
+            return *field->getRID();
+        }
+        if (type == "Col")
+        {
+            return *field->getCID();
+        }
+        if (type == "Block")
+        {
+            return *field->getBID();
+        }
+        return 0;
+    }
 } // namespace sudoku

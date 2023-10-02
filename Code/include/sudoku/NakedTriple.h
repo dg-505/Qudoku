@@ -1,7 +1,8 @@
 #pragma once
 
-#include "sudoku/Field.h"
 #include <string>
+
+#include "sudoku/Field.h"
 
 namespace sudoku
 {
@@ -18,22 +19,23 @@ namespace sudoku
             uint8_t _unitNumber;
 
         public:
-            NakedTriple(Field* field1, Field* feld2, Field* field3, uint8_t cand1, uint8_t c2, uint8_t c3, const std::string& type);
-            Field* getField1();
+            NakedTriple(Field* field1, Field* field2, Field* field3, uint8_t cand1, uint8_t cand2, uint8_t cand3, const std::string& type);
+
+            auto getField1() -> Field*;
             void setField1(Field* field1);
-            Field* getField2();
+            auto getField2() -> Field*;
             void setField2(Field* field2);
-            Field* getField3();
+            auto getField3() -> Field*;
             void setField3(Field* field3);
-            uint8_t getCandidate1();
+            [[nodiscard]] auto getCandidate1() const -> uint8_t;
             void setCandidate1(uint8_t cand1);
-            uint8_t getCandidate2();
+            [[nodiscard]] auto getCandidate2() const -> uint8_t;
             void setCandidate2(uint8_t cand2);
-            uint8_t getCandidate3();
+            [[nodiscard]] auto getCandidate3() const -> uint8_t;
             void setCandidate3(uint8_t cand3);
-            std::string getType();
+            auto getType() -> std::string;
             void setType(const std::string& type);
-            uint8_t getUnitNumber();
+            [[nodiscard]] auto getUnitNumber() const -> uint8_t;
             void setUnitNumber(uint8_t num);
     };
 } // namespace sudoku

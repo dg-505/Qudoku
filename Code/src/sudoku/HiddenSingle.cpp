@@ -1,19 +1,12 @@
 #include "sudoku/HiddenSingle.h"
+#include "sudoku/Sudoku.h"
 
 namespace sudoku
 {
     HiddenSingle::HiddenSingle(Field* field, uint8_t cand, const std::string& type)
-        : _field(field), _candidate(cand), _type(type), _unitNumber(-1)
-    {
-        if (type == "Row")
-            _unitNumber = *_field->getRID();
-        else if (type == "Col")
-            _unitNumber = *_field->getCID();
-        else if (type == "Block")
-            _unitNumber = *_field->getBID();
-    }
+        : _field(field), _candidate(cand), _type(type), _unitNumber(Sudoku::getUnitNumber(field, type)) {}
 
-    Field* HiddenSingle::getField()
+    auto HiddenSingle::getField() -> Field*
     {
         return _field;
     }
@@ -23,17 +16,17 @@ namespace sudoku
         _field = field;
     }
 
-    const uint8_t* HiddenSingle::getCandidate() const
+    auto HiddenSingle::getCandidate() const -> const uint8_t*
     {
         return &_candidate;
     }
 
-    void HiddenSingle::setCandidate(uint8_t cand)
+    void HiddenSingle::setCandidate(const uint8_t cand)
     {
         _candidate = cand;
     }
 
-    const std::string* HiddenSingle::getType() const
+    auto HiddenSingle::getType() const -> const std::string*
     {
         return &_type;
     }
@@ -43,12 +36,12 @@ namespace sudoku
         _type = type;
     }
 
-    uint8_t* HiddenSingle::getUnitNumber()
+    auto HiddenSingle::getUnitNumber() -> uint8_t*
     {
         return &_unitNumber;
     }
 
-    void HiddenSingle::setUnitNumber(uint8_t num)
+    void HiddenSingle::setUnitNumber(const uint8_t num)
     {
         _unitNumber = num;
     }

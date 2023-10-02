@@ -5,23 +5,23 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStackedWidget>
 
-//#include "gui/QInputField.h"
 #include "sudoku/Sudoku.h"
-
-// #include "sudoku/Sudoku.hpp"
 
 namespace sudoku
 {
     class StepByStepGUI : public QMainWindow
     {
+            Q_OBJECT
         public:
-            StepByStepGUI(Sudoku* sudoku, uint8_t* initVals, QWidget*);
-            ~StepByStepGUI();
+            StepByStepGUI(const StepByStepGUI&) = delete;
+            StepByStepGUI(StepByStepGUI&&) = delete;
+            auto operator=(const StepByStepGUI&) -> StepByStepGUI& = delete;
+            auto operator=(StepByStepGUI&&) -> StepByStepGUI& = delete;
+            StepByStepGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* /*parent*/);
+            ~StepByStepGUI() override = default;
 
         private:
             Sudoku* sudoku;
-
-            // QLabel* fields[81];
 
             QStackedWidget* stepsStack;
 

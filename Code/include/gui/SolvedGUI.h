@@ -3,31 +3,26 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 
-//#include "gui/QInputField.h"
 #include "sudoku/Sudoku.h"
-
-// #include "sudoku/Sudoku.hpp"
 
 namespace sudoku
 {
     class SolvedGUI : public QMainWindow
     {
+            Q_OBJECT
         public:
-            SolvedGUI(Sudoku* sudoku, uint8_t* initVals, QWidget*);
-            ~SolvedGUI();
+            SolvedGUI(const SolvedGUI&) = delete;
+            SolvedGUI(SolvedGUI&&) = delete;
+            auto operator=(const SolvedGUI&) -> SolvedGUI& = delete;
+            auto operator=(SolvedGUI&&) -> SolvedGUI& = delete;
+            SolvedGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* /*parent*/);
+            ~SolvedGUI() override = default;
+
+            // Helper functions
+            static void fillSolvedGrid(const QFont& candsFont, const QFont& fieldsFont, std::array<std::array<Field, global::order>, global::order>& step, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent);
+            static void createFrame();
 
         private:
             Sudoku* sudoku;
-
-            // QLabel* fields[81];
-
-            // QFrame* hLine0;
-            QFrame* hLine1;
-            QFrame* hLine2;
-            // QFrame* hLine3;
-            // QFrame* vLine0;
-            QFrame* vLine1;
-            QFrame* vLine2;
-            // QFrame* vLine3;
     };
 } // namespace sudoku

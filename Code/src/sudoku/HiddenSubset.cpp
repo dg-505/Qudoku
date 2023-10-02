@@ -1,19 +1,12 @@
 #include "sudoku/HiddenSubset.h"
+#include "sudoku/Sudoku.h"
 
 namespace sudoku
 {
-    HiddenSubset::HiddenSubset(const std::vector<Field*>& field, const std::vector<uint8_t>& cand, const std::string& type)
-        : _fields(field), _candidates(cand), _type(type), _unitNumber(-1)
-    {
-        if (type == "Row")
-            _unitNumber = *_fields[0]->getRID();
-        else if (type == "Col")
-            _unitNumber = *_fields[0]->getCID();
-        else if (type == "Block")
-            _unitNumber = *_fields[0]->getBID();
-    }
+    HiddenSubset::HiddenSubset(const std::vector<Field*>& fields, const std::vector<uint8_t>& cand, const std::string& type)
+        : _fields(fields), _candidates(cand), _type(type), _unitNumber(Sudoku::getUnitNumber(fields.at(0), type)) {}
 
-    std::vector<Field*> HiddenSubset::getFields() const
+    auto HiddenSubset::getFields() const -> std::vector<Field*>
     {
         return _fields;
     }
@@ -23,7 +16,7 @@ namespace sudoku
         _fields = field;
     }
 
-    std::vector<uint8_t> HiddenSubset::getCandidates() const
+    auto HiddenSubset::getCandidates() const -> std::vector<uint8_t>
     {
         return _candidates;
     }
@@ -33,7 +26,7 @@ namespace sudoku
         _candidates = cand;
     }
 
-    std::string HiddenSubset::getType() const
+    auto HiddenSubset::getType() const -> std::string
     {
         return _type;
     }
@@ -43,12 +36,12 @@ namespace sudoku
         _type = type;
     }
 
-    uint8_t HiddenSubset::getUnitNumber() const
+    auto HiddenSubset::getUnitNumber() const -> uint8_t
     {
         return _unitNumber;
     }
 
-    void HiddenSubset::setUnitNumber(uint8_t num)
+    void HiddenSubset::setUnitNumber(const uint8_t num)
     {
         _unitNumber = num;
     }

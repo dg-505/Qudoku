@@ -1,145 +1,86 @@
-//#include <iomanip>
-//#include <sstream>
-
-#include "globals.h"
 #include "gui/CandidatesGUI.h"
+#include "globals.h"
+#include "gui/SolvedGUI.h"
 
 namespace sudoku
 {
 
-    CandidatesGUI::CandidatesGUI(Sudoku* sudoku, QWidget* parent)
+    CandidatesGUI::CandidatesGUI(Sudoku* sudoku, QWidget* /*parent*/)
         : sudoku(sudoku)
     {
-        setFixedSize(512, 512);
-        setObjectName("CandidatesGUI");
-        setWindowTitle("Candidates");
-        QMainWindow::setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
+        constexpr QSize guiDim(512, 512);
+        this->setFixedSize(guiDim);
+        this->setObjectName("CandidatesGUI");
+        this->setWindowTitle(QStringLiteral("Candidates"));
+        this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
 
-        // auto sudoku = MainGUI::init();
-
-        // sudoku->print();
-        // sudoku->printFields();
-
-        QFont const fieldsFont("Liberation Mono", 32, QFont::Bold);
-        QFont const candsFont("Liberation Mono", 14, QFont::Bold);
+        const QFont fieldsFont(QStringLiteral("Liberation Mono"), 32, QFont::Bold);
+        const QFont candsFont(QStringLiteral("Liberation Mono"), 14, QFont::Bold);
 
         uint8_t fID = 1;
-        short posY = 0;
-        for (uint8_t rID = 1; rID <= order; rID++)
+        uint16_t posY = 0;
+        for (uint8_t rID = 1; rID <= global::order; rID++)
         {
-            short posX = 0;
-            for (uint8_t cID = 1; cID <= order; cID++)
+            uint16_t posX = 0;
+            for (uint8_t cID = 1; cID <= global::order; cID++)
             {
-                QLabel* field = new QLabel(this);
-                //                std::stringstream const objectName;
-                //                objectName << "field" << std::setw(2) << std::setfill('0') << i;
+                auto* field = new QLabel(this);
                 field->setObjectName("field" + QString::number(fID));
-                field->setGeometry(posX, posY, 56, 56);
+                field->setGeometry(posX, posY, global::fieldDim, global::fieldDim);
                 field->setFont(fieldsFont);
-                field->setStyleSheet("color: black; background-color: rgb(239, 239, 239)");
+                field->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
                 field->setAlignment(Qt::AlignCenter);
                 field->setFrameShape(QFrame::Panel);
-                uint8_t const val = *sudoku->getFieldByCoord(rID, cID)->getVal();
+                const uint8_t val = *sudoku->getFieldByCoord(rID, cID)->getVal();
                 if (val != 0)
                 {
                     field->setText(QString::number(val));
                 }
                 else
                 {
-                    short candY = posY + 1;
+                    uint16_t candY = posY + 1;
                     uint8_t candI = 1;
                     for (uint8_t candR = 1; candR <= 3; candR++)
                     {
-                        short candX = posX + 1;
+                        uint16_t candX = posX + 1;
                         for (uint8_t candR = 1; candR <= 3; candR++)
                         {
-                            QLabel* cand = new QLabel(this);
-                            cand->setGeometry(candX, candY, 17, 17);
+                            auto* cand = new QLabel(this);
+                            const QRect candGeom(candX, candY, 17, 17);
+                            cand->setGeometry(candGeom);
                             cand->setAlignment(Qt::AlignCenter);
                             cand->setFont(candsFont);
-                            cand->setStyleSheet("color: rgb(20,50,255);");
+                            cand->setStyleSheet(QStringLiteral("color: rgb(20,50,255);"));
 
-                            // cand->setFrameShape(QFrame::Panel);
                             auto* cands = sudoku->getFieldByCoord(rID, cID)->getCandidates();
                             if (std::find(cands->begin(), cands->end(), candI) != cands->end())
                             {
                                 cand->setText(QString::number(candI));
-                                // cand->setText("");
                             }
                             else
                             {
-                                cand->setText("");
+                                cand->setText(QStringLiteral(""));
                             }
                             candI++;
-                            candX += 19;
+                            candX += global::candDim;
                         }
-                        candY += 19;
+                        candY += global::candDim;
                     }
                 }
-                // fields[i - 1] = field;
                 fID++;
-                posX += 56;
+                posX += global::fieldDim;
                 if (cID % 3 == 0)
                 {
                     posX += 4;
                 }
             }
-            posY += 56;
+            posY += global::fieldDim;
             if (rID % 3 == 0)
             {
                 posY += 4;
             }
         }
 
-        // Frame for the grid
-        // hLine0 = new QFrame(this);
-        // hLine0->setObjectName("hLine0");
-        // hLine0->setGeometry(0, 0, 512, 2);
-        // hLine0->setLineWidth(2);
-        // hLine0->setFrameShape(QFrame::HLine);
-        hLine1 = new QFrame(this);
-        hLine1->setObjectName("hLine1");
-        hLine1->setGeometry(0, 169, 512, 2);
-        hLine1->setLineWidth(2);
-        hLine1->setFrameShape(QFrame::HLine);
-        hLine1->setStyleSheet("color: black");
-        hLine2 = new QFrame(this);
-        hLine2->setObjectName("hLine2");
-        hLine2->setGeometry(0, 341, 512, 2);
-        hLine2->setLineWidth(2);
-        hLine2->setFrameShape(QFrame::HLine);
-        hLine2->setStyleSheet("color: black");
-        // hLine3 = new QFrame(this);
-        // hLine3->setObjectName("hLine3");
-        // hLine3->setGeometry(0, 510, 512, 2);
-        // hLine3->setLineWidth(2);
-        // hLine3->setFrameShape(QFrame::HLine);
-        // vLine0 = new QFrame(this);
-        // vLine0->setObjectName("vLine0");
-        // vLine0->setGeometry(0, 0, 2, 512);
-        // vLine0->setLineWidth(2);
-        // vLine0->setFrameShape(QFrame::VLine);
-        vLine1 = new QFrame(this);
-        vLine1->setObjectName("vLine1");
-        vLine1->setGeometry(169, 0, 2, 512);
-        vLine1->setLineWidth(2);
-        vLine1->setFrameShape(QFrame::VLine);
-        vLine1->setStyleSheet("color: black");
-        vLine2 = new QFrame(this);
-        vLine2->setObjectName("vLine2");
-        vLine2->setGeometry(341, 0, 2, 512);
-        vLine2->setLineWidth(2);
-        vLine2->setFrameShape(QFrame::VLine);
-        vLine2->setStyleSheet("color: black");
-        // vLine3 = new QFrame(this);
-        // vLine3->setObjectName("vLine3");
-        // vLine3->setGeometry(510, 0, 2, 512);
-        // vLine3->setLineWidth(2);
-        // vLine3->setFrameShape(QFrame::VLine);
+        SolvedGUI::createFrame();
     }
-
-    CandidatesGUI::~CandidatesGUI()
-    {
-    }
-
 } // namespace sudoku

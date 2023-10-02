@@ -7,8 +7,16 @@ namespace sudoku
 {
     class QInputField : public QLineEdit
     {
+            Q_OBJECT
         public:
-            QInputField(QWidget* parent = nullptr);
+            explicit QInputField(QWidget* parent = nullptr);
+
+            QInputField(const QInputField&) = delete;
+            QInputField(QInputField&&) = delete;
+            auto operator=(const QInputField&) -> QInputField& = delete;
+            auto operator=(QInputField&&) -> QInputField& = delete;
+
+            ~QInputField() override = default;
 
         protected:
             void keyPressEvent(QKeyEvent* event) override;

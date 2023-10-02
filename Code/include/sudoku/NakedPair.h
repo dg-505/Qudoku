@@ -1,7 +1,8 @@
 #pragma once
 
-#include "sudoku/Field.h"
 #include <string>
+
+#include "sudoku/Field.h"
 
 namespace sudoku
 {
@@ -17,17 +18,18 @@ namespace sudoku
 
         public:
             NakedPair(Field* field1, Field* field2, uint8_t cand1, uint8_t cand2, const std::string& type);
-            Field* getField1();
+
+            auto getField1() -> Field*;
             void setField1(Field* field1);
-            Field* getField2();
+            auto getField2() -> Field*;
             void setField2(Field* field2);
-            uint8_t getCandidate1();
+            [[nodiscard]] auto getCandidate1() const -> uint8_t;
             void setCandidate1(uint8_t cand1);
-            uint8_t getCandidate2();
+            [[nodiscard]] auto getCandidate2() const -> uint8_t;
             void setCandidate2(uint8_t cand2);
-            std::string getType();
+            auto getType() -> std::string;
             void setType(const std::string& type);
-            uint8_t getUnitNumber();
+            [[nodiscard]] auto getUnitNumber() const -> uint8_t;
             void setUnitNumber(uint8_t num);
     };
 } // namespace sudoku

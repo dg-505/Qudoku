@@ -2,12 +2,9 @@
 #include <QtCore/QTextStream>
 #include <QtGui/QIcon>
 #include <QtWidgets/QApplication>
-//#include <QtWidgets/QDesktopWidget>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
-//#include <iomanip>
-//#include <iostream>
-//#include <sstream>
+#include <iostream>
 
 #include "globals.h"
 #include "gui/CandidatesGUI.h"
@@ -17,84 +14,92 @@
 
 namespace sudoku
 {
-
     // Main GUI setup
     MainGUI::MainGUI(QWidget* parent)
         : QMainWindow(parent, Qt::WindowFlags()),
           logScrollArea(new QScrollArea(this)),
           logTextBrowser(new QLogTextBrowser(logScrollArea)),
           titleLabel(new QLabel(this, Qt::WindowFlags())),
-          fields(new array<QInputField*, static_cast<uint8_t>(order* order)>),
-          //          field(new QInputField(this)),
+          fields(new std::array<QInputField*, static_cast<uint8_t>(global::order* global::order)>),
           loadButton(new QPushButton(this)),
           saveButton(new QPushButton(this)),
           candidatesButton(new QPushButton(this)),
           stepByStepButton(new QPushButton(this)),
           solveButton(new QPushButton(this)),
           clearButton(new QPushButton(this)),
-          exitButton(new QPushButton(this))
+          exitButton(new QPushButton(this)),
+          hLine0(new QFrame(this)),
+          hLine1(new QFrame(this)),
+          hLine2(new QFrame(this)),
+          hLine3(new QFrame(this)),
+          vLine0(new QFrame(this)),
+          vLine1(new QFrame(this)),
+          vLine2(new QFrame(this)),
+          vLine3(new QFrame(this))
     {
         // Main window properties
-        setFixedSize(1012, 612);
-        setObjectName("MainGUI");
-        setWindowTitle(QStringLiteral("Qudoku - Qt based cross platform sudoku solver"));
-        QMainWindow::setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
+        constexpr QSize guiDim(1012, 612);
+        this->setFixedSize(guiDim);
+        this->setObjectName("MainGUI");
+        this->setWindowTitle(QStringLiteral("Qudoku - Qt based cross platform sudoku solver"));
+        this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
 
-        QString const defaultStyleSheet = QStringLiteral("color: black; background: rgb(239, 239, 239)");
+        const QString defaultStyleSheet = QStringLiteral("color: black; background: rgb(239, 239, 239)");
 
         // Log scroll area and text browser
-        QFont const logFont(QStringLiteral("Liberation Mono"), 10, QFont::Bold, false);
+        const QFont logFont(QStringLiteral("Liberation Mono"), 10, QFont::Bold, false);
 
-        logScrollArea->setObjectName("logScrollArea");
-        logScrollArea->setGeometry(512, 0, 500, 612);
+        this->logScrollArea->setObjectName("logScrollArea");
+        constexpr QRect logScrollAreaGeom(512, 0, 500, 612);
+        this->logScrollArea->setGeometry(logScrollAreaGeom);
 
-        logTextBrowser->setObjectName("logTextBrowser");
-        logTextBrowser->setGeometry(0, 0, 500, 612);
-        // logTextBrowser->setStyleSheet(defaultStyleSheet);
-        logTextBrowser->setStyleSheet(QStringLiteral("color: black; background: white"));
-        logTextBrowser->setWordWrapMode(QTextOption::NoWrap);
-        logTextBrowser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-        logTextBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        logTextBrowser->setFont(logFont);
+        this->logTextBrowser->setObjectName("logTextBrowser");
+        constexpr QRect logTextBrowserGeom(0, 0, 500, 612);
+        this->logTextBrowser->setGeometry(logTextBrowserGeom);
+        this->logTextBrowser->setStyleSheet(QStringLiteral("color: black; background: white"));
+        this->logTextBrowser->setWordWrapMode(QTextOption::NoWrap);
+        this->logTextBrowser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        this->logTextBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        this->logTextBrowser->setFont(logFont);
 
         // Title label
-        titleLabel->setObjectName("titleLabel");
-        titleLabel->setGeometry(0, 0, 412, 50);
-        titleLabel->setStyleSheet(defaultStyleSheet);
-        titleLabel->setFont(QFont(QStringLiteral("Open Sans"), 14, QFont::Bold, false));
-        titleLabel->setAlignment(Qt::AlignCenter);
-        titleLabel->setText(QStringLiteral("Please fill in the initially given fields"));
+        this->titleLabel->setObjectName("titleLabel");
+        constexpr QRect titleLabelGeom(0, 0, 412, 50);
+        this->titleLabel->setGeometry(titleLabelGeom);
+        this->titleLabel->setStyleSheet(defaultStyleSheet);
+        const QFont titleFont(QStringLiteral("Open Sans"), 14, QFont::Bold, false);
+        this->titleLabel->setFont(titleFont);
+        this->titleLabel->setAlignment(Qt::AlignCenter);
+        this->titleLabel->setText(QStringLiteral("Please fill in the initially given fields"));
 
         // Set up the fields
-        QFont const fieldsFont(QStringLiteral("Liberation Mono"), 32, QFont::Bold, false);
+        const QFont fieldsFont(QStringLiteral("Liberation Mono"), 32, QFont::Bold, false);
 
         // QSudokuInputField* fields[81];
         uint8_t fID = 1;
-        uint16_t posY = 50;
-        for (uint8_t rID = 1; rID <= order; rID++)
+        constexpr uint8_t yOffset = 50;
+        uint16_t posY = yOffset;
+        for (uint8_t rID = 1; rID <= global::order; rID++)
         {
             uint16_t posX = 0;
-            for (uint8_t cID = 1; cID <= order; cID++)
+            for (uint8_t cID = 1; cID <= global::order; cID++)
             {
-                //                std::stringstream objectName;
-                //                objectName << "field" << std::setw(2) << std::setfill('0') << fID;
-                auto* field = new QInputField(this);
-                field->setObjectName("field" + QString::number(fID));
-                field->setGeometry(posX, posY, 56, 56);
-                // field->setStyleSheet("color: black; background: rgb(239, 239, 239); QLinefocus: {background: black}");
-                field->setStyleSheet(QStringLiteral("QLineEdit {color: black; background: white} QLineEdit:focus{color: black; background: white; border: 1px solid black}"));
-                field->setFont(fieldsFont);
-                field->setMaxLength(1);
-                field->setAlignment(Qt::AlignCenter);
-                fields->at(fID - 1) = field;
+                this->field = new QInputField(this);
+                this->field->setObjectName("field" + QString::number(fID));
+                this->field->setGeometry(posX, posY, global::fieldDim, global::fieldDim);
+                this->field->setStyleSheet(QStringLiteral("QLineEdit {color: black; background: white} QLineEdit:focus{color: black; background: white; border: 1px solid black}"));
+                this->field->setFont(fieldsFont);
+                this->field->setMaxLength(1);
+                this->field->setAlignment(Qt::AlignCenter);
+                this->fields->at(fID - 1) = field;
                 fID++;
-                posX += 56;
+                posX += global::fieldDim;
                 if (cID % 3 == 0)
                 {
                     posX += 4;
                 }
             }
-            posY += 56;
+            posY += global::fieldDim;
             if (rID % 3 == 0)
             {
                 posY += 4;
@@ -102,17 +107,15 @@ namespace sudoku
         }
 
         // Buttons
-        QFont const buttonFont(QStringLiteral("Open Sans"), 11, QFont::Bold, false);
+        const QFont buttonFont(QStringLiteral("Open Sans"), 11, QFont::Bold, false);
 
-        loadButton->setObjectName("loadButton");
-        // loadButton->setGeometry(412, 0, 100, 17); // with validateButton
-        loadButton->setGeometry(412, 0, 100, 25); // without validateButton
-        loadButton->setFont(buttonFont);
-        loadButton->setStyleSheet(defaultStyleSheet);
-        loadButton->setText(QStringLiteral("Load"));
-        connect(loadButton, &QPushButton::clicked, this, &MainGUI::loadButtonClicked, Qt::AutoConnection);
-        // QObject::connect(loadButton, &QPushButton::clicked, [=]()
-        //                  { logTextBrowser->append("loadButtonButtonClicked!"); });
+        this->loadButton->setObjectName("loadButton");
+        constexpr QRect loadButtonGeom(412, 0, 100, 25);
+        this->loadButton->setGeometry(loadButtonGeom);
+        this->loadButton->setFont(buttonFont);
+        this->loadButton->setStyleSheet(defaultStyleSheet);
+        this->loadButton->setText(QStringLiteral("Load"));
+        MainGUI::connect(loadButton, &QPushButton::clicked, this, &MainGUI::loadButtonClicked, Qt::AutoConnection);
 
         // validateButton = new QPushButton(this);
         // validateButton->setObjectName("validateButton");
@@ -120,208 +123,190 @@ namespace sudoku
         // validateButton->setFont(buttonFont);
         // validateButton->setText("Validate");
 
-        saveButton->setObjectName("saveButton");
-        // saveButton->setGeometry(412, 33, 100, 17); // with validateButton
-        saveButton->setGeometry(412, 25, 100, 25); // without validateButton
-        saveButton->setFont(buttonFont);
-        saveButton->setStyleSheet(defaultStyleSheet);
-        saveButton->setText(QStringLiteral("Save"));
-        connect(saveButton, &QPushButton::clicked, this, &MainGUI::saveButtonClicked, Qt::AutoConnection);
-        // QObject::connect(saveButton, &QPushButton::clicked, [=]()
-        //                  { logTextBrowser->append("saveButtonButtonClicked!"); });
+        this->saveButton->setObjectName("saveButton");
+        constexpr QRect saveButtonGeom(412, 25, 100, 25);
+        this->saveButton->setGeometry(saveButtonGeom);
+        this->saveButton->setFont(buttonFont);
+        this->saveButton->setStyleSheet(defaultStyleSheet);
+        this->saveButton->setText(QStringLiteral("Save"));
+        MainGUI::connect(saveButton, &QPushButton::clicked, this, &MainGUI::saveButtonClicked, Qt::AutoConnection);
 
-        candidatesButton->setObjectName("candidatesButton");
-        candidatesButton->setGeometry(0, 562, 102, 50);
-        candidatesButton->setFont(buttonFont);
-        candidatesButton->setStyleSheet(defaultStyleSheet);
-        candidatesButton->setText(QStringLiteral("Candidates"));
-        connect(candidatesButton, &QPushButton::clicked, this, &MainGUI::candidatesButtonClicked, Qt::AutoConnection);
-        // QObject::connect(candidatesButton, &QPushButton::clicked, [=]()
-        //                  { logTextBrowser->append("candidatesButtonClicked!"); });
+        this->candidatesButton->setObjectName("candidatesButton");
+        constexpr QRect candidatesButtonGeom(0, 562, 102, 50);
+        this->candidatesButton->setGeometry(candidatesButtonGeom);
+        this->candidatesButton->setFont(buttonFont);
+        this->candidatesButton->setStyleSheet(defaultStyleSheet);
+        this->candidatesButton->setText(QStringLiteral("Candidates"));
+        MainGUI::connect(candidatesButton, &QPushButton::clicked, this, &MainGUI::candidatesButtonClicked, Qt::AutoConnection);
 
-        stepByStepButton->setObjectName("stepByStepButton");
-        stepByStepButton->setGeometry(102, 562, 103, 50);
-        stepByStepButton->setFont(buttonFont);
-        stepByStepButton->setStyleSheet(defaultStyleSheet);
-        stepByStepButton->setText(QStringLiteral("Step by Step"));
-        connect(stepByStepButton, &QPushButton::clicked, this, &MainGUI::stepByStepButtonButtonClicked, Qt::AutoConnection);
-        // QObject::connect(stepByStepButton, &QPushButton::clicked, [=]()
-        //                  { logTextBrowser->append("stepByStepButtonClicked!"); });
+        this->stepByStepButton->setObjectName("stepByStepButton");
+        constexpr QRect stepByStepButtonGeom(102, 562, 103, 50);
+        this->stepByStepButton->setGeometry(stepByStepButtonGeom);
+        this->stepByStepButton->setFont(buttonFont);
+        this->stepByStepButton->setStyleSheet(defaultStyleSheet);
+        this->stepByStepButton->setText(QStringLiteral("Step by Step"));
+        MainGUI::connect(stepByStepButton, &QPushButton::clicked, this, &MainGUI::stepByStepButtonButtonClicked, Qt::AutoConnection);
 
-        solveButton->setObjectName("solveButton");
-        solveButton->setGeometry(205, 562, 102, 50);
-        solveButton->setFont(buttonFont);
-        solveButton->setStyleSheet(defaultStyleSheet);
-        solveButton->setText(QStringLiteral("Solve"));
-        connect(solveButton, &QPushButton::clicked, this, &MainGUI::solveButtonClicked, Qt::AutoConnection);
-        // QObject::connect(solveButton, &QPushButton::clicked, [=]()
-        //                  { logTextBrowser->append("solveButtonClicked!"); });
+        this->solveButton->setObjectName("solveButton");
+        constexpr QRect solveButtonGeom(205, 562, 102, 50);
+        this->solveButton->setGeometry(solveButtonGeom);
+        this->solveButton->setFont(buttonFont);
+        this->solveButton->setStyleSheet(defaultStyleSheet);
+        this->solveButton->setText(QStringLiteral("Solve"));
+        MainGUI::connect(solveButton, &QPushButton::clicked, this, &MainGUI::solveButtonClicked, Qt::AutoConnection);
 
-        clearButton->setObjectName("clearButton");
-        clearButton->setGeometry(307, 562, 103, 50);
-        clearButton->setFont(buttonFont);
-        clearButton->setStyleSheet(defaultStyleSheet);
-        clearButton->setText(QStringLiteral("Clear"));
-        connect(clearButton, &QPushButton::clicked, this, &MainGUI::clearButtonClicked, Qt::AutoConnection);
-        // QObject::connect(clearButton, &QPushButton::clicked, [=]()
-        //                  { logTextBrowser->append("clearButtonClicked!"); });
+        this->clearButton->setObjectName("clearButton");
+        constexpr QRect clearButtonGeom(307, 562, 103, 50);
+        this->clearButton->setGeometry(clearButtonGeom);
+        this->clearButton->setFont(buttonFont);
+        this->clearButton->setStyleSheet(defaultStyleSheet);
+        this->clearButton->setText(QStringLiteral("Clear"));
+        MainGUI::connect(clearButton, &QPushButton::clicked, this, &MainGUI::clearButtonClicked, Qt::AutoConnection);
 
-        exitButton->setObjectName("exitButton");
-        exitButton->setGeometry(410, 562, 102, 50);
-        exitButton->setFont(buttonFont);
-        exitButton->setStyleSheet(defaultStyleSheet);
-        exitButton->setText(QStringLiteral("Exit"));
-        // connect(exitButton, &QPushButton:#:clicked, this, &MainGUI::exitButtonClicked);
-        QObject::connect(exitButton, &QPushButton::clicked, [=]()
+        this->exitButton->setObjectName("exitButton");
+        constexpr QRect exitButtonGeom(410, 562, 102, 50);
+        this->exitButton->setGeometry(exitButtonGeom);
+        this->exitButton->setFont(buttonFont);
+        this->exitButton->setStyleSheet(defaultStyleSheet);
+        this->exitButton->setText(QStringLiteral("Exit"));
+        MainGUI::connect(exitButton, &QPushButton::clicked, [=]()
                          { QApplication::quit(); });
 
         // Frame for the grid
-        hLine0 = new QFrame(this);
-        hLine0->setObjectName("hLine0");
-        hLine0->setGeometry(0, 50, 512, 2);
-        hLine0->setLineWidth(2);
-        hLine0->setFrameShape(QFrame::HLine);
-        hLine0->setStyleSheet(QStringLiteral("color: black"));
-        hLine1 = new QFrame(this);
-        hLine1->setObjectName("hLine1");
-        hLine1->setGeometry(0, 219, 512, 2);
-        hLine1->setLineWidth(2);
-        hLine1->setFrameShape(QFrame::HLine);
-        hLine1->setStyleSheet(QStringLiteral("color: black"));
-        hLine2 = new QFrame(this);
-        hLine2->setObjectName("hLine2");
-        hLine2->setGeometry(0, 391, 512, 2);
-        hLine2->setLineWidth(2);
-        hLine2->setFrameShape(QFrame::HLine);
-        hLine2->setStyleSheet(QStringLiteral("color: black"));
-        hLine3 = new QFrame(this);
-        hLine3->setObjectName("hLine3");
-        hLine3->setGeometry(0, 561, 512, 2);
-        hLine3->setLineWidth(2);
-        hLine3->setFrameShape(QFrame::HLine);
-        hLine3->setStyleSheet(QStringLiteral("color: black"));
-        vLine0 = new QFrame(this);
-        vLine0->setObjectName("vLine0");
-        vLine0->setGeometry(0, 50, 2, 512);
-        vLine0->setLineWidth(2);
-        vLine0->setFrameShape(QFrame::VLine);
-        vLine0->setStyleSheet(QStringLiteral("color: black"));
-        vLine1 = new QFrame(this);
-        vLine1->setObjectName("vLine1");
-        vLine1->setGeometry(169, 50, 2, 512);
-        vLine1->setLineWidth(2);
-        vLine1->setFrameShape(QFrame::VLine);
-        vLine1->setStyleSheet(QStringLiteral("color: black"));
-        vLine2 = new QFrame(this);
-        vLine2->setObjectName("vLine2");
-        vLine2->setGeometry(341, 50, 2, 512);
-        vLine2->setLineWidth(2);
-        vLine2->setFrameShape(QFrame::VLine);
-        vLine2->setStyleSheet(QStringLiteral("color: black"));
-        vLine3 = new QFrame(this);
-        vLine3->setObjectName("vLine3");
-        vLine3->setGeometry(510, 50, 2, 512);
-        vLine3->setLineWidth(2);
-        vLine3->setFrameShape(QFrame::VLine);
-        vLine3->setStyleSheet(QStringLiteral("color: black"));
+        this->hLine0->setObjectName("hLine0");
+        constexpr QRect hLine0Geom(0, 50, 56, 2);
+        this->hLine0->setGeometry(hLine0Geom);
+        this->hLine0->setLineWidth(2);
+        this->hLine0->setFrameShape(QFrame::HLine);
+        this->hLine0->setStyleSheet(QStringLiteral("color: black"));
+        this->hLine1->setObjectName("hLine1");
+        constexpr QRect hLine1Geom(0, 219, 56, 2);
+        this->hLine1->setGeometry(hLine1Geom);
+        this->hLine1->setLineWidth(2);
+        this->hLine1->setFrameShape(QFrame::HLine);
+        this->hLine1->setStyleSheet(QStringLiteral("color: black"));
+        this->hLine2->setObjectName("hLine2");
+        constexpr QRect hLine2Geom(0, 391, 56, 2);
+        this->hLine2->setGeometry(hLine2Geom);
+        this->hLine2->setLineWidth(2);
+        this->hLine2->setFrameShape(QFrame::HLine);
+        this->hLine2->setStyleSheet(QStringLiteral("color: black"));
+        this->hLine3->setObjectName("hLine3");
+        constexpr QRect hLine3Geom(0, 561, 56, 2);
+        this->hLine3->setGeometry(hLine3Geom);
+        this->hLine3->setLineWidth(2);
+        this->hLine3->setFrameShape(QFrame::HLine);
+        this->hLine3->setStyleSheet(QStringLiteral("color: black"));
+        this->vLine0->setObjectName("vLine0");
+        constexpr QRect vLine0Geom(0, 50, 2, 56);
+        this->vLine0->setGeometry(vLine0Geom);
+        this->vLine0->setLineWidth(2);
+        this->vLine0->setFrameShape(QFrame::VLine);
+        this->vLine0->setStyleSheet(QStringLiteral("color: black"));
+        this->vLine1->setObjectName("vLine1");
+        constexpr QRect vLine1Geom(169, 50, 2, 56);
+        this->vLine1->setGeometry(vLine1Geom);
+        this->vLine1->setLineWidth(2);
+        this->vLine1->setFrameShape(QFrame::VLine);
+        this->vLine1->setStyleSheet(QStringLiteral("color: black"));
+        this->vLine2->setObjectName("vLine2");
+        constexpr QRect vLine2Geom(341, 50, 2, 56);
+        this->vLine2->setGeometry(vLine2Geom);
+        this->vLine2->setLineWidth(2);
+        this->vLine2->setFrameShape(QFrame::VLine);
+        this->vLine2->setStyleSheet(QStringLiteral("color: black"));
+        this->vLine3->setObjectName("vLine3");
+        constexpr QRect vLine3Geom(510, 50, 2, 56);
+        this->vLine3->setGeometry(vLine3Geom);
+        this->vLine3->setLineWidth(2);
+        this->vLine3->setFrameShape(QFrame::VLine);
+        this->vLine3->setStyleSheet(QStringLiteral("color: black"));
 
         // center window
-        //        short screenWidth = QApplication::desktop()->width();
-        //        short screenHeight = QApplication::desktop()->height();
-        //        short windowWidth = this->width();
-        //        short windowHeight = this->height();
-        //        short x = (screenWidth - windowWidth) / 2;
-        //        short y = (screenHeight - windowHeight) / 2;
-        //        this->setGeometry(x, y, windowWidth, windowHeight);
-        move(screen()->geometry().center() - frameGeometry().center());
+        this->move(screen()->geometry().center() - frameGeometry().center());
 
-        QWidget::setTabOrder(loadButton, saveButton);
-        QWidget::setTabOrder(saveButton, fields->at(0));
-        for (uint8_t fID = 1; fID < order * order; fID++)
+        MainGUI::setTabOrder(loadButton, saveButton);
+        MainGUI::setTabOrder(saveButton, fields->at(0));
+        for (uint8_t fID = 1; fID < global::order * global::order; fID++)
         {
-            QWidget::setTabOrder(fields->at(fID - 1), fields->at(fID));
+            MainGUI::setTabOrder(fields->at(fID - 1), fields->at(fID));
         }
-        QWidget::setTabOrder(fields->at((order * order) - 1), candidatesButton);
-        QWidget::setTabOrder(candidatesButton, stepByStepButton);
-        QWidget::setTabOrder(stepByStepButton, solveButton);
-        QWidget::setTabOrder(solveButton, clearButton);
-        QWidget::setTabOrder(clearButton, exitButton);
-        QWidget::setTabOrder(exitButton, logScrollArea);
-        QWidget::setTabOrder(logScrollArea, loadButton);
+        MainGUI::setTabOrder(fields->at((global::order * global::order) - 1), candidatesButton);
+        MainGUI::setTabOrder(candidatesButton, stepByStepButton);
+        MainGUI::setTabOrder(stepByStepButton, solveButton);
+        MainGUI::setTabOrder(solveButton, clearButton);
+        MainGUI::setTabOrder(clearButton, exitButton);
+        MainGUI::setTabOrder(exitButton, loadButton);
     }
-
-    //    MainGUI::~MainGUI()
-    //    {
-    //    }
 
     // Button functions
 
-    std::string MainGUI::loadButtonClicked()
+    auto MainGUI::loadButtonClicked() -> std::string
     {
         // Read the data directory from the Qudoku.ini file created during installation
-        QString const filepath = QFileDialog::getOpenFileName(this, QStringLiteral("Open Sudoku from file"), (QSettings(QStringLiteral("./Qudoku.ini"), QSettings::IniFormat)).value("DIRS/DataDir").toString());
+        const QString filepath = QFileDialog::getOpenFileName(this, QStringLiteral("Open Sudoku from file"), (QSettings(QStringLiteral("./Qudoku.ini"), QSettings::IniFormat)).value("DIRS/DataDir").toString());
         if (filepath.isEmpty())
         {
             // User cancelled file selection
-            logTextBrowser->append(QStringLiteral("File opening cancelled!"));
+            this->logTextBrowser->append(QStringLiteral("File opening cancelled!"));
             return "";
         }
 
         QFile file(filepath);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            logTextBrowser->append(QStringLiteral("Failed to open file:"));
+            this->logTextBrowser->append(QStringLiteral("Failed to open file:"));
             return "";
         }
 
         QTextStream loadFile(&file);
-        QString const sudokuString = loadFile.readAll().trimmed();
+        const QString sudokuString = loadFile.readAll().trimmed();
 
         if (sudokuString.isEmpty())
         {
             QMessageBox::critical(nullptr, QStringLiteral("Empty file"), QStringLiteral("Error reading \"%1\":\nEmpty file.").arg(filepath));
-            for (auto* field : *fields)
+            for (auto* field : *this->fields)
             {
                 field->clear();
             }
             return "";
         }
 
-        if (sudokuString.length() != static_cast<uint8_t>(order * order))
+        if (sudokuString.length() != static_cast<uint8_t>(global::order * global::order))
         {
             QMessageBox::critical(nullptr, QStringLiteral("Invalid number of entries"), QStringLiteral("Error reading \"%1\":\nInvalid number of entries (%2).\n\nNumber of entries must be 81.").arg(filepath).arg(sudokuString.length()));
-            for (auto* field : *fields)
+            for (auto* field : *this->fields)
             {
                 field->clear();
             }
             return "";
         }
 
-        for (uint8_t fID = 1; fID <= order * order; fID++)
+        for (uint8_t fID = 1; fID <= global::order * global::order; fID++)
         {
-            QChar const inputChar = sudokuString.at(fID - 1);
+            const QChar inputChar = sudokuString.at(fID - 1);
             if (inputChar.isDigit())
             {
-                uint8_t const value = inputChar.digitValue();
+                const uint8_t value = inputChar.digitValue();
                 if (value == 0)
                 {
                     QMessageBox::critical(nullptr, QStringLiteral("Invalid value 0"), QStringLiteral("Error reading \"%1\":\nInvalid value \"0\" at entry %2.\n\nValues must be between 1 and 9.").arg(filepath).arg(fID + 1));
-                    for (auto* field : *fields)
+                    for (auto* field : *this->fields)
                     {
                         field->clear();
                     }
                     return "";
                 }
-                fields->at(fID - 1)->setText(inputChar);
+                this->fields->at(fID - 1)->setText(inputChar);
             }
             else if (inputChar == '.')
             {
-                fields->at(fID - 1)->clear();
+                this->fields->at(fID - 1)->clear();
             }
             else
             {
                 QMessageBox::critical(nullptr, QStringLiteral("Invalid character"), QStringLiteral("Error reading \"%1\":\nInvalid character \"%2\" at entry %3.\n\nValid characters are numbers from 1 to 9 or dot ('.').").arg(filepath).arg(inputChar).arg(fID + 1));
-                for (auto* field : *fields)
+                for (auto* field : *this->fields)
                 {
                     field->clear();
                 }
@@ -329,7 +314,7 @@ namespace sudoku
             }
         }
 
-        QString const extraLine = loadFile.readLine();
+        const QString extraLine = loadFile.readLine();
 
         if (!extraLine.isEmpty())
         {
@@ -341,20 +326,19 @@ namespace sudoku
         // size_t const lastDot = filepath.toStdString().find_last_of('.');
         // filename = filepath.toStdString().substr(lastSeparator + 1, lastDot - lastSeparator - 1);
 
-        logTextBrowser->clear();
-        logTextBrowser->append("Sudoku \"" + filepath + "\" successfully loaded");
-        // QMessageBox::information(nullptr, "Sudoku loaded", QString("Sudoku \"%1\" successfully loaded.").arg(QString::fromStdString(filename)));
+        this->logTextBrowser->clear();
+        this->logTextBrowser->append("Sudoku \"" + filepath + "\" successfully loaded");
         file.close();
 
         return filename;
     }
 
-    const void MainGUI::saveButtonClicked() const
+    void MainGUI::saveButtonClicked() const
     {
         // Read the data directory from the Qudoku.ini file created during installation
-        QSettings my_settings("./Qudoku.ini", QSettings::IniFormat);
-        QString dataDir = my_settings.value("DIRS/DataDir").toString();
-        QString const filepath = QFileDialog::getSaveFileName(this->centralWidget(), dataDir, QStringLiteral("Save Sudoku to file"));
+        const QSettings my_settings(QStringLiteral("./Qudoku.ini"), QSettings::IniFormat);
+        const QString dataDir = my_settings.value("DIRS/DataDir").toString();
+        const QString filepath = QFileDialog::getSaveFileName(this->centralWidget(), dataDir, QStringLiteral("Save Sudoku to file"));
 
         if (filepath.isEmpty())
         {
@@ -365,13 +349,13 @@ namespace sudoku
         QFile file(filepath);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
-            logTextBrowser->append(QStringLiteral("Failed to open file for writing:"));
+            this->logTextBrowser->append(QStringLiteral("Failed to open file for writing:"));
             return;
         }
 
         QTextStream out(&file);
 
-        for (uint8_t fID = 1; fID <= order * order; fID++)
+        for (uint8_t fID = 1; fID <= global::order * global::order; fID++)
         {
             QString const val = fields->at(fID - 1)->text();
             if (val.isEmpty())
@@ -386,46 +370,46 @@ namespace sudoku
         out << "\n";
         file.close();
 
-        logTextBrowser->append("Saved to \"" + filepath + "\"");
+        this->logTextBrowser->append("Saved to \"" + filepath + "\"");
     }
 
-    const void MainGUI::candidatesButtonClicked() const
+    void MainGUI::candidatesButtonClicked() const
     {
-        uint8_t initVals[81];
-        auto sudoku = init(initVals);
-        // auto freeFields = sudoku.getFreeFields();
-        auto* candidatesGUI = new sudoku::CandidatesGUI(&sudoku, this->centralWidget());
-        candidatesGUI->move(this->pos().x(), this->pos().y() + 50);
+        std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
+        auto sudoku = init(&initVals);
+        auto* candidatesGUI = new CandidatesGUI(&sudoku, this->centralWidget());
+        const QPoint candidatesGUIpos(this->pos().x(), this->pos().y() + 50);
+        candidatesGUI->move(candidatesGUIpos);
         candidatesGUI->show();
     }
 
-    const void MainGUI::stepByStepButtonButtonClicked() const
+    void MainGUI::stepByStepButtonButtonClicked() const
     {
-        uint8_t initVals[81];
-        auto sudoku = init(initVals);
+        std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
+        auto sudoku = init(&initVals);
         sudoku.solve(filename);
-        // auto steps = sudoku.getSteps();
-        auto* stepByStepGUI = new sudoku::StepByStepGUI(&sudoku, initVals, this->centralWidget());
-        stepByStepGUI->move(this->pos().x(), this->pos().y());
+        auto* stepByStepGUI = new StepByStepGUI(&sudoku, initVals, this->centralWidget());
+        stepByStepGUI->move(QPoint(this->pos().x(), this->pos().y()));
         stepByStepGUI->show();
     }
 
-    const void MainGUI::solveButtonClicked() const
+    void MainGUI::solveButtonClicked() const
     {
-        uint8_t initVals[81];
-        auto sudoku = init(initVals);
+        std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
+        auto sudoku = init(&initVals);
         sudoku.solve(filename);
-        auto* solvedGUI = new sudoku::SolvedGUI(&sudoku, initVals, this->centralWidget());
-        solvedGUI->move(this->pos().x(), this->pos().y() + 50);
+        auto* solvedGUI = new SolvedGUI(&sudoku, initVals, this->centralWidget());
+        const QPoint solvedGUIpos(this->pos().x(), this->pos().y() + 50);
+        solvedGUI->move(solvedGUIpos);
         solvedGUI->show();
     }
 
     void MainGUI::clearButtonClicked()
     {
-        clear();
+        this->clear();
     }
 
-    void MainGUI::closeEvent(QCloseEvent *bar)
+    void MainGUI::closeEvent(QCloseEvent* /*event*/)
     {
         QApplication::quit();
     }
@@ -434,30 +418,28 @@ namespace sudoku
 
     void MainGUI::clear()
     {
-        for (auto* field : *fields)
+        for (auto* field : *this->fields)
         {
             field->clear();
         }
-        logTextBrowser->clear();
+        this->logTextBrowser->clear();
         filename = "";
     }
 
-    Sudoku MainGUI::init(uint8_t* initVals) const
+    auto MainGUI::init(std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* initVals) const -> Sudoku
     {
-        // logTextBrowser->append("Initializing:");
-        // uint8_t initVals[81];
-
-        for (uint8_t i = 1; i <= order * order; i++)
+        for (uint8_t i = 1; i <= global::order * global::order; i++)
         {
+
             try
             {
-                initVals[i - 1] = static_cast<uint8_t>(std::stoi(fields->at(i - 1)->text().toStdString()));
+                initVals->at(i - 1) = static_cast<uint8_t>(std::stoi(this->fields->at(i - 1)->text().toStdString()));
             }
             catch (const std::exception& e)
             {
-                initVals[i - 1] = 0;
+                initVals->at(i - 1) = 0;
             }
         }
-        return Sudoku(initVals, *logTextBrowser);
+        return {initVals, *this->logTextBrowser};
     }
 } // namespace sudoku

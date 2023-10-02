@@ -1,7 +1,6 @@
 #pragma once
 
 #include <QtCore/QString>
-//#include <vector>
 
 #include "gui/QLogTextBrowser.h"
 
@@ -21,39 +20,38 @@ namespace sudoku
             // Default constructor
             Field();
 
-            // Konstruktor: leeres Feld (mit ID, aber ohne Wert)
-            explicit Field(uint8_t fID);
-
             // Konstruktor: besetzt ein Feld f mit den zugehoerigen IDs und dem Wert val
             Field(uint8_t fID, uint8_t val);
 
             // copy constructor
-            Field(const Field& other);
+            Field(const Field& other) = default;
 
             // Destructor
             ~Field() = default;
 
-            Field& operator=(const Field& other);
+            // copy assignment operator
+            auto operator=(const Field& other) -> Field&;
 
-            // void setField(const uint8_t f, const uint8_t v);
+            // move constructor
+            Field(Field&&) = delete;
 
             // Row-ID, Col-ID und Block-ID aus Feld-ID bestimmen
-            [[nodiscard]] const uint8_t getRIDfromFID(uint8_t fID) const;
-            [[nodiscard]] const uint8_t getCIDfromFID(uint8_t fID) const;
-            [[nodiscard]] const uint8_t getBIDfromFID(uint8_t fID) const;
+            [[nodiscard]] static auto getRIDfromFID(uint8_t fID) -> uint8_t;
+            [[nodiscard]] static auto getCIDfromFID(uint8_t fID) -> uint8_t;
+            [[nodiscard]] static auto getBIDfromFID(uint8_t fID) -> uint8_t;
 
             // Getter
-            [[nodiscard]] const uint8_t* getFID() const;
-            [[nodiscard]] const uint8_t* getRID() const;
-            [[nodiscard]] const uint8_t* getCID() const;
-            [[nodiscard]] const uint8_t* getBID() const;
-            std::vector<uint8_t>* getCandidates();
-            [[nodiscard]] const uint8_t* getVal() const;
+            [[nodiscard]] auto getFID() const -> const uint8_t*;
+            [[nodiscard]] auto getRID() const -> const uint8_t*;
+            [[nodiscard]] auto getCID() const -> const uint8_t*;
+            [[nodiscard]] auto getBID() const -> const uint8_t*;
+            auto getCandidates() -> std::vector<uint8_t>*;
+            [[nodiscard]] auto getVal() const -> const uint8_t*;
 
             // set candidates and value
             void setCandidates(const std::vector<uint8_t>* cands);
             void setVal(const uint8_t* val);
 
-            const void printField(QLogTextBrowser& logTextArea) const;
+            void printField(QLogTextBrowser& logTextArea) const;
     };
 } // namespace sudoku

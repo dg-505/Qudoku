@@ -1,20 +1,12 @@
 #include "sudoku/NakedPair.h"
-//#include "sudoku/Field.h"
+#include "sudoku/Sudoku.h"
 
 namespace sudoku
 {
     NakedPair::NakedPair(Field* field1, Field* field2, uint8_t cand1, uint8_t cand2, const std::string& type)
-        : _field1(field1), _field2(field2), _candidate1(cand1), _candidate2(cand2), _type(type), _unitNumber(-1)
-    {
-        if (type == "Row")
-            _unitNumber = *_field1->getRID();
-        else if (type == "Col")
-            _unitNumber = *_field1->getCID();
-        else if (type == "Block")
-            _unitNumber = *_field1->getBID();
-    }
+        : _field1(field1), _field2(field2), _candidate1(cand1), _candidate2(cand2), _type(type), _unitNumber(Sudoku::getUnitNumber(field1, type)) {}
 
-    Field* NakedPair::getField1()
+    auto NakedPair::getField1() -> Field*
     {
         return _field1;
     }
@@ -24,7 +16,7 @@ namespace sudoku
         _field1 = field1;
     }
 
-    Field* NakedPair::getField2()
+    auto NakedPair::getField2() -> Field*
     {
         return _field2;
     }
@@ -34,27 +26,27 @@ namespace sudoku
         _field2 = field2;
     }
 
-    uint8_t NakedPair::getCandidate1()
+    auto NakedPair::getCandidate1() const -> uint8_t
     {
         return _candidate1;
     }
 
-    void NakedPair::setCandidate1(uint8_t cand1)
+    void NakedPair::setCandidate1(const uint8_t cand1)
     {
         _candidate1 = cand1;
     }
 
-    uint8_t NakedPair::getCandidate2()
+    auto NakedPair::getCandidate2() const -> uint8_t
     {
         return _candidate2;
     }
 
-    void NakedPair::setCandidate2(uint8_t cand2)
+    void NakedPair::setCandidate2(const uint8_t cand2)
     {
         _candidate2 = cand2;
     }
 
-    std::string NakedPair::getType()
+    auto NakedPair::getType() -> std::string
     {
         return _type;
     }
@@ -64,12 +56,12 @@ namespace sudoku
         _type = type;
     }
 
-    uint8_t NakedPair::getUnitNumber()
+    auto NakedPair::getUnitNumber() const -> uint8_t
     {
         return _unitNumber;
     }
 
-    void NakedPair::setUnitNumber(uint8_t num)
+    void NakedPair::setUnitNumber(const uint8_t num)
     {
         _unitNumber = num;
     }

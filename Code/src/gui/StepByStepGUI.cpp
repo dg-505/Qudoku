@@ -2,176 +2,104 @@
 //#include <iostream>
 //#include <sstream>
 
-#include "globals.h"
 #include "gui/StepByStepGUI.h"
-
-//using std::cout;
-//using std::endl;
+#include "globals.h"
+#include "gui/SolvedGUI.h"
 
 namespace sudoku
 {
-
-    StepByStepGUI::StepByStepGUI(Sudoku* sudoku, uint8_t* initVals, QWidget*)
-        : sudoku(sudoku)
+    StepByStepGUI::StepByStepGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* /*parent*/)
+        : sudoku(sudoku),
+          stepsStack(new QStackedWidget(this)),
+          firstButton(new QPushButton(QIcon(QStringLiteral(":/res/first.png")), QStringLiteral(""), this)),
+          prevButton(new QPushButton(QIcon(QStringLiteral(":/res/prev.png")), QStringLiteral(""), this)),
+          nextButton(new QPushButton(QIcon(QStringLiteral(":/res/next.png")), QStringLiteral(""), this)),
+          lastButton(new QPushButton(QIcon(QStringLiteral(":/res/last.png")), QStringLiteral(""), this))
     {
-        setFixedSize(512, 612);
-        setObjectName("StepByStepGUI");
-        setWindowTitle(QStringLiteral("Step-by-step solution"));
-        QMainWindow::setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
+        constexpr QSize guiDim(512, 612);
+        this->setFixedSize(guiDim);
+        this->setObjectName("StepByStepGUI");
+        this->setWindowTitle(QStringLiteral("Step-by-step solution"));
+        this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
 
-        // auto sudoku = MainGUI::init();
+        const QFont fieldsFont(QStringLiteral("Liberation Mono"), 32, QFont::Bold);
+        const QFont candsFont(QStringLiteral("Liberation Mono"), 14, QFont::Bold);
 
-        // sudoku->print();
-        // sudoku->printFields();
+        this->stepsStack->setObjectName("stepsStack");
+        constexpr QRect stepsStackGeom(0, 0, 512, 562);
+        this->stepsStack->setGeometry(stepsStackGeom);
 
-        QFont const fieldsFont("Liberation Mono", 32, QFont::Bold);
-        QFont const candsFont("Liberation Mono", 14, QFont::Bold);
-
-        stepsStack = new QStackedWidget(this);
-        stepsStack->setObjectName("stepsStack");
-        stepsStack->setGeometry(0, 0, 512, 562);
-        // sudoku->getLogTextArea()->append(QString::number(sudoku->getSteps().size()));
-
-        for (unsigned short numStep = 0; numStep < sudoku->getSteps()->size(); numStep++)
+        constexpr QRect messageLabelGeom(0, 0, 512, 50);
+        const QFont messageFont(QStringLiteral("Open Sans"), 12, QFont::Bold);
+        constexpr QRect stepFieldsGeom(0, 50, 512, 512);
+        for (int numStep = 0; numStep < sudoku->getSteps()->size(); numStep++)
         {
-            QWidget* stepWidget = new QWidget(stepsStack);
-            stepsStack->addWidget(stepWidget);
+            auto* stepWidget = new QWidget(stepsStack);
+            this->stepsStack->addWidget(stepWidget);
 
-            QLabel* messageLabel = new QLabel(stepWidget);
-
-            // messageLabel->setObjectName("messageLabel");
-            messageLabel->setGeometry(0, 0, 512, 50);
-            messageLabel->setStyleSheet("color: black; background-color: rgba(239, 239, 239, 1.0)");
-            messageLabel->setFont(QFont("Open Sans", 12, QFont::Bold));
+            auto* messageLabel = new QLabel(stepWidget);
+            messageLabel->setGeometry(messageLabelGeom);
+            messageLabel->setStyleSheet(QStringLiteral("color: black; background-color: rgba(239, 239, 239, 1.0)"));
+            messageLabel->setFont(messageFont);
             messageLabel->setAlignment(Qt::AlignCenter);
             messageLabel->setText("Run " + QString::number(sudoku->getFoundInRunNo()->at(numStep)) + "/" +
                                   QString::number(sudoku->getFoundInRunNo()->back()) + ", Step " +
                                   QString::number(numStep) + " of " + QString::number(sudoku->getSteps()->size() - 1) + ":\n" +
                                   sudoku->getFoundByType()->at(numStep));
 
-            QWidget* stepFields = new QWidget(stepWidget);
-            stepFields->setGeometry(0, 50, 512, 512);
+            auto* stepFields = new QWidget(stepWidget);
+            stepFields->setGeometry(stepFieldsGeom);
 
-            auto step = sudoku->getSteps()->at(numStep);
-
-            uint8_t fID = 1;
-            short posY = 0;
-            for (uint8_t rID = 1; rID <= order; rID++)
-            {
-                short posX = 0;
-                for (uint8_t cID = 1; cID <= order; cID++)
-                {
-                    QLabel* field = new QLabel(stepFields);
-                    //                    std::stringstream objectName;
-                    //                    objectName << "field" << std::setw(2) << std::setfill('0') << i;
-                    field->setObjectName(QString::number(fID));
-                    field->setGeometry(posX, posY, 56, 56);
-                    field->setFont(fieldsFont);
-                    field->setStyleSheet(
-                        "color: black; background-color: rgba(239, 239, 239, 1.0)");
-                    field->setAlignment(Qt::AlignCenter);
-                    field->setFrameShape(QFrame::Panel);
-                    uint8_t const val = *step[rID - 1][cID - 1].getVal();
-                    // If field is solved => fill value
-                    if (val != 0)
-                    {
-                        field->setText(QString::number(val));
-                        // If field was NOT given initially, but is solved now => set color green
-                        if (initVals[fID - 1] == 0)
-                        {
-                            field->setStyleSheet(
-                                "color: rgb(20,160,50); background-color: rgba(239, 239, 239, "
-                                "1.0); border: 1px solid black");
-                        }
-                    }
-                    else
-                    {
-                        short candY = posY + 1;
-                        uint8_t candI = 1;
-                        for (short candR = 1; candR <= 3; candR++)
-                        {
-                            short candX = posX + 1;
-                            for (short candR = 1; candR <= 3; candR++)
-                            {
-                                QLabel* cand = new QLabel(stepFields);
-                                cand->setGeometry(candX, candY, 17, 17);
-                                cand->setAlignment(Qt::AlignCenter);
-                                cand->setFont(candsFont);
-                                cand->setStyleSheet("color: rgb(20,50,255)");
-
-                                // cand->setFrameShape(QFrame::Panel);
-                                auto* cands = step[rID - 1][cID - 1].getCandidates();
-                                if (std::find(cands->begin(), cands->end(), candI) != cands->end())
-                                {
-                                    cand->setText(QString::number(candI));
-                                    // cand->setText("");
-                                }
-                                else
-                                {
-                                    cand->setText("");
-                                }
-                                candI++;
-                                candX += 19;
-                            }
-                            candY += 19;
-                        }
-                    }
-                    fID++;
-                    posX += 56;
-                    if (cID % 3 == 0)
-                    {
-                        posX += 4;
-                    }
-                }
-                posY += 56;
-                if (rID % 3 == 0)
-                {
-                    posY += 4;
-                }
-            }
+            SolvedGUI::fillSolvedGrid(candsFont, fieldsFont, sudoku->getSteps()->at(numStep), initVals, stepFields);
 
             // Frame for the grid
-            hLine0 = new QFrame(stepFields);
-            hLine0->setObjectName("hLine0");
-            hLine0->setGeometry(0, 0, 512, 2);
-            hLine0->setLineWidth(2);
-            hLine0->setFrameShape(QFrame::HLine);
-            hLine0->setStyleSheet("color: black");
-            hLine1 = new QFrame(stepFields);
-            hLine1->setObjectName("hLine1");
-            hLine1->setGeometry(0, 169, 512, 2);
-            hLine1->setLineWidth(2);
-            hLine1->setFrameShape(QFrame::HLine);
-            hLine1->setStyleSheet("color: black");
-            hLine2 = new QFrame(stepFields);
-            hLine2->setObjectName("hLine2");
-            hLine2->setGeometry(0, 341, 512, 2);
-            hLine2->setLineWidth(2);
-            hLine2->setFrameShape(QFrame::HLine);
-            hLine2->setStyleSheet("color: black");
-            hLine3 = new QFrame(stepFields);
-            hLine3->setObjectName("hLine3");
-            hLine3->setGeometry(0, 510, 512, 2);
-            hLine3->setLineWidth(2);
-            hLine3->setFrameShape(QFrame::HLine);
-            hLine3->setStyleSheet("color: black");
+            this->hLine0 = new QFrame(stepFields);
+            this->hLine0->setObjectName("hLine0");
+            constexpr QRect hLine0Geom(0, 0, 512, 2);
+            this->hLine0->setGeometry(hLine0Geom);
+            this->hLine0->setLineWidth(2);
+            this->hLine0->setFrameShape(QFrame::HLine);
+            this->hLine0->setStyleSheet(QStringLiteral("color: black"));
+            this->hLine1 = new QFrame(stepFields);
+            this->hLine1->setObjectName("hLine1");
+            constexpr QRect hLine1Geom(0, 169, 512, 2);
+            this->hLine1->setGeometry(hLine1Geom);
+            this->hLine1->setLineWidth(2);
+            this->hLine1->setFrameShape(QFrame::HLine);
+            this->hLine1->setStyleSheet(QStringLiteral("color: black"));
+            this->hLine2 = new QFrame(stepFields);
+            this->hLine2->setObjectName("hLine2");
+            constexpr QRect hLine2Geom(0, 341, 512, 2);
+            this->hLine2->setGeometry(hLine2Geom);
+            this->hLine2->setLineWidth(2);
+            this->hLine2->setFrameShape(QFrame::HLine);
+            this->hLine2->setStyleSheet(QStringLiteral("color: black"));
+            this->hLine3 = new QFrame(stepFields);
+            this->hLine3->setObjectName("hLine3");
+            constexpr QRect hLine3Geom(0, 510, 512, 2);
+            this->hLine3->setGeometry(hLine3Geom);
+            this->hLine3->setLineWidth(2);
+            this->hLine3->setFrameShape(QFrame::HLine);
+            this->hLine3->setStyleSheet(QStringLiteral("color: black"));
             // vLine0 = new QFrame(stepFields);
             // vLine0->setObjectName("vLine0");
             // vLine0->setGeometry(0, 0, 2, 512);
             // vLine0->setLineWidth(2);
             // vLine0->setFrameShape(QFrame::VLine);
-            vLine1 = new QFrame(stepFields);
-            vLine1->setObjectName("vLine1");
-            vLine1->setGeometry(169, 0, 2, 512);
-            vLine1->setLineWidth(2);
-            vLine1->setFrameShape(QFrame::VLine);
-            vLine1->setStyleSheet("color: black");
-            vLine2 = new QFrame(stepFields);
-            vLine2->setObjectName("vLine2");
-            vLine2->setGeometry(341, 0, 2, 512);
-            vLine2->setLineWidth(2);
-            vLine2->setFrameShape(QFrame::VLine);
-            vLine2->setStyleSheet("color: black");
+            this->vLine1 = new QFrame(stepFields);
+            this->vLine1->setObjectName("vLine1");
+            constexpr QRect vLine1Geom(169, 0, 2, 512);
+            this->vLine1->setGeometry(vLine1Geom);
+            this->vLine1->setLineWidth(2);
+            this->vLine1->setFrameShape(QFrame::VLine);
+            this->vLine1->setStyleSheet(QStringLiteral("color: black"));
+            this->vLine2 = new QFrame(stepFields);
+            this->vLine2->setObjectName("vLine2");
+            constexpr QRect vLine2Geom(341, 0, 2, 512);
+            this->vLine2->setGeometry(vLine2Geom);
+            this->vLine2->setLineWidth(2);
+            this->vLine2->setFrameShape(QFrame::VLine);
+            this->vLine2->setStyleSheet(QStringLiteral("color: black"));
             // vLine3 = new QFrame(stepFields);
             // vLine3->setObjectName("vLine3");
             // vLine3->setGeometry(510, 0, 2, 512);
@@ -180,60 +108,43 @@ namespace sudoku
         }
 
         // Buttons
-        QFont const buttonFont("Open Sans", 28, QFont::Bold);
-        QSize const buttonIconSize(24, 24);
+        const QFont buttonFont(QStringLiteral("Open Sans"), 28, QFont::Bold);
+        constexpr QSize buttonIconSize(24, 24);
 
-        firstButton = new QPushButton(QIcon(":/res/first.png"), "", this);
-        firstButton->setIconSize(buttonIconSize);
-        firstButton->setObjectName("firstButton");
-        firstButton->setGeometry(0, 562, 128, 50);
-        firstButton->setFont(buttonFont);
-        firstButton->setStyleSheet("color: black; background-color: rgb(239, 239, 239)");
-        // firstButton->setText("<<");
-        // firstButton->setText("\u23EE");
-        QObject::connect(firstButton, &QPushButton::clicked, this, [this]() {
-            stepsStack->setCurrentIndex(0);
-        });
+        this->firstButton->setIconSize(buttonIconSize);
+        this->firstButton->setObjectName("firstButton");
+        constexpr QRect firstButtonGeom(0, 562, 128, 50);
+        this->firstButton->setGeometry(firstButtonGeom);
+        this->firstButton->setFont(buttonFont);
+        this->firstButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
+        StepByStepGUI::connect(firstButton, &QPushButton::clicked, this, [this]()
+                               { stepsStack->setCurrentIndex(0); });
 
-        prevButton = new QPushButton(QIcon(":/res/prev.png"), "", this);
-        prevButton->setIconSize(buttonIconSize);
-        prevButton->setObjectName("prevButton");
-        prevButton->setGeometry(128, 562, 128, 50);
-        prevButton->setFont(buttonFont);
-        prevButton->setStyleSheet("color: black; background-color: rgb(239, 239, 239)");
-        // prevButton->setText("<");
-        // prevButton->setText("\u23F4");
-        QObject::connect(prevButton, &QPushButton::clicked, this, [this]() {
-            stepsStack->setCurrentIndex(stepsStack->currentIndex() - 1);
-        });
+        this->prevButton->setIconSize(buttonIconSize);
+        this->prevButton->setObjectName("prevButton");
+        constexpr QRect prevButtonGeom(128, 562, 128, 50);
+        this->prevButton->setGeometry(prevButtonGeom);
+        this->prevButton->setFont(buttonFont);
+        this->prevButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
+        StepByStepGUI::connect(prevButton, &QPushButton::clicked, this, [this]()
+                               { stepsStack->setCurrentIndex(stepsStack->currentIndex() - 1); });
 
-        nextButton = new QPushButton(QIcon(":/res/next.png"), "", this);
-        nextButton->setIconSize(buttonIconSize);
-        nextButton->setObjectName("nextButton");
-        nextButton->setGeometry(256, 562, 128, 50);
-        nextButton->setFont(buttonFont);
-        nextButton->setStyleSheet("color: black; background-color: rgb(239, 239, 239)");
-        // nextButton->setText(">");
-        // nextButton->setText("\u23F5");
-        QObject::connect(nextButton, &QPushButton::clicked, this, [this]() {
-            stepsStack->setCurrentIndex(stepsStack->currentIndex() + 1);
-        });
+        this->nextButton->setIconSize(buttonIconSize);
+        this->nextButton->setObjectName("nextButton");
+        constexpr QRect nextButtonGeom(256, 562, 128, 50);
+        this->nextButton->setGeometry(nextButtonGeom);
+        this->nextButton->setFont(buttonFont);
+        this->nextButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
+        StepByStepGUI::connect(nextButton, &QPushButton::clicked, this, [this]()
+                               { stepsStack->setCurrentIndex(stepsStack->currentIndex() + 1); });
 
-        lastButton = new QPushButton(QIcon(":/res/last.png"), "", this);
-        lastButton->setIconSize(buttonIconSize);
-        lastButton->setObjectName("lastButton");
-        lastButton->setGeometry(384, 562, 128, 50);
-        lastButton->setFont(buttonFont);
-        lastButton->setStyleSheet("color: black; background-color: rgb(239, 239, 239)");
-        // lastButton->setText(">>");
-        // lastButton->setText("\u23ED");
-        QObject::connect(lastButton, &QPushButton::clicked, this, [this]() {
-            stepsStack->setCurrentIndex(stepsStack->count() - 1);
-        });
+        this->lastButton->setIconSize(buttonIconSize);
+        this->lastButton->setObjectName("lastButton");
+        constexpr QRect lastButtonGeom(384, 562, 128, 50);
+        this->lastButton->setGeometry(lastButtonGeom);
+        this->lastButton->setFont(buttonFont);
+        this->lastButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
+        StepByStepGUI::connect(lastButton, &QPushButton::clicked, this, [this]()
+                               { stepsStack->setCurrentIndex(stepsStack->count() - 1); });
     }
-
-    StepByStepGUI::~StepByStepGUI()
-    {
-    }
-
 } // namespace sudoku

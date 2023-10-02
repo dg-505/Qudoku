@@ -1,9 +1,9 @@
 #pragma once
 
-#include "sudoku/Field.h"
-//#include <list>
 #include <string>
 #include <vector>
+
+#include "sudoku/Field.h"
 
 namespace sudoku
 {
@@ -16,14 +16,15 @@ namespace sudoku
             uint8_t _unitNumber;
 
         public:
-            HiddenSubset(const std::vector<Field*>& field, const std::vector<uint8_t>& cand, const std::string& type);
-            std::vector<Field*> getFields() const;
+            HiddenSubset(const std::vector<Field*>& fields, const std::vector<uint8_t>& cand, const std::string& type);
+
+            [[nodiscard]] auto getFields() const -> std::vector<Field*>;
             void setFields(const std::vector<Field*>& field);
-            std::vector<uint8_t> getCandidates() const;
+            [[nodiscard]] auto getCandidates() const -> std::vector<uint8_t>;
             void setCandidates(const std::vector<uint8_t>& cand);
-            std::string getType() const;
+            [[nodiscard]] auto getType() const -> std::string;
             void setType(const std::string& type);
-            uint8_t getUnitNumber() const;
+            [[nodiscard]] auto getUnitNumber() const -> uint8_t;
             void setUnitNumber(uint8_t num);
     };
-}
+} // namespace sudoku

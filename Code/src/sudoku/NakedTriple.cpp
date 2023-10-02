@@ -1,20 +1,12 @@
 #include "sudoku/NakedTriple.h"
-//#include "sudoku/Field.h"
+#include "sudoku/Sudoku.h"
 
 namespace sudoku
 {
     NakedTriple::NakedTriple(Field* field1, Field* field2, Field* field3, uint8_t cand1, uint8_t cand2, uint8_t cand3, const std::string& type)
-        : _field1(field1), _field2(field2), _field3(field3), _candidate1(cand1), _candidate2(cand2), _candidate3(cand3), _type(type), _unitNumber(-1)
-    {
-        if (type == "Row")
-            _unitNumber = *_field1->getRID();
-        else if (type == "Col")
-            _unitNumber = *_field1->getCID();
-        else if (type == "Block")
-            _unitNumber = *_field1->getBID();
-    }
+        : _field1(field1), _field2(field2), _field3(field3), _candidate1(cand1), _candidate2(cand2), _candidate3(cand3), _type(type), _unitNumber(Sudoku::getUnitNumber(field1, type)) {}
 
-    Field* NakedTriple::getField1()
+    auto NakedTriple::getField1() -> Field*
     {
         return _field1;
     }
@@ -24,7 +16,7 @@ namespace sudoku
         _field1 = field1;
     }
 
-    Field* NakedTriple::getField2()
+    auto NakedTriple::getField2() -> Field*
     {
         return _field2;
     }
@@ -34,7 +26,7 @@ namespace sudoku
         _field2 = field2;
     }
 
-    Field* NakedTriple::getField3()
+    auto NakedTriple::getField3() -> Field*
     {
         return _field3;
     }
@@ -44,37 +36,37 @@ namespace sudoku
         _field3 = field3;
     }
 
-    uint8_t NakedTriple::getCandidate1()
+    auto NakedTriple::getCandidate1() const -> uint8_t
     {
         return _candidate1;
     }
 
-    void NakedTriple::setCandidate1(uint8_t cand1)
+    void NakedTriple::setCandidate1(const uint8_t cand1)
     {
         _candidate1 = cand1;
     }
 
-    uint8_t NakedTriple::getCandidate2()
+    auto NakedTriple::getCandidate2() const -> uint8_t
     {
         return _candidate2;
     }
 
-    void NakedTriple::setCandidate2(uint8_t cand2)
+    void NakedTriple::setCandidate2(const uint8_t cand2)
     {
         _candidate2 = cand2;
     }
 
-    uint8_t NakedTriple::getCandidate3()
+    auto NakedTriple::getCandidate3() const -> uint8_t
     {
         return _candidate3;
     }
 
-    void NakedTriple::setCandidate3(uint8_t cand3)
+    void NakedTriple::setCandidate3(const uint8_t cand3)
     {
         _candidate3 = cand3;
     }
 
-    std::string NakedTriple::getType()
+    auto NakedTriple::getType() -> std::string
     {
         return _type;
     }
@@ -84,12 +76,12 @@ namespace sudoku
         _type = type;
     }
 
-    uint8_t NakedTriple::getUnitNumber()
+    auto NakedTriple::getUnitNumber() const -> uint8_t
     {
         return _unitNumber;
     }
 
-    void NakedTriple::setUnitNumber(uint8_t num)
+    void NakedTriple::setUnitNumber(const uint8_t num)
     {
         _unitNumber = num;
     }
