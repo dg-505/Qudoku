@@ -1,6 +1,4 @@
 #include <QtCore/QStringList>
-#include <iomanip>
-#include <iostream>
 
 #include "globals.h"
 #include "sudoku/Field.h"

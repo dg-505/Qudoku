@@ -42,13 +42,13 @@ namespace sudoku
                 previewLabel->setStyleSheet(QStringLiteral("color: black; background-color: rgba(239, 239, 239, 1.0)"));
                 previewLabel->setFont(messageFont);
                 previewLabel->setAlignment(Qt::AlignCenter);
-                previewLabel->setText("Preview: Run " + QString::number(sudoku->getFoundInRunNo()->at(numStep)) + "/" +
-                                      QString::number(sudoku->getFoundInRunNo()->back()) + ", Step " +
+                previewLabel->setText("Preview: Run " + QString::number(*sudoku->getSteps()->at(numStep).getFoundInRunNo()) + "/" +
+                                      QString::number(*sudoku->getSteps()->back().getFoundInRunNo()) + ", Step " +
                                       QString::number(numStep) + " of " + QString::number(sudoku->getSteps()->size() - 1) + ":\n" +
-                                      QString::fromStdString(sudoku->getFoundByType()->at(numStep)));
+                                      QString::fromStdString(*sudoku->getSteps()->at(numStep).getFoundByType()));
                 auto* previewFields = new QWidget(previewWidget);
                 previewFields->setGeometry(stepFieldsGeom);
-                SolvedGUI::drawGrid(sudoku->getSteps()->at(numStep-1), sudoku->getSteps()->at(numStep), initVals, previewFields);
+                SolvedGUI::drawGrid(*sudoku->getSteps()->at(numStep-1).getGrid(), *sudoku->getSteps()->at(numStep).getGrid(), initVals, previewFields);
             }
 
             // executed step
@@ -60,14 +60,14 @@ namespace sudoku
             messageLabel->setStyleSheet(QStringLiteral("color: black; background-color: rgba(239, 239, 239, 1.0)"));
             messageLabel->setFont(messageFont);
             messageLabel->setAlignment(Qt::AlignCenter);
-            messageLabel->setText("Run " + QString::number(sudoku->getFoundInRunNo()->at(numStep)) + "/" +
-                                  QString::number(sudoku->getFoundInRunNo()->back()) + ", Step " +
+            messageLabel->setText("Run " + QString::number(*sudoku->getSteps()->at(numStep).getFoundInRunNo()) + "/" +
+                                  QString::number(*sudoku->getSteps()->back().getFoundInRunNo()) + ", Step " +
                                   QString::number(numStep) + " of " + QString::number(sudoku->getSteps()->size() - 1) + ":\n" +
-                                  QString::fromStdString(sudoku->getFoundByType()->at(numStep)));
+                                  QString::fromStdString(*sudoku->getSteps()->at(numStep).getFoundByType()));
             auto* stepFields = new QWidget(stepWidget);
             stepFields->setGeometry(stepFieldsGeom);
 
-            SolvedGUI::drawGrid(sudoku->getSteps()->at(numStep), sudoku->getSteps()->at(numStep), initVals, stepFields);
+            SolvedGUI::drawGrid(*sudoku->getSteps()->at(numStep).getGrid(), *sudoku->getSteps()->at(numStep).getGrid(), initVals, stepFields);
         }
 
         // Buttons

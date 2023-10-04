@@ -68,7 +68,7 @@ namespace sudoku
                             if (std::find(cands->begin(), cands->end(), candI) != cands->end())
                             {
                                 cand->setText(QString::number(candI));
-                                // if candI disappears in the next step, make background of cand red
+                                // If candI disappears in the next step => make background of cand red
                                 if (std::find(nextStep.at(rID - 1).at(cID - 1).getCandidates()->begin(), nextStep.at(rID - 1).at(cID - 1).getCandidates()->end(), candI) == nextStep.at(rID - 1).at(cID - 1).getCandidates()->end() &&
                                     *nextStep.at(rID - 1).at(cID - 1).getVal() == 0)
                                 {
@@ -123,7 +123,8 @@ namespace sudoku
         hLine2->setStyleSheet(QStringLiteral("color: black"));
         auto* hLine3 = new QFrame(parent);
         hLine3->setObjectName("hLine3");
-        hLine3->setGeometry(0, 510, 512, 2);
+        constexpr QRect hLine3Geom(0, 510, 512, 2);
+        hLine3->setGeometry(hLine3Geom);
         hLine3->setLineWidth(2);
         hLine3->setFrameShape(QFrame::HLine);
         hLine3->setStyleSheet(QStringLiteral("color: black"));

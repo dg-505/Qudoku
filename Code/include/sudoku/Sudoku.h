@@ -1,9 +1,10 @@
 #pragma once
 
 #include <array>
-#include <vector>
 #include <string>
+#include <vector>
 
+#include "Step.h"
 #include "globals.h"
 #include "gui/QLogTextBrowser.h"
 #include "sudoku/Field.h"
@@ -18,10 +19,8 @@ namespace sudoku
     {
         private:
             std::array<std::array<Field, global::order>, global::order> _grid;
-            std::vector<std::array<std::array<Field, global::order>, global::order>> _steps;
+            std::vector<Step> _steps;
             QLogTextBrowser* _logTextArea;
-            std::vector<uint8_t> _foundInRunNo;
-            std::vector<std::string> _foundByType;
 
         public:
             Sudoku(const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser& logTextArea);
@@ -34,10 +33,8 @@ namespace sudoku
             ~Sudoku() = default;
 
             auto getGrid() -> std::array<std::array<Field, global::order>, global::order>*;
-            auto getSteps() -> std::vector<std::array<std::array<Field, global::order>, global::order>>*;
+            auto getSteps() -> std::vector<Step>*;
             auto getLogTextArea() -> QLogTextBrowser*;
-            auto getFoundInRunNo() -> std::vector<uint8_t>*;
-            auto getFoundByType() -> std::vector<std::string>*;
 
             auto getFieldByCoord(uint8_t rID, uint8_t cID) -> Field*;
             auto getFieldByFieldID(uint8_t fID) -> Field*;
@@ -85,7 +82,6 @@ namespace sudoku
 
             void solve(const std::string& name);
 
-            void addStepToList(uint8_t run, const std::string& type);
             void print() const;
             void printFields() const;
             // bool validateInput(QWidget* msgParent);
