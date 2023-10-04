@@ -377,7 +377,7 @@ namespace sudoku
     {
         std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
         auto sudoku = init(&initVals);
-        auto* candidatesGUI = new CandidatesGUI(&sudoku, this->centralWidget());
+        auto* candidatesGUI = new CandidatesGUI(&sudoku, initVals, this->centralWidget());
         const QPoint candidatesGUIpos(this->pos().x(), this->pos().y() + 50);
         candidatesGUI->move(candidatesGUIpos);
         candidatesGUI->show();
@@ -385,6 +385,9 @@ namespace sudoku
 
     void MainGUI::stepByStepButtonButtonClicked() const
     {
+        this->logTextBrowser->clear();
+        this->logTextBrowser->append("Solving in progress. Please wait...");
+        this->logTextBrowser->repaint();
         std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
         auto sudoku = init(&initVals);
         sudoku.solve(filename);
@@ -395,6 +398,9 @@ namespace sudoku
 
     void MainGUI::solveButtonClicked() const
     {
+        this->logTextBrowser->clear();
+        this->logTextBrowser->append("Solving in progress. Please wait...");
+        this->logTextBrowser->repaint();
         std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
         auto sudoku = init(&initVals);
         sudoku.solve(filename);

@@ -122,7 +122,7 @@ namespace sudoku
         return &_foundInRunNo;
     }
 
-    auto Sudoku::getFoundByType() -> std::vector<QString>*
+    auto Sudoku::getFoundByType() -> std::vector<std::string>*
     {
         return &_foundByType;
     }
@@ -249,21 +249,21 @@ namespace sudoku
 
         // eliminate candidate "val" from units
         auto rowFields = this->getRowByFieldID(*field->getFID());
-        for (Field* field : rowFields)
+        for (Field* rowField : rowFields)
         {
-            field->getCandidates()->erase(std::remove(field->getCandidates()->begin(), field->getCandidates()->end(), val), field->getCandidates()->end());
+            rowField->getCandidates()->erase(std::remove(rowField->getCandidates()->begin(), rowField->getCandidates()->end(), val), rowField->getCandidates()->end());
         }
 
         auto colFields = this->getColByFieldID(*field->getFID());
-        for (Field* field : colFields)
+        for (Field* colField : colFields)
         {
-            field->getCandidates()->erase(std::remove(field->getCandidates()->begin(), field->getCandidates()->end(), val), field->getCandidates()->end());
+            colField->getCandidates()->erase(std::remove(colField->getCandidates()->begin(), colField->getCandidates()->end(), val), colField->getCandidates()->end());
         }
 
         auto blockFields = this->getBlockByFieldID(*field->getFID());
-        for (Field* field : blockFields)
+        for (Field* blockField : blockFields)
         {
-            field->getCandidates()->erase(std::remove(field->getCandidates()->begin(), field->getCandidates()->end(), val), field->getCandidates()->end());
+            blockField->getCandidates()->erase(std::remove(blockField->getCandidates()->begin(), blockField->getCandidates()->end(), val), blockField->getCandidates()->end());
         }
 
         auto freeFields = this->getFreeFields();
@@ -298,12 +298,12 @@ namespace sudoku
                 break;
             }
             this->filldAndEliminate(firstNakedSingle);
-            const QString msg =
-                "NakedSingle {" + QString::number(*firstNakedSingle->getVal()) +
-                "} in Field (" + QString::number(*firstNakedSingle->getRID()) + "," +
-                QString::number(*firstNakedSingle->getCID()) + ")";
-            this->_logTextArea->append(msg);
+            const std::string msg =
+                "NakedSingle {" + std::to_string(*firstNakedSingle->getVal()) +
+                "} in Field (" + std::to_string(*firstNakedSingle->getRID()) + "," +
+                std::to_string(*firstNakedSingle->getCID()) + ")";
             this->addStepToList(run, msg);
+            this->_logTextArea->append(QString::fromStdString(msg));
         }
         // this->print();
         // this->printFields();
@@ -379,16 +379,15 @@ namespace sudoku
             firstHiddenSingle->getField()->setCandidates(&cand);
             this->filldAndEliminate(firstHiddenSingle->getField());
 
-            const QString msg =
+            const std::string msg =
                 "HiddenSingle {" +
-                QString::number(*firstHiddenSingle->getField()->getVal()) + "} in " +
-                QString::fromStdString(*firstHiddenSingle->getType()) + " " +
-                QString::number(*firstHiddenSingle->getUnitNumber()) + ": Field (" +
-                QString::number(*firstHiddenSingle->getField()->getRID()) + "," +
-                QString::number(*firstHiddenSingle->getField()->getCID()) + ")";
-
+                std::to_string(*firstHiddenSingle->getField()->getVal()) + "} in " +
+                *firstHiddenSingle->getType() + " " +
+                std::to_string(*firstHiddenSingle->getUnitNumber()) + ": Field (" +
+                std::to_string(*firstHiddenSingle->getField()->getRID()) + "," +
+                std::to_string(*firstHiddenSingle->getField()->getCID()) + ")";
             this->addStepToList(run, msg);
-            this->_logTextArea->append(msg);
+            this->_logTextArea->append(QString::fromStdString(msg));
         }
         // this->print();
         // this->printFields();
@@ -508,18 +507,18 @@ namespace sudoku
             this->eliminateNakedPair(firstNakedPair);
             if (this->countCandidates() < numCandsBeforeEliminatingFirstNakedPair)
             {
-                const QString msg =
+                const std::string msg =
                     "NakedPair {" +
-                    QString::number(firstNakedPair->getCandidate1()) + "," +
-                    QString::number(firstNakedPair->getCandidate2()) + "} in " +
-                    QString::fromStdString(firstNakedPair->getType()) + " " +
-                    QString::number(firstNakedPair->getUnitNumber()) + ": Fields (" +
-                    QString::number(*firstNakedPair->getField1()->getRID()) + "," +
-                    QString::number(*firstNakedPair->getField1()->getCID()) + ");(" +
-                    QString::number(*firstNakedPair->getField2()->getRID()) + "," +
-                    QString::number(*firstNakedPair->getField2()->getCID()) + ")";
+                    std::to_string(firstNakedPair->getCandidate1()) + "," +
+                    std::to_string(firstNakedPair->getCandidate2()) + "} in " +
+                    firstNakedPair->getType() + " " +
+                    std::to_string(firstNakedPair->getUnitNumber()) + ": Fields (" +
+                    std::to_string(*firstNakedPair->getField1()->getRID()) + "," +
+                    std::to_string(*firstNakedPair->getField1()->getCID()) + ");(" +
+                    std::to_string(*firstNakedPair->getField2()->getRID()) + "," +
+                    std::to_string(*firstNakedPair->getField2()->getCID()) + ")";
                 this->addStepToList(run, msg);
-                this->_logTextArea->append(msg);
+                this->_logTextArea->append(QString::fromStdString(msg));
             }
         }
         // this->print();
@@ -591,17 +590,17 @@ namespace sudoku
 
             if (this->countCandidates() < numCandsBeforeEliminatingHiddenPair)
             {
-                const QString msg = "HiddenPair {" +
-                                    QString::number(firstHiddenPair->getCandidates().at(0)) + "," +
-                                    QString::number(firstHiddenPair->getCandidates().at(1)) + "} in " +
-                                    QString::fromStdString(firstHiddenPair->getType()) + " " +
-                                    QString::number(firstHiddenPair->getUnitNumber()) + ": Fields (" +
-                                    QString::number(*firstHiddenPair->getFields().at(0)->getRID()) + "," +
-                                    QString::number(*firstHiddenPair->getFields().at(0)->getCID()) + ");(" +
-                                    QString::number(*firstHiddenPair->getFields().at(1)->getRID()) + "," +
-                                    QString::number(*firstHiddenPair->getFields().at(1)->getCID()) + ")";
+                const std::string msg = "HiddenPair {" +
+                                        std::to_string(firstHiddenPair->getCandidates().at(0)) + "," +
+                                        std::to_string(firstHiddenPair->getCandidates().at(1)) + "} in " +
+                                        firstHiddenPair->getType() + " " +
+                                        std::to_string(firstHiddenPair->getUnitNumber()) + ": Fields (" +
+                                        std::to_string(*firstHiddenPair->getFields().at(0)->getRID()) + "," +
+                                        std::to_string(*firstHiddenPair->getFields().at(0)->getCID()) + ");(" +
+                                        std::to_string(*firstHiddenPair->getFields().at(1)->getRID()) + "," +
+                                        std::to_string(*firstHiddenPair->getFields().at(1)->getCID()) + ")";
                 this->addStepToList(run, msg);
-                this->_logTextArea->append(msg);
+                this->_logTextArea->append(QString::fromStdString(msg));
             }
             // this->print();
             // this->printFields();
@@ -761,21 +760,21 @@ namespace sudoku
 
             if (this->countCandidates() < numCandsBeforeEliminatingFirstNakedTriple)
             {
-                const QString msg =
+                const std::string msg =
                     "NakedTriple {" +
-                    QString::number(firstNakedTriple->getCandidate1()) + "," +
-                    QString::number(firstNakedTriple->getCandidate2()) + "," +
-                    QString::number(firstNakedTriple->getCandidate3()) + "} in " +
-                    QString::fromStdString(firstNakedTriple->getType()) + " " +
-                    QString::number(firstNakedTriple->getUnitNumber()) + ": Fields (" +
-                    QString::number(*firstNakedTriple->getField1()->getRID()) + "," +
-                    QString::number(*firstNakedTriple->getField1()->getCID()) + ");(" +
-                    QString::number(*firstNakedTriple->getField2()->getRID()) + "," +
-                    QString::number(*firstNakedTriple->getField2()->getCID()) + ");(" +
-                    QString::number(*firstNakedTriple->getField3()->getRID()) + "," +
-                    QString::number(*firstNakedTriple->getField3()->getCID()) + ")";
+                    std::to_string(firstNakedTriple->getCandidate1()) + "," +
+                    std::to_string(firstNakedTriple->getCandidate2()) + "," +
+                    std::to_string(firstNakedTriple->getCandidate3()) + "} in " +
+                    firstNakedTriple->getType() + " " +
+                    std::to_string(firstNakedTriple->getUnitNumber()) + ": Fields (" +
+                    std::to_string(*firstNakedTriple->getField1()->getRID()) + "," +
+                    std::to_string(*firstNakedTriple->getField1()->getCID()) + ");(" +
+                    std::to_string(*firstNakedTriple->getField2()->getRID()) + "," +
+                    std::to_string(*firstNakedTriple->getField2()->getCID()) + ");(" +
+                    std::to_string(*firstNakedTriple->getField3()->getRID()) + "," +
+                    std::to_string(*firstNakedTriple->getField3()->getCID()) + ")";
                 this->addStepToList(run, msg);
-                this->_logTextArea->append(msg);
+                this->_logTextArea->append(QString::fromStdString(msg));
             }
             if (this->firstNakedSingle() != nullptr || this->firstHiddenSingle() != nullptr)
             {
@@ -867,20 +866,20 @@ namespace sudoku
             }
             if (this->countCandidates() < numCandsBeforeEliminatingHiddenTriple)
             {
-                const QString msg = "HiddenTriple {" +
-                                    QString::number(firstHiddenTriple->getCandidates().at(0)) + "," +
-                                    QString::number(firstHiddenTriple->getCandidates().at(1)) + "," +
-                                    QString::number(firstHiddenTriple->getCandidates().at(2)) + "} in " +
-                                    QString::fromStdString(firstHiddenTriple->getType()) + " " +
-                                    QString::number(firstHiddenTriple->getUnitNumber()) + ": Fields (" +
-                                    QString::number(*firstHiddenTriple->getFields().at(0)->getRID()) + "," +
-                                    QString::number(*firstHiddenTriple->getFields().at(0)->getCID()) + ");(" +
-                                    QString::number(*firstHiddenTriple->getFields().at(1)->getRID()) + "," +
-                                    QString::number(*firstHiddenTriple->getFields().at(1)->getCID()) + ");(" +
-                                    QString::number(*firstHiddenTriple->getFields().at(2)->getRID()) + "," +
-                                    QString::number(*firstHiddenTriple->getFields().at(2)->getCID()) + ")";
+                const std::string msg = "HiddenTriple {" +
+                                    std::to_string(firstHiddenTriple->getCandidates().at(0)) + "," +
+                                    std::to_string(firstHiddenTriple->getCandidates().at(1)) + "," +
+                                    std::to_string(firstHiddenTriple->getCandidates().at(2)) + "} in " +
+                                    firstHiddenTriple->getType() + " " +
+                                    std::to_string(firstHiddenTriple->getUnitNumber()) + ": Fields (" +
+                                    std::to_string(*firstHiddenTriple->getFields().at(0)->getRID()) + "," +
+                                    std::to_string(*firstHiddenTriple->getFields().at(0)->getCID()) + ");(" +
+                                    std::to_string(*firstHiddenTriple->getFields().at(1)->getRID()) + "," +
+                                    std::to_string(*firstHiddenTriple->getFields().at(1)->getCID()) + ");(" +
+                                    std::to_string(*firstHiddenTriple->getFields().at(2)->getRID()) + "," +
+                                    std::to_string(*firstHiddenTriple->getFields().at(2)->getCID()) + ")";
                 this->addStepToList(run, msg);
-                this->_logTextArea->append(msg);
+                this->_logTextArea->append(QString::fromStdString(msg));
             }
             if (this->firstNakedSingle() != nullptr || this->firstHiddenSingle() != nullptr)
             {
@@ -927,9 +926,14 @@ namespace sudoku
             this->removeCandidateIFromUnit(cand, containingCandidateI, lineIdOfFirst, type);
             if (this->countCandidates() < numCandsBeforeBRC)
             {
-                const QString msg = "Block-in-" + QString::fromStdString(type) + " with {" + QString::number(cand) + "} in Block " + QString::number(blockID) + ": Only in " + QString::fromStdString(type) + " " + QString::number(lineIdOfFirst);
-                this->_logTextArea->append(msg);
+                const std::string msg = "Block-in-" +
+                                    type + " with {" +
+                                    std::to_string(cand) + "} in Block " +
+                                    std::to_string(blockID) + ": Only in " +
+                                    type + " " +
+                                    std::to_string(lineIdOfFirst);
                 this->addStepToList(run, msg);
+                this->_logTextArea->append(QString::fromStdString(msg));
             }
         }
     }
@@ -1026,11 +1030,13 @@ namespace sudoku
                             this->removeCandidateIFromUnit(i, containingCandidateI, blockIdOfFirst, "Block"); // remove candidate i from block
                             if (this->countCandidates() < numCandsBeforeRBC)
                             {
-                                const QString msg = QString::fromStdString(type) + "-in-Block with {" + QString::number(i) + "} in " +
-                                                    QString::fromStdString(type) + " " + QString::number(lineID) + ": " +
-                                                    "Only in Block " + QString::number(blockIdOfFirst);
-                                this->_logTextArea->append(msg);
+                                const std::string msg = type + "-in-Block with {" +
+                                                        std::to_string(i) + "} in " +
+                                                        type + " " +
+                                                        std::to_string(lineID) + ": Only in Block " +
+                                                        std::to_string(blockIdOfFirst);
                                 this->addStepToList(run, msg);
+                                this->_logTextArea->append(QString::fromStdString(msg));
                             }
                         }
                     }
@@ -1051,7 +1057,7 @@ namespace sudoku
 
         uint8_t run = 0;
 
-        addStepToList(run, QStringLiteral("Initial status"));
+        addStepToList(run, "Initial status");
 
         std::chrono::high_resolution_clock::time_point t_1;
         const std::chrono::high_resolution_clock::time_point t_0 = std::chrono::high_resolution_clock::now();
@@ -1215,11 +1221,11 @@ namespace sudoku
         this->_logTextArea->append("Elapsed time: " + QString::number(std::chrono::duration<double, std::milli>(t_1 - t_0).count(), 'f', 1) + " ms\n");
     }
 
-    void Sudoku::addStepToList(const uint8_t run, const QString& type)
+    void Sudoku::addStepToList(const uint8_t run, const std::string& type)
     {
-        _steps.push_back(_grid);
-        _foundInRunNo.push_back(run);
-        _foundByType.push_back(type);
+        this->_steps.push_back(_grid);
+        this->_foundInRunNo.push_back(run);
+        this->_foundByType.push_back(type);
     }
 
     void Sudoku::print() const

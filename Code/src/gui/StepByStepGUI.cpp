@@ -22,9 +22,6 @@ namespace sudoku
         this->setWindowTitle(QStringLiteral("Step-by-step solution"));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
 
-        const QFont fieldsFont(QStringLiteral("Liberation Mono"), 32, QFont::Bold);
-        const QFont candsFont(QStringLiteral("Liberation Mono"), 14, QFont::Bold);
-
         this->stepsStack->setObjectName("stepsStack");
         constexpr QRect stepsStackGeom(0, 0, 512, 562);
         this->stepsStack->setGeometry(stepsStackGeom);
@@ -34,6 +31,27 @@ namespace sudoku
         constexpr QRect stepFieldsGeom(0, 50, 512, 512);
         for (int numStep = 0; numStep < sudoku->getSteps()->size(); numStep++)
         {
+            // Preview of step
+            if (numStep > 0)
+            {
+                auto* previewWidget = new QWidget(stepsStack);
+                this->stepsStack->addWidget(previewWidget);
+
+                auto* previewLabel = new QLabel(previewWidget);
+                previewLabel->setGeometry(messageLabelGeom);
+                previewLabel->setStyleSheet(QStringLiteral("color: black; background-color: rgba(239, 239, 239, 1.0)"));
+                previewLabel->setFont(messageFont);
+                previewLabel->setAlignment(Qt::AlignCenter);
+                previewLabel->setText("Preview: Run " + QString::number(sudoku->getFoundInRunNo()->at(numStep)) + "/" +
+                                      QString::number(sudoku->getFoundInRunNo()->back()) + ", Step " +
+                                      QString::number(numStep) + " of " + QString::number(sudoku->getSteps()->size() - 1) + ":\n" +
+                                      QString::fromStdString(sudoku->getFoundByType()->at(numStep)));
+                auto* previewFields = new QWidget(previewWidget);
+                previewFields->setGeometry(stepFieldsGeom);
+                SolvedGUI::drawGrid(sudoku->getSteps()->at(numStep-1), sudoku->getSteps()->at(numStep), initVals, previewFields);
+            }
+
+            // executed step
             auto* stepWidget = new QWidget(stepsStack);
             this->stepsStack->addWidget(stepWidget);
 
@@ -45,66 +63,11 @@ namespace sudoku
             messageLabel->setText("Run " + QString::number(sudoku->getFoundInRunNo()->at(numStep)) + "/" +
                                   QString::number(sudoku->getFoundInRunNo()->back()) + ", Step " +
                                   QString::number(numStep) + " of " + QString::number(sudoku->getSteps()->size() - 1) + ":\n" +
-                                  sudoku->getFoundByType()->at(numStep));
-
+                                  QString::fromStdString(sudoku->getFoundByType()->at(numStep)));
             auto* stepFields = new QWidget(stepWidget);
             stepFields->setGeometry(stepFieldsGeom);
 
-            SolvedGUI::fillSolvedGrid(candsFont, fieldsFont, sudoku->getSteps()->at(numStep), initVals, stepFields);
-
-            // Frame for the grid
-            this->hLine0 = new QFrame(stepFields);
-            this->hLine0->setObjectName("hLine0");
-            constexpr QRect hLine0Geom(0, 0, 512, 2);
-            this->hLine0->setGeometry(hLine0Geom);
-            this->hLine0->setLineWidth(2);
-            this->hLine0->setFrameShape(QFrame::HLine);
-            this->hLine0->setStyleSheet(QStringLiteral("color: black"));
-            this->hLine1 = new QFrame(stepFields);
-            this->hLine1->setObjectName("hLine1");
-            constexpr QRect hLine1Geom(0, 169, 512, 2);
-            this->hLine1->setGeometry(hLine1Geom);
-            this->hLine1->setLineWidth(2);
-            this->hLine1->setFrameShape(QFrame::HLine);
-            this->hLine1->setStyleSheet(QStringLiteral("color: black"));
-            this->hLine2 = new QFrame(stepFields);
-            this->hLine2->setObjectName("hLine2");
-            constexpr QRect hLine2Geom(0, 341, 512, 2);
-            this->hLine2->setGeometry(hLine2Geom);
-            this->hLine2->setLineWidth(2);
-            this->hLine2->setFrameShape(QFrame::HLine);
-            this->hLine2->setStyleSheet(QStringLiteral("color: black"));
-            this->hLine3 = new QFrame(stepFields);
-            this->hLine3->setObjectName("hLine3");
-            constexpr QRect hLine3Geom(0, 510, 512, 2);
-            this->hLine3->setGeometry(hLine3Geom);
-            this->hLine3->setLineWidth(2);
-            this->hLine3->setFrameShape(QFrame::HLine);
-            this->hLine3->setStyleSheet(QStringLiteral("color: black"));
-            // vLine0 = new QFrame(stepFields);
-            // vLine0->setObjectName("vLine0");
-            // vLine0->setGeometry(0, 0, 2, 512);
-            // vLine0->setLineWidth(2);
-            // vLine0->setFrameShape(QFrame::VLine);
-            this->vLine1 = new QFrame(stepFields);
-            this->vLine1->setObjectName("vLine1");
-            constexpr QRect vLine1Geom(169, 0, 2, 512);
-            this->vLine1->setGeometry(vLine1Geom);
-            this->vLine1->setLineWidth(2);
-            this->vLine1->setFrameShape(QFrame::VLine);
-            this->vLine1->setStyleSheet(QStringLiteral("color: black"));
-            this->vLine2 = new QFrame(stepFields);
-            this->vLine2->setObjectName("vLine2");
-            constexpr QRect vLine2Geom(341, 0, 2, 512);
-            this->vLine2->setGeometry(vLine2Geom);
-            this->vLine2->setLineWidth(2);
-            this->vLine2->setFrameShape(QFrame::VLine);
-            this->vLine2->setStyleSheet(QStringLiteral("color: black"));
-            // vLine3 = new QFrame(stepFields);
-            // vLine3->setObjectName("vLine3");
-            // vLine3->setGeometry(510, 0, 2, 512);
-            // vLine3->setLineWidth(2);
-            // vLine3->setFrameShape(QFrame::VLine);
+            SolvedGUI::drawGrid(sudoku->getSteps()->at(numStep), sudoku->getSteps()->at(numStep), initVals, stepFields);
         }
 
         // Buttons

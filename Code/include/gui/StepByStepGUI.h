@@ -29,14 +29,5 @@ namespace sudoku
             QPushButton* prevButton;
             QPushButton* nextButton;
             QPushButton* lastButton;
-
-            QFrame* hLine0;
-            QFrame* hLine1;
-            QFrame* hLine2;
-            QFrame* hLine3;
-            // QFrame* vLine0;
-            QFrame* vLine1;
-            QFrame* vLine2;
-            // QFrame* vLine3;
     };
 } // namespace sudoku

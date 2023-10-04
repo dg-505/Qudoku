@@ -25,6 +25,5 @@ namespace sudoku
             void setType(const std::string& type);
             auto getUnitNumber() -> uint8_t*;
             void setUnitNumber(uint8_t num);
-            void getUnitNumber(const std::string& type);
     };
 } // namespace sudoku
