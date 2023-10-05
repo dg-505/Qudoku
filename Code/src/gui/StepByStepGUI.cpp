@@ -48,7 +48,7 @@ namespace sudoku
                                       QString::fromStdString(*sudoku->getSteps()->at(numStep).getFoundByType()));
                 auto* previewFields = new QWidget(previewWidget);
                 previewFields->setGeometry(stepFieldsGeom);
-                SolvedGUI::drawGrid(*sudoku->getSteps()->at(numStep-1).getGrid(), *sudoku->getSteps()->at(numStep).getGrid(), initVals, previewFields);
+                SolvedGUI::drawGrid(sudoku->getSteps()->at(numStep-1), sudoku->getSteps()->at(numStep), initVals, previewFields);
             }
 
             // executed step
@@ -67,7 +67,7 @@ namespace sudoku
             auto* stepFields = new QWidget(stepWidget);
             stepFields->setGeometry(stepFieldsGeom);
 
-            SolvedGUI::drawGrid(*sudoku->getSteps()->at(numStep).getGrid(), *sudoku->getSteps()->at(numStep).getGrid(), initVals, stepFields);
+            SolvedGUI::drawGrid(sudoku->getSteps()->at(numStep), sudoku->getSteps()->at(numStep), initVals, stepFields);
         }
 
         // Buttons

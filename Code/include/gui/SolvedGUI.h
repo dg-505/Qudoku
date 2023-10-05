@@ -19,7 +19,7 @@ namespace sudoku
             ~SolvedGUI() override = default;
 
             // Helper functions
-            static void drawGrid(std::array<std::array<sudoku::Field, global::order>, global::order>& step, std::array<std::array<sudoku::Field, global::order>, global::order>& nextStep, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent);
+            static void drawGrid(Step& currStep, Step& nextStep, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent);
 
         private:
             Sudoku* sudoku;

@@ -1,5 +1,4 @@
 #include <QtWidgets/QApplication>
-//#include <iostream>
 
 #include "gui/MainGUI.h"
 #include "qtresource.h"

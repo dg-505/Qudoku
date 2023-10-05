@@ -13,11 +13,11 @@ namespace sudoku
         this->setWindowTitle(QStringLiteral("Solved Sudoku"));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
 
-        SolvedGUI::drawGrid(*sudoku->getGrid(), *sudoku->getGrid(), initVals, this);
+        SolvedGUI::drawGrid(sudoku->getSteps()->back(), sudoku->getSteps()->back(), initVals, this);
     }
 
     // Helper functions
-    void SolvedGUI::drawGrid(std::array<std::array<sudoku::Field, global::order>, global::order>& step, std::array<std::array<sudoku::Field, global::order>, global::order>& nextStep, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent)
+    void SolvedGUI::drawGrid(Step& currStep, Step& nextStep, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent)
     {
         const QFont fieldsFont(QStringLiteral("Liberation Mono"), 32, QFont::Bold);
         const QFont candsFont(QStringLiteral("Liberation Mono"), 14, QFont::Bold);
@@ -37,7 +37,7 @@ namespace sudoku
                 field->setStyleSheet(QStringLiteral("color: black; background-color: rgba(239, 239, 239, 1.0)"));
                 field->setAlignment(Qt::AlignCenter);
                 field->setFrameShape(QFrame::Panel);
-                const uint8_t val = *step.at(rID - 1).at(cID - 1).getVal();
+                const uint8_t val = *currStep.getGrid()->at(rID - 1).at(cID - 1).getVal();
                 // If field is solved => fill value
                 if (val != 0)
                 {
@@ -55,7 +55,7 @@ namespace sudoku
                     for (uint8_t candR = 1; candR <= 3; candR++)
                     {
                         uint16_t candX = posX + 1;
-                        for (uint8_t candR = 1; candR <= 3; candR++)
+                        for (uint8_t candC = 1; candC <= 3; candC++)
                         {
                             auto* cand = new QLabel(parent);
                             const QRect candGeom(candX, candY, 17, 17);
@@ -64,15 +64,29 @@ namespace sudoku
                             cand->setFont(candsFont);
                             cand->setStyleSheet(QStringLiteral("color: rgb(20,50,255)"));
 
-                            auto* cands = step.at(rID - 1).at(cID - 1).getCandidates();
+                            auto* cands = currStep.getGrid()->at(rID - 1).at(cID - 1).getCandidates();
                             if (std::find(cands->begin(), cands->end(), candI) != cands->end())
                             {
                                 cand->setText(QString::number(candI));
-                                // If candI disappears in the next step => make background of cand red
-                                if (std::find(nextStep.at(rID - 1).at(cID - 1).getCandidates()->begin(), nextStep.at(rID - 1).at(cID - 1).getCandidates()->end(), candI) == nextStep.at(rID - 1).at(cID - 1).getCandidates()->end() &&
-                                    *nextStep.at(rID - 1).at(cID - 1).getVal() == 0)
+                                //if (&currStep !=&nextStep) // enable this: hide green markings after step execution.
                                 {
-                                    cand->setStyleSheet(QStringLiteral("color: rgb(20,50,255); background-color: rgba(255, 50, 10, 1.0); border: 1px solid black"));
+                                    // If candI disappears in the next step => make background of cand red
+                                    if (std::find(nextStep.getGrid()->at(rID - 1).at(cID - 1).getCandidates()->begin(), nextStep.getGrid()->at(rID - 1).at(cID - 1).getCandidates()->end(), candI) == nextStep.getGrid()->at(rID - 1).at(cID - 1).getCandidates()->end())
+                                    {
+                                        cand->setStyleSheet(QStringLiteral("color: rgb(10,30,255); background-color: rgba(255, 70, 0, 1.0); border: 1px solid black"));
+                                    }
+                                    // set green background for cands found in "fields" in next step
+                                    for (const Field* field : *nextStep.getFields()) // go through all fields in nextStep, where candidates were found
+                                    {
+                                        std::vector<uint8_t> fieldCands = *nextStep.getCandidates(); // get the candidates found in the field
+                                        for (uint8_t c : fieldCands)
+                                        {
+                                            if (*field->getFID() == *nextStep.getGrid()->at(rID - 1).at(cID - 1).getFID() && candI == c)
+                                            {
+                                                cand->setStyleSheet(QStringLiteral("color: rgb(10,30,255); background-color: rgba(50, 255, 10, 1.0); border: 1px solid black"));
+                                            }
+                                        }
+                                    }
                                 }
                             }
                             else

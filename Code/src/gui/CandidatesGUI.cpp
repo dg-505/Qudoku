@@ -14,6 +14,7 @@ namespace sudoku
         this->setWindowTitle(QStringLiteral("Candidates"));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
 
-        SolvedGUI::drawGrid(*sudoku->getGrid(), *sudoku->getGrid(), initVals, this);
+        sudoku->getSteps()->emplace_back(*sudoku->getGrid(), std::vector<Field*>{}, std::vector<uint8_t>{}, 0, "Initial status");
+        SolvedGUI::drawGrid(sudoku->getSteps()->front(), sudoku->getSteps()->front(), initVals, this);
     }
 } // namespace sudoku

@@ -292,7 +292,7 @@ namespace sudoku
                 "NakedSingle {" + std::to_string(*firstNakedSingle->getVal()) +
                 "} in Field (" + std::to_string(*firstNakedSingle->getRID()) + "," +
                 std::to_string(*firstNakedSingle->getCID()) + ")";
-            this->_steps.emplace_back(this->_grid, run, msg);
+            this->_steps.emplace_back(this->_grid, std::vector<Field*>{firstNakedSingle}, std::vector<uint8_t>{firstNakedSingle->getCandidates()->front()}, run, msg);
             this->_logTextArea->append(QString::fromStdString(msg));
         }
         // this->print();
@@ -376,7 +376,7 @@ namespace sudoku
                 std::to_string(*firstHiddenSingle->getUnitNumber()) + ": Field (" +
                 std::to_string(*firstHiddenSingle->getField()->getRID()) + "," +
                 std::to_string(*firstHiddenSingle->getField()->getCID()) + ")";
-            this->_steps.emplace_back(this->_grid, run, msg);
+            this->_steps.emplace_back(this->_grid, std::vector<Field*>{firstHiddenSingle->getField()}, std::vector<uint8_t>{*firstHiddenSingle->getCandidate()}, run, msg);
             this->_logTextArea->append(QString::fromStdString(msg));
         }
         // this->print();
@@ -507,7 +507,7 @@ namespace sudoku
                     std::to_string(*firstNakedPair->getField1()->getCID()) + ");(" +
                     std::to_string(*firstNakedPair->getField2()->getRID()) + "," +
                     std::to_string(*firstNakedPair->getField2()->getCID()) + ")";
-                this->_steps.emplace_back(this->_grid, run, msg);
+                this->_steps.emplace_back(this->_grid, std::vector<Field*>{firstNakedPair->getField1(), firstNakedPair->getField2()}, std::vector<uint8_t>{firstNakedPair->getCandidate1(), firstNakedPair->getCandidate2()}, run, msg);
                 this->_logTextArea->append(QString::fromStdString(msg));
             }
         }
@@ -589,7 +589,7 @@ namespace sudoku
                                         std::to_string(*firstHiddenPair->getFields().at(0)->getCID()) + ");(" +
                                         std::to_string(*firstHiddenPair->getFields().at(1)->getRID()) + "," +
                                         std::to_string(*firstHiddenPair->getFields().at(1)->getCID()) + ")";
-                this->_steps.emplace_back(this->_grid, run, msg);
+                this->_steps.emplace_back(this->_grid, std::vector<Field*>{firstHiddenPair->getFields()}, std::vector<uint8_t>{firstHiddenPair->getCandidates()}, run, msg);
                 this->_logTextArea->append(QString::fromStdString(msg));
             }
             // this->print();
@@ -708,9 +708,9 @@ namespace sudoku
                 continue;
             }
             std::vector<uint8_t>* candidates = field->getCandidates();
-            std::vector<uint8_t>* candidatesToRemove = nakedTriple->getField1()->getCandidates();
+            std::vector<uint8_t> candidatesToRemove{nakedTriple->getCandidate1(), nakedTriple->getCandidate2(), nakedTriple->getCandidate3()};
 
-            for (const uint8_t candidate : *candidatesToRemove)
+            for (const uint8_t candidate : candidatesToRemove)
             {
                 candidates->erase(std::remove(candidates->begin(), candidates->end(), candidate), candidates->end());
             }
@@ -763,7 +763,7 @@ namespace sudoku
                     std::to_string(*firstNakedTriple->getField2()->getCID()) + ");(" +
                     std::to_string(*firstNakedTriple->getField3()->getRID()) + "," +
                     std::to_string(*firstNakedTriple->getField3()->getCID()) + ")";
-                this->_steps.emplace_back(this->_grid, run, msg);
+                this->_steps.emplace_back(this->_grid, std::vector<Field*>{firstNakedTriple->getField1(), firstNakedTriple->getField2(), firstNakedTriple->getField3()}, std::vector<uint8_t>{firstNakedTriple->getCandidate1(), firstNakedTriple->getCandidate2(), firstNakedTriple->getCandidate3()}, run, msg);
                 this->_logTextArea->append(QString::fromStdString(msg));
             }
             if (this->firstNakedSingle() != nullptr || this->firstHiddenSingle() != nullptr)
@@ -868,7 +868,7 @@ namespace sudoku
                                         std::to_string(*firstHiddenTriple->getFields().at(1)->getCID()) + ");(" +
                                         std::to_string(*firstHiddenTriple->getFields().at(2)->getRID()) + "," +
                                         std::to_string(*firstHiddenTriple->getFields().at(2)->getCID()) + ")";
-                this->_steps.emplace_back(this->_grid, run, msg);
+                this->_steps.emplace_back(this->_grid, std::vector<Field*>{firstHiddenTriple->getFields()}, std::vector<uint8_t>{firstHiddenTriple->getCandidates()}, run, msg);
                 this->_logTextArea->append(QString::fromStdString(msg));
             }
             if (this->firstNakedSingle() != nullptr || this->firstHiddenSingle() != nullptr)
@@ -922,7 +922,7 @@ namespace sudoku
                                         std::to_string(blockID) + ": Only in " +
                                         type + " " +
                                         std::to_string(lineIdOfFirst);
-                this->_steps.emplace_back(this->_grid, run, msg);
+                this->_steps.emplace_back(this->_grid, containingCandidateI, std::vector<uint8_t>{cand}, run, msg);
                 this->_logTextArea->append(QString::fromStdString(msg));
             }
         }
@@ -944,7 +944,7 @@ namespace sudoku
                     {
                         if (type == "Row")
                         {
-                            const uint8_t rowIdOfFirst = *containingCandidateI[0]->getRID();
+                            const uint8_t rowIdOfFirst = *containingCandidateI.at(0)->getRID();
                             bool allCandidatesInSameRow = false;
                             for (Field* field : containingCandidateI)
                             {
@@ -962,7 +962,7 @@ namespace sudoku
                         }
                         else if (type == "Col")
                         {
-                            const uint8_t colIdOfFirst = *containingCandidateI[0]->getCID();
+                            const uint8_t colIdOfFirst = *containingCandidateI.at(0)->getCID();
                             bool allCandidatesInSameCol = false;
                             for (Field* field : containingCandidateI)
                             {
@@ -995,12 +995,12 @@ namespace sudoku
             for (uint8_t lineID = 1; lineID <= global::order; lineID++) // Iterate over each row/col
             {
                 auto unit = this->getUnit(type, lineID);
-                for (uint8_t i = 1; i <= global::order; i++)
+                for (uint8_t cand = 1; cand <= global::order; cand++)
                 {
-                    std::vector<Field*> containingCandidateI = this->findFieldsInUnitContainingCandidateI(unit, i);
-                    if (!containingCandidateI.empty()) // proceed only if there exists at least one field with candidate i
+                    std::vector<Field*> containingCandidateI = this->findFieldsInUnitContainingCandidateI(unit, cand);
+                    if (!containingCandidateI.empty()) // proceed only if there exists at least one field with candidate cand
                     {
-                        const uint8_t blockIdOfFirst = *containingCandidateI[0]->getBID();
+                        const uint8_t blockIdOfFirst = *containingCandidateI.at(0)->getBID();
                         bool allCandidatesInSameBlock = false;
                         for (Field* field : containingCandidateI)
                         {
@@ -1017,15 +1017,16 @@ namespace sudoku
                         if (allCandidatesInSameBlock)
                         {
                             const uint8_t numCandsBeforeRBC = this->countCandidates();
-                            this->removeCandidateIFromUnit(i, containingCandidateI, blockIdOfFirst, "Block"); // remove candidate i from block
+                            this->removeCandidateIFromUnit(cand, containingCandidateI, blockIdOfFirst, "Block"); // remove candidate cand from block
                             if (this->countCandidates() < numCandsBeforeRBC)
                             {
-                                const std::string msg = type + "-in-Block with {" +
-                                                        std::to_string(i) + "} in " +
-                                                        type + " " +
-                                                        std::to_string(lineID) + ": Only in Block " +
-                                                        std::to_string(blockIdOfFirst);
-                                this->_steps.emplace_back(this->_grid, run, msg);
+                                std::string msg = type;
+                                msg.append("-in-Block with {" +
+                                           std::to_string(cand) + "} in " +
+                                           type + " " +
+                                           std::to_string(lineID) + ": Only in Block " +
+                                           std::to_string(blockIdOfFirst));
+                                this->_steps.emplace_back(this->_grid, containingCandidateI, std::vector<uint8_t>{cand}, run, msg);
                                 this->_logTextArea->append(QString::fromStdString(msg));
                             }
                         }
@@ -1047,7 +1048,7 @@ namespace sudoku
 
         uint8_t run = 0;
 
-        this->_steps.emplace_back(this->_grid, run, "Initial status");
+        this->_steps.emplace_back(this->_grid, std::vector<Field*>{}, std::vector<uint8_t>{}, run, "Initial status");
 
         std::chrono::high_resolution_clock::time_point t_1;
         const std::chrono::high_resolution_clock::time_point t_0 = std::chrono::high_resolution_clock::now();
