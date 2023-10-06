@@ -1,7 +1,3 @@
-//#include <iomanip>
-//#include <iostream>
-//#include <sstream>
-
 #include "gui/StepByStepGUI.h"
 #include "globals.h"
 #include "gui/SolvedGUI.h"
