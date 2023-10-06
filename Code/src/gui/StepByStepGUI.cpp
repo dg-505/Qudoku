@@ -21,6 +21,7 @@ namespace sudoku
         this->setObjectName("StepByStepGUI");
         this->setWindowTitle(QStringLiteral("Step-by-step solution"));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
+        this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
 
         this->stepsStack->setObjectName("stepsStack");
         constexpr QRect stepsStackGeom(0, 0, 512, 562);
@@ -48,7 +49,8 @@ namespace sudoku
                                       QString::fromStdString(*sudoku->getSteps()->at(numStep).getFoundByType()));
                 auto* previewFields = new QWidget(previewWidget);
                 previewFields->setGeometry(stepFieldsGeom);
-                SolvedGUI::drawGrid(sudoku->getSteps()->at(numStep-1), sudoku->getSteps()->at(numStep), initVals, previewFields);
+                SolvedGUI::drawFields(sudoku->getSteps()->at(numStep - 1), sudoku->getSteps()->at(numStep), initVals, previewFields);
+                SolvedGUI::drawFrame(previewFields);
             }
 
             // executed step
@@ -67,7 +69,8 @@ namespace sudoku
             auto* stepFields = new QWidget(stepWidget);
             stepFields->setGeometry(stepFieldsGeom);
 
-            SolvedGUI::drawGrid(sudoku->getSteps()->at(numStep), sudoku->getSteps()->at(numStep), initVals, stepFields);
+            SolvedGUI::drawFields(sudoku->getSteps()->at(numStep), sudoku->getSteps()->at(numStep), initVals, stepFields);
+            SolvedGUI::drawFrame(stepFields);
         }
 
         // Buttons

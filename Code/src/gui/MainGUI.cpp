@@ -20,6 +20,7 @@ namespace sudoku
           logScrollArea(new QScrollArea(this)),
           logTextBrowser(new QLogTextBrowser(logScrollArea)),
           titleLabel(new QLabel(this, Qt::WindowFlags())),
+          gridWidget(new QWidget(this)),
           fields(new std::array<QInputField*, static_cast<uint8_t>(global::order* global::order)>),
           loadButton(new QPushButton(this)),
           saveButton(new QPushButton(this)),
@@ -27,22 +28,15 @@ namespace sudoku
           stepByStepButton(new QPushButton(this)),
           solveButton(new QPushButton(this)),
           clearButton(new QPushButton(this)),
-          exitButton(new QPushButton(this)),
-          hLine0(new QFrame(this)),
-          hLine1(new QFrame(this)),
-          hLine2(new QFrame(this)),
-          hLine3(new QFrame(this)),
-          vLine0(new QFrame(this)),
-          vLine1(new QFrame(this)),
-          vLine2(new QFrame(this)),
-          vLine3(new QFrame(this))
+          exitButton(new QPushButton(this))
     {
         // Main window properties
-        constexpr QSize guiDim(1012, 612);
+        constexpr QSize guiDim(1000, 612);
         this->setFixedSize(guiDim);
         this->setObjectName("MainGUI");
         this->setWindowTitle(QStringLiteral("Qudoku - Qt based cross platform sudoku solver"));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
+        this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
 
         const QString defaultStyleSheet = QStringLiteral("color: black; background: rgb(239, 239, 239)");
 
@@ -50,11 +44,11 @@ namespace sudoku
         const QFont logFont(QStringLiteral("Liberation Mono"), 10, QFont::Bold, false);
 
         this->logScrollArea->setObjectName("logScrollArea");
-        constexpr QRect logScrollAreaGeom(512, 0, 500, 612);
+        constexpr QRect logScrollAreaGeom(512, 0, 488, 612);
         this->logScrollArea->setGeometry(logScrollAreaGeom);
 
         this->logTextBrowser->setObjectName("logTextBrowser");
-        constexpr QRect logTextBrowserGeom(0, 0, 500, 612);
+        constexpr QRect logTextBrowserGeom(0, 0, 488, 612);
         this->logTextBrowser->setGeometry(logTextBrowserGeom);
         this->logTextBrowser->setStyleSheet(QStringLiteral("color: black; background: white"));
         this->logTextBrowser->setWordWrapMode(QTextOption::NoWrap);
@@ -73,18 +67,22 @@ namespace sudoku
         this->titleLabel->setText(QStringLiteral("Please fill in the initially given fields"));
 
         // Set up the fields
+        this->gridWidget->setObjectName("gridWidget");
+        constexpr QRect sudokuPanelGeom(0, 50, 512, 512);
+        this->gridWidget->setGeometry(sudokuPanelGeom);
+
         const QFont fieldsFont(QStringLiteral("Liberation Mono"), 32, QFont::Bold, false);
 
         // QSudokuInputField* fields[81];
         uint8_t fID = 1;
-        constexpr uint8_t yOffset = 50;
-        uint16_t posY = yOffset;
+        constexpr uint8_t offset = 2;
+        uint16_t posY = offset;
         for (uint8_t rID = 1; rID <= global::order; rID++)
         {
-            uint16_t posX = 0;
+            uint16_t posX = offset;
             for (uint8_t cID = 1; cID <= global::order; cID++)
             {
-                this->field = new QInputField(this);
+                this->field = new QInputField(gridWidget);
                 this->field->setObjectName("field" + QString::number(fID));
                 this->field->setGeometry(posX, posY, global::fieldDim, global::fieldDim);
                 this->field->setStyleSheet(QStringLiteral("QLineEdit {color: black; background: white} QLineEdit:focus{color: black; background: white; border: 1px solid black}"));
@@ -96,13 +94,13 @@ namespace sudoku
                 posX += global::fieldDim;
                 if (cID % 3 == 0)
                 {
-                    posX += 4;
+                    posX += 2;
                 }
             }
             posY += global::fieldDim;
             if (rID % 3 == 0)
             {
-                posY += 4;
+                posY += 2;
             }
         }
 
@@ -172,55 +170,7 @@ namespace sudoku
         MainGUI::connect(exitButton, &QPushButton::clicked, [=]()
                          { QApplication::quit(); });
 
-        // Frame for the grid
-        this->hLine0->setObjectName("hLine0");
-        constexpr QRect hLine0Geom(0, 50, 56, 2);
-        this->hLine0->setGeometry(hLine0Geom);
-        this->hLine0->setLineWidth(2);
-        this->hLine0->setFrameShape(QFrame::HLine);
-        this->hLine0->setStyleSheet(QStringLiteral("color: black"));
-        this->hLine1->setObjectName("hLine1");
-        constexpr QRect hLine1Geom(0, 219, 56, 2);
-        this->hLine1->setGeometry(hLine1Geom);
-        this->hLine1->setLineWidth(2);
-        this->hLine1->setFrameShape(QFrame::HLine);
-        this->hLine1->setStyleSheet(QStringLiteral("color: black"));
-        this->hLine2->setObjectName("hLine2");
-        constexpr QRect hLine2Geom(0, 391, 56, 2);
-        this->hLine2->setGeometry(hLine2Geom);
-        this->hLine2->setLineWidth(2);
-        this->hLine2->setFrameShape(QFrame::HLine);
-        this->hLine2->setStyleSheet(QStringLiteral("color: black"));
-        this->hLine3->setObjectName("hLine3");
-        constexpr QRect hLine3Geom(0, 561, 56, 2);
-        this->hLine3->setGeometry(hLine3Geom);
-        this->hLine3->setLineWidth(2);
-        this->hLine3->setFrameShape(QFrame::HLine);
-        this->hLine3->setStyleSheet(QStringLiteral("color: black"));
-        this->vLine0->setObjectName("vLine0");
-        constexpr QRect vLine0Geom(0, 50, 2, 56);
-        this->vLine0->setGeometry(vLine0Geom);
-        this->vLine0->setLineWidth(2);
-        this->vLine0->setFrameShape(QFrame::VLine);
-        this->vLine0->setStyleSheet(QStringLiteral("color: black"));
-        this->vLine1->setObjectName("vLine1");
-        constexpr QRect vLine1Geom(169, 50, 2, 56);
-        this->vLine1->setGeometry(vLine1Geom);
-        this->vLine1->setLineWidth(2);
-        this->vLine1->setFrameShape(QFrame::VLine);
-        this->vLine1->setStyleSheet(QStringLiteral("color: black"));
-        this->vLine2->setObjectName("vLine2");
-        constexpr QRect vLine2Geom(341, 50, 2, 56);
-        this->vLine2->setGeometry(vLine2Geom);
-        this->vLine2->setLineWidth(2);
-        this->vLine2->setFrameShape(QFrame::VLine);
-        this->vLine2->setStyleSheet(QStringLiteral("color: black"));
-        this->vLine3->setObjectName("vLine3");
-        constexpr QRect vLine3Geom(510, 50, 2, 56);
-        this->vLine3->setGeometry(vLine3Geom);
-        this->vLine3->setLineWidth(2);
-        this->vLine3->setFrameShape(QFrame::VLine);
-        this->vLine3->setStyleSheet(QStringLiteral("color: black"));
+        SolvedGUI::drawFrame(gridWidget);
 
         // center window
         this->move(screen()->geometry().center() - frameGeometry().center());

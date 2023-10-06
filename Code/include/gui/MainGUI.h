@@ -27,17 +27,9 @@ namespace sudoku
             QScrollArea* logScrollArea;
             QLogTextBrowser* logTextBrowser;
             QLabel* titleLabel;
-            QWidget* sudokuPanel{};
+            QWidget* gridWidget;
             QInputField* field;
             std::array<QInputField*, static_cast<uint8_t>(global::order* global::order)>* fields{};
-            QFrame* hLine0;
-            QFrame* hLine1;
-            QFrame* hLine2;
-            QFrame* hLine3;
-            QFrame* vLine0;
-            QFrame* vLine1;
-            QFrame* vLine2;
-            QFrame* vLine3;
             QPushButton* loadButton;
             // QPushButton* validateButton;
             QPushButton* saveButton;

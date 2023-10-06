@@ -13,8 +13,10 @@ namespace sudoku
         this->setObjectName("CandidatesGUI");
         this->setWindowTitle(QStringLiteral("Candidates"));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
+        this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
 
         sudoku->getSteps()->emplace_back(*sudoku->getGrid(), std::vector<Field*>{}, std::vector<uint8_t>{}, 0, "Initial status");
-        SolvedGUI::drawGrid(sudoku->getSteps()->front(), sudoku->getSteps()->front(), initVals, this);
+        SolvedGUI::drawFields(sudoku->getSteps()->front(), sudoku->getSteps()->front(), initVals, this);
+        SolvedGUI::drawFrame(this);
     }
 } // namespace sudoku

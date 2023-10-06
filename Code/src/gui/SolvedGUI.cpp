@@ -12,21 +12,24 @@ namespace sudoku
         this->setObjectName("SolvedGUI");
         this->setWindowTitle(QStringLiteral("Solved Sudoku"));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
+        this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
 
-        SolvedGUI::drawGrid(sudoku->getSteps()->back(), sudoku->getSteps()->back(), initVals, this);
+        SolvedGUI::drawFields(sudoku->getSteps()->back(), sudoku->getSteps()->back(), initVals, this);
+        SolvedGUI::drawFrame(this);
     }
 
     // Helper functions
-    void SolvedGUI::drawGrid(Step& currStep, Step& nextStep, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent)
+    void SolvedGUI::drawFields(Step& currStep, Step& nextStep, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent)
     {
         const QFont fieldsFont(QStringLiteral("Liberation Mono"), 32, QFont::Bold);
-        const QFont candsFont(QStringLiteral("Liberation Mono"), 14, QFont::Bold);
+        const QFont candsFont(QStringLiteral("Liberation Mono"), 16, QFont::Bold);
 
         uint8_t fID = 1;
-        uint16_t posY = 0;
+        constexpr uint8_t offset = 2;
+        uint16_t posY = offset;
         for (uint8_t rID = 1; rID <= global::order; rID++)
         {
-            uint16_t posX = 0;
+            uint16_t posX = offset;
             for (uint8_t cID = 1; cID <= global::order; cID++)
             {
                 auto* field = new QLabel(parent);
@@ -58,7 +61,7 @@ namespace sudoku
                         for (uint8_t candC = 1; candC <= 3; candC++)
                         {
                             auto* cand = new QLabel(parent);
-                            const QRect candGeom(candX, candY, 17, 17);
+                            const QRect candGeom(candX, candY, global::candDim, global::candDim);
                             cand->setGeometry(candGeom);
                             cand->setAlignment(Qt::AlignCenter);
                             cand->setFont(candsFont);
@@ -68,12 +71,13 @@ namespace sudoku
                             if (std::find(cands->begin(), cands->end(), candI) != cands->end())
                             {
                                 cand->setText(QString::number(candI));
-                                //if (&currStep !=&nextStep) // enable this: hide green markings after step execution.
+                                if (&currStep !=&nextStep) // enable this: hide green markings after step execution.
                                 {
                                     // If candI disappears in the next step => make background of cand red
                                     if (std::find(nextStep.getGrid()->at(rID - 1).at(cID - 1).getCandidates()->begin(), nextStep.getGrid()->at(rID - 1).at(cID - 1).getCandidates()->end(), candI) == nextStep.getGrid()->at(rID - 1).at(cID - 1).getCandidates()->end())
                                     {
-                                        cand->setStyleSheet(QStringLiteral("color: rgb(10,30,255); background-color: rgba(255, 70, 0, 1.0); border: 1px solid black"));
+                                        cand->setStyleSheet(QStringLiteral("color: rgb(10,30,255); background-color: rgba(255, 70, 0, 1.0)"));
+
                                     }
                                     // set green background for cands found in "fields" in next step
                                     for (const Field* field : *nextStep.getFields()) // go through all fields in nextStep, where candidates were found
@@ -83,7 +87,7 @@ namespace sudoku
                                         {
                                             if (*field->getFID() == *nextStep.getGrid()->at(rID - 1).at(cID - 1).getFID() && candI == c)
                                             {
-                                                cand->setStyleSheet(QStringLiteral("color: rgb(10,30,255); background-color: rgba(50, 255, 10, 1.0); border: 1px solid black"));
+                                                cand->setStyleSheet(QStringLiteral("color: rgb(10,30,255); background-color: rgba(50, 255, 10, 1.0)"));
                                             }
                                         }
                                     }
@@ -103,16 +107,19 @@ namespace sudoku
                 posX += global::fieldDim;
                 if (cID % 3 == 0)
                 {
-                    posX += 4;
+                    posX += 2;
                 }
             }
             posY += global::fieldDim;
             if (rID % 3 == 0)
             {
-                posY += 4;
+                posY += 2;
             }
         }
+    }
 
+    void SolvedGUI::drawFrame(QWidget* parent)
+    {
         // Frame for the grid
         auto* hLine0 = new QFrame(parent);
         hLine0->setObjectName("hLine0");
@@ -123,14 +130,14 @@ namespace sudoku
         hLine0->setStyleSheet(QStringLiteral("color: black"));
         auto* hLine1 = new QFrame(parent);
         hLine1->setObjectName("hLine1");
-        constexpr QRect hLine1Geom(0, 169, 512, 2);
+        constexpr QRect hLine1Geom(0, 170, 512, 2);
         hLine1->setGeometry(hLine1Geom);
         hLine1->setLineWidth(2);
         hLine1->setFrameShape(QFrame::HLine);
         hLine1->setStyleSheet(QStringLiteral("color: black"));
         auto* hLine2 = new QFrame(parent);
         hLine2->setObjectName("hLine2");
-        constexpr QRect hLine2Geom(0, 341, 512, 2);
+        constexpr QRect hLine2Geom(0, 340, 512, 2);
         hLine2->setGeometry(hLine2Geom);
         hLine2->setLineWidth(2);
         hLine2->setFrameShape(QFrame::HLine);
@@ -151,14 +158,14 @@ namespace sudoku
         vLine0->setStyleSheet(QStringLiteral("color: black"));
         auto* vLine1 = new QFrame(parent);
         vLine1->setObjectName("vLine1");
-        constexpr QRect vLine1Geom(169, 0, 2, 512);
+        constexpr QRect vLine1Geom(170, 0, 2, 512);
         vLine1->setGeometry(vLine1Geom);
         vLine1->setLineWidth(2);
         vLine1->setFrameShape(QFrame::VLine);
         vLine1->setStyleSheet(QStringLiteral("color: black"));
         auto* vLine2 = new QFrame(parent);
         vLine2->setObjectName("vLine2");
-        constexpr QRect vLine2Geom(341, 0, 2, 512);
+        constexpr QRect vLine2Geom(340, 0, 2, 512);
         vLine2->setGeometry(vLine2Geom);
         vLine2->setLineWidth(2);
         vLine2->setFrameShape(QFrame::VLine);
