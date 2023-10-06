@@ -12,7 +12,7 @@ namespace sudoku
           nextButton(new QPushButton(QIcon(QStringLiteral(":/res/next.png")), QStringLiteral(""), this)),
           lastButton(new QPushButton(QIcon(QStringLiteral(":/res/last.png")), QStringLiteral(""), this))
     {
-        constexpr QSize guiDim(512, 612);
+        constexpr QSize guiDim(537, 637);
         this->setFixedSize(guiDim);
         this->setObjectName("StepByStepGUI");
         this->setWindowTitle(QStringLiteral("Step-by-step solution"));
@@ -20,12 +20,12 @@ namespace sudoku
         this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
 
         this->stepsStack->setObjectName("stepsStack");
-        constexpr QRect stepsStackGeom(0, 0, 512, 562);
+        constexpr QRect stepsStackGeom(0, 0, 537, 587);
         this->stepsStack->setGeometry(stepsStackGeom);
 
-        constexpr QRect messageLabelGeom(0, 0, 512, 50);
+        constexpr QRect messageLabelGeom(0, 0, 537, 50);
         const QFont messageFont(QStringLiteral("Open Sans"), 12, QFont::Bold);
-        constexpr QRect stepFieldsGeom(0, 50, 512, 512);
+        constexpr QRect stepFieldsGeom(0, 50, 537, 537);
         for (int numStep = 0; numStep < sudoku->getSteps()->size(); numStep++)
         {
             // Preview of step
@@ -75,7 +75,7 @@ namespace sudoku
 
         this->firstButton->setIconSize(buttonIconSize);
         this->firstButton->setObjectName("firstButton");
-        constexpr QRect firstButtonGeom(0, 562, 128, 50);
+        constexpr QRect firstButtonGeom(0, 587, 134, 50);
         this->firstButton->setGeometry(firstButtonGeom);
         this->firstButton->setFont(buttonFont);
         this->firstButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
@@ -84,7 +84,7 @@ namespace sudoku
 
         this->prevButton->setIconSize(buttonIconSize);
         this->prevButton->setObjectName("prevButton");
-        constexpr QRect prevButtonGeom(128, 562, 128, 50);
+        constexpr QRect prevButtonGeom(134, 587, 134, 50);
         this->prevButton->setGeometry(prevButtonGeom);
         this->prevButton->setFont(buttonFont);
         this->prevButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
@@ -93,7 +93,7 @@ namespace sudoku
 
         this->nextButton->setIconSize(buttonIconSize);
         this->nextButton->setObjectName("nextButton");
-        constexpr QRect nextButtonGeom(256, 562, 128, 50);
+        constexpr QRect nextButtonGeom(269, 587, 134, 50);
         this->nextButton->setGeometry(nextButtonGeom);
         this->nextButton->setFont(buttonFont);
         this->nextButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
@@ -102,7 +102,7 @@ namespace sudoku
 
         this->lastButton->setIconSize(buttonIconSize);
         this->lastButton->setObjectName("lastButton");
-        constexpr QRect lastButtonGeom(384, 562, 128, 50);
+        constexpr QRect lastButtonGeom(403, 587, 134, 50);
         this->lastButton->setGeometry(lastButtonGeom);
         this->lastButton->setFont(buttonFont);
         this->lastButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));

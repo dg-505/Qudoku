@@ -3,11 +3,10 @@
 
 namespace sudoku
 {
-
     SolvedGUI::SolvedGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* /*parent*/)
         : sudoku(sudoku)
     {
-        constexpr QSize guiDim(512, 512);
+        constexpr QSize guiDim(537, 537);
         this->setFixedSize(guiDim);
         this->setObjectName("SolvedGUI");
         this->setWindowTitle(QStringLiteral("Solved Sudoku"));
@@ -23,12 +22,31 @@ namespace sudoku
     {
         const QFont fieldsFont(QStringLiteral("Liberation Mono"), 32, QFont::Bold);
         const QFont candsFont(QStringLiteral("Liberation Mono"), 16, QFont::Bold);
+        const QFont rcLabelFont(QStringLiteral("Open Sans"), 16, QFont::Bold, false);
 
         uint8_t fID = 1;
-        constexpr uint8_t offset = 2;
+        constexpr uint8_t offset = 27;
         uint16_t posY = offset;
         for (uint8_t rID = 1; rID <= global::order; rID++)
         {
+            auto* rLabel = new QLabel(parent);
+            rLabel->setObjectName("rLabel" + QString::number(rID));
+            const QRect rLabelGeom(posY, 1, global::fieldDim, 25);
+            rLabel->setGeometry(rLabelGeom);
+            rLabel->setStyleSheet(QStringLiteral("color: rgb(100, 100, 100); background-color: rgba(239, 239, 239, 1.0); border: 1px solid rgb(171, 171, 171)"));
+            rLabel->setFont(rcLabelFont);
+            rLabel->setAlignment(Qt::AlignCenter);
+            rLabel->setText(QString::number(rID));
+
+            auto* cLabel = new QLabel(parent);
+            cLabel->setObjectName("rLabel" + QString::number(rID));
+            const QRect cLabelGeom(1, posY, 25, global::fieldDim);
+            cLabel->setGeometry(cLabelGeom);
+            cLabel->setStyleSheet(QStringLiteral("color: rgb(100, 100, 100); background-color: rgba(239, 239, 239, 1.0); border: 1px solid rgb(171, 171, 171)"));
+            cLabel->setFont(rcLabelFont);
+            cLabel->setAlignment(Qt::AlignCenter);
+            cLabel->setText(QString::number(rID));
+
             uint16_t posX = offset;
             for (uint8_t cID = 1; cID <= global::order; cID++)
             {
@@ -121,58 +139,72 @@ namespace sudoku
     void SolvedGUI::drawFrame(QWidget* parent)
     {
         // Frame for the grid
+        auto* hLine_1 = new QFrame(parent);
+        hLine_1->setObjectName("hLine0");
+        constexpr QRect hLine_1Geom(25, 0, 512, 2);
+        hLine_1->setGeometry(hLine_1Geom);
+        hLine_1->setLineWidth(2);
+        hLine_1->setFrameShape(QFrame::HLine);
+        hLine_1->setStyleSheet(QStringLiteral("color: black"));
         auto* hLine0 = new QFrame(parent);
         hLine0->setObjectName("hLine0");
-        constexpr QRect hLine0Geom(0, 0, 512, 2);
+        constexpr QRect hLine0Geom(0, 25, 537, 2);
         hLine0->setGeometry(hLine0Geom);
         hLine0->setLineWidth(2);
         hLine0->setFrameShape(QFrame::HLine);
         hLine0->setStyleSheet(QStringLiteral("color: black"));
         auto* hLine1 = new QFrame(parent);
         hLine1->setObjectName("hLine1");
-        constexpr QRect hLine1Geom(0, 170, 512, 2);
+        constexpr QRect hLine1Geom(0, 195, 537, 2);
         hLine1->setGeometry(hLine1Geom);
         hLine1->setLineWidth(2);
         hLine1->setFrameShape(QFrame::HLine);
         hLine1->setStyleSheet(QStringLiteral("color: black"));
         auto* hLine2 = new QFrame(parent);
         hLine2->setObjectName("hLine2");
-        constexpr QRect hLine2Geom(0, 340, 512, 2);
+        constexpr QRect hLine2Geom(0, 365, 537, 2);
         hLine2->setGeometry(hLine2Geom);
         hLine2->setLineWidth(2);
         hLine2->setFrameShape(QFrame::HLine);
         hLine2->setStyleSheet(QStringLiteral("color: black"));
         auto* hLine3 = new QFrame(parent);
         hLine3->setObjectName("hLine3");
-        constexpr QRect hLine3Geom(0, 510, 512, 2);
+        constexpr QRect hLine3Geom(0, 535, 537, 2);
         hLine3->setGeometry(hLine3Geom);
         hLine3->setLineWidth(2);
         hLine3->setFrameShape(QFrame::HLine);
         hLine3->setStyleSheet(QStringLiteral("color: black"));
+        auto* vLine_1 = new QFrame(parent);
+        vLine_1->setObjectName("vLine0");
+        constexpr QRect vLine_1Geom(0, 25, 2, 512);
+        vLine_1->setGeometry(vLine_1Geom);
+        vLine_1->setLineWidth(2);
+        vLine_1->setFrameShape(QFrame::VLine);
+        vLine_1->setStyleSheet(QStringLiteral("color: black"));
         auto* vLine0 = new QFrame(parent);
         vLine0->setObjectName("vLine0");
-        constexpr QRect vLine0Geom(0, 0, 2, 512);
+        constexpr QRect vLine0Geom(25, 0, 2, 537);
         vLine0->setGeometry(vLine0Geom);
         vLine0->setLineWidth(2);
         vLine0->setFrameShape(QFrame::VLine);
         vLine0->setStyleSheet(QStringLiteral("color: black"));
         auto* vLine1 = new QFrame(parent);
         vLine1->setObjectName("vLine1");
-        constexpr QRect vLine1Geom(170, 0, 2, 512);
+        constexpr QRect vLine1Geom(195, 0, 2, 537);
         vLine1->setGeometry(vLine1Geom);
         vLine1->setLineWidth(2);
         vLine1->setFrameShape(QFrame::VLine);
         vLine1->setStyleSheet(QStringLiteral("color: black"));
         auto* vLine2 = new QFrame(parent);
         vLine2->setObjectName("vLine2");
-        constexpr QRect vLine2Geom(340, 0, 2, 512);
+        constexpr QRect vLine2Geom(365, 0, 2, 537);
         vLine2->setGeometry(vLine2Geom);
         vLine2->setLineWidth(2);
         vLine2->setFrameShape(QFrame::VLine);
         vLine2->setStyleSheet(QStringLiteral("color: black"));
         auto* vLine3 = new QFrame(parent);
         vLine3->setObjectName("vLine3");
-        constexpr QRect vLine3Geom(510, 0, 2, 512);
+        constexpr QRect vLine3Geom(535, 0, 2, 537);
         vLine3->setGeometry(vLine3Geom);
         vLine3->setLineWidth(2);
         vLine3->setFrameShape(QFrame::VLine);
