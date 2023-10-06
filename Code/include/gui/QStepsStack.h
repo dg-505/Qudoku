@@ -1,0 +1,24 @@
+#pragma once
+
+#include <QtGui/QWheelEvent>
+#include <QtWidgets/QStackedWidget>
+
+namespace sudoku
+{
+    class QStepsStack : public QStackedWidget
+    {
+            Q_OBJECT
+        public:
+            explicit QStepsStack(QWidget* parent = nullptr);
+
+            QStepsStack(const QStepsStack&) = delete;
+            QStepsStack(QStepsStack&&) = delete;
+            auto operator=(const QStepsStack&) -> QStepsStack& = delete;
+            auto operator=(QStepsStack&&) -> QStepsStack& = delete;
+
+            ~QStepsStack() override = default;
+
+        protected:
+            void wheelEvent(QWheelEvent* event) override;
+    };
+} // namespace sudoku

@@ -6,7 +6,7 @@ namespace sudoku
 {
     StepByStepGUI::StepByStepGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* /*parent*/)
         : sudoku(sudoku),
-          stepsStack(new QStackedWidget(this)),
+          stepsStack(new QStepsStack(this)),
           firstButton(new QPushButton(QIcon(QStringLiteral(":/res/first.png")), QStringLiteral(""), this)),
           prevButton(new QPushButton(QIcon(QStringLiteral(":/res/prev.png")), QStringLiteral(""), this)),
           nextButton(new QPushButton(QIcon(QStringLiteral(":/res/next.png")), QStringLiteral(""), this)),

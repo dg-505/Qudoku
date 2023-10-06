@@ -5,6 +5,7 @@
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QStackedWidget>
 
+#include "gui/QStepsStack.h"
 #include "sudoku/Sudoku.h"
 
 namespace sudoku
@@ -23,7 +24,7 @@ namespace sudoku
         private:
             Sudoku* sudoku;
 
-            QStackedWidget* stepsStack;
+            QStepsStack* stepsStack;
 
             QPushButton* firstButton;
             QPushButton* prevButton;
