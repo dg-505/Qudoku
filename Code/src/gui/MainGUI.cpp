@@ -34,7 +34,8 @@ namespace sudoku
         constexpr QSize guiDim(1025, 637);
         this->setFixedSize(guiDim);
         this->setObjectName("MainGUI");
-        this->setWindowTitle(QStringLiteral("Qudoku - Qt based cross platform sudoku solver"));
+        const std::string title = "Qudoku - Qt based cross platform sudoku solver (Version " + global::version + ")";
+        this->setWindowTitle(QString::fromStdString(title));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
         this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
 
