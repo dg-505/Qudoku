@@ -18,6 +18,9 @@ namespace sudoku
 
             ~QStepsStack() override = default;
 
+        signals:
+            void stepChanged(int step);
+
         protected:
             void wheelEvent(QWheelEvent* event) override;
     };

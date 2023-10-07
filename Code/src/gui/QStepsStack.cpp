@@ -16,5 +16,6 @@ namespace sudoku
         {
             this->setCurrentIndex(this->currentIndex() + 1);
         }
+        emit stepChanged(this->currentIndex());
     }
 } // namespace sudoku
