@@ -1,7 +1,7 @@
 #!/bin/bash
 
 if [ -t 0 ]; then
-	rm ../release/Qudoku-x86_64.AppImage
+	rm ../release/Qudoku-*-x86_64.AppImage
 	cd ../release/AppImage
 	find . ! -name 'Qudoku.desktop' -exec rm -r {} \;
 	cd ../../util
