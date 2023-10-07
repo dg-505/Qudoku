@@ -708,7 +708,7 @@ namespace sudoku
                 continue;
             }
             std::vector<uint8_t>* candidates = field->getCandidates();
-            std::vector<uint8_t> candidatesToRemove{nakedTriple->getCandidate1(), nakedTriple->getCandidate2(), nakedTriple->getCandidate3()};
+            const std::vector<uint8_t> candidatesToRemove{nakedTriple->getCandidate1(), nakedTriple->getCandidate2(), nakedTriple->getCandidate3()};
 
             for (const uint8_t candidate : candidatesToRemove)
             {

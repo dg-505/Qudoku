@@ -29,32 +29,35 @@ namespace sudoku
         constexpr QRect stepFieldsGeom(0, 50, 537, 537);
         for (int numStep = 0; numStep < sudoku->getSteps()->size(); numStep++)
         {
+            const QString msg = "Run " + QString::number(*sudoku->getSteps()->at(numStep).getFoundInRunNo()) + "/" +
+                                QString::number(*sudoku->getSteps()->back().getFoundInRunNo()) + ", Step " +
+                                QString::number(numStep) + " of " + QString::number(sudoku->getSteps()->size() - 1) + ":\n" +
+                                QString::fromStdString(*sudoku->getSteps()->at(numStep).getFoundByType());
+
             // Preview of step
             if (numStep > 0)
             {
                 auto* previewWidget = new QWidget(stepsStack);
                 this->stepsStack->addWidget(previewWidget);
 
-                auto* previewLabel = new QLabel(previewWidget);
-                previewLabel->setObjectName("previewLabel");
-                previewLabel->setGeometry(messageLabelGeom);
-                previewLabel->setStyleSheet(QStringLiteral("color: black; background-color: rgba(239, 239, 239, 1.0)"));
-                previewLabel->setFont(messageFont);
-                previewLabel->setAlignment(Qt::AlignCenter);
-                previewLabel->setText("Run " + QString::number(*sudoku->getSteps()->at(numStep).getFoundInRunNo()) + "/" +
-                                      QString::number(*sudoku->getSteps()->back().getFoundInRunNo()) + ", Step " +
-                                      QString::number(numStep) + " of " + QString::number(sudoku->getSteps()->size() - 1) + ":\n" +
-                                      QString::fromStdString(*sudoku->getSteps()->at(numStep).getFoundByType()));
+                auto* msgPreviewLabel = new QLabel(previewWidget);
+                msgPreviewLabel->setObjectName("msgPreviewLabel");
+                msgPreviewLabel->setGeometry(messageLabelGeom);
+                msgPreviewLabel->setStyleSheet(QStringLiteral("color: black; background-color: rgba(239, 239, 239, 1.0)"));
+                msgPreviewLabel->setFont(messageFont);
+                msgPreviewLabel->setAlignment(Qt::AlignCenter);
+                msgPreviewLabel->setText(msg);
                 auto* previewFields = new QWidget(previewWidget);
                 previewFields->setGeometry(stepFieldsGeom);
 
-                auto* p = new QLabel(previewWidget);
-                p->setObjectName("p");
-                p->setGeometry(0, 0, 100, 25);
-                p->setStyleSheet(QStringLiteral("color: rgb(239, 239, 239); background-color: rgba(100, 100, 100, 1.0)"));
-                p->setFont(messageFont);
-                p->setAlignment(Qt::AlignCenter);
-                p->setText("Preview");
+                auto* previewLabel = new QLabel(previewWidget);
+                previewLabel->setObjectName("p");
+                constexpr QRect previewLabelGeom(0, 0, 100, 25);
+                previewLabel->setGeometry(previewLabelGeom);
+                previewLabel->setStyleSheet(QStringLiteral("color: rgb(239, 239, 239); background-color: rgba(100, 100, 100, 1.0)"));
+                previewLabel->setFont(messageFont);
+                previewLabel->setAlignment(Qt::AlignCenter);
+                previewLabel->setText(QStringLiteral("Preview"));
 
                 SolvedGUI::drawFields(sudoku->getSteps()->at(numStep - 1), sudoku->getSteps()->at(numStep), initVals, previewFields);
                 SolvedGUI::drawFrame(previewFields);
@@ -69,10 +72,7 @@ namespace sudoku
             messageLabel->setStyleSheet(QStringLiteral("color: black; background-color: rgba(239, 239, 239, 1.0)"));
             messageLabel->setFont(messageFont);
             messageLabel->setAlignment(Qt::AlignCenter);
-            messageLabel->setText("Run " + QString::number(*sudoku->getSteps()->at(numStep).getFoundInRunNo()) + "/" +
-                                  QString::number(*sudoku->getSteps()->back().getFoundInRunNo()) + ", Step " +
-                                  QString::number(numStep) + " of " + QString::number(sudoku->getSteps()->size() - 1) + ":\n" +
-                                  QString::fromStdString(*sudoku->getSteps()->at(numStep).getFoundByType()));
+            messageLabel->setText(msg);
             auto* stepFields = new QWidget(stepWidget);
             stepFields->setGeometry(stepFieldsGeom);
 
@@ -101,7 +101,7 @@ namespace sudoku
         this->firstButton->setFont(buttonFont);
         this->firstButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
         QObject::connect(firstButton, &QPushButton::clicked, this, [this, stepsScrollBar]()
-                         { int firstStep = 0; this->stepsStack->setCurrentIndex(firstStep); stepsScrollBar->setValue(firstStep); });
+                         { constexpr int firstStep = 0; this->stepsStack->setCurrentIndex(firstStep); stepsScrollBar->setValue(firstStep); });
 
         this->prevButton->setIconSize(buttonIconSize);
         this->prevButton->setObjectName("prevButton");
@@ -110,7 +110,7 @@ namespace sudoku
         this->prevButton->setFont(buttonFont);
         this->prevButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
         QObject::connect(prevButton, &QPushButton::clicked, this, [this, stepsScrollBar]()
-                         { int prevStep = this->stepsStack->currentIndex() - 1; this->stepsStack->setCurrentIndex(prevStep); stepsScrollBar->setValue(prevStep); });
+                         { const int prevStep = this->stepsStack->currentIndex() - 1; this->stepsStack->setCurrentIndex(prevStep); stepsScrollBar->setValue(prevStep); });
 
         this->nextButton->setIconSize(buttonIconSize);
         this->nextButton->setObjectName("nextButton");
@@ -119,7 +119,7 @@ namespace sudoku
         this->nextButton->setFont(buttonFont);
         this->nextButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
         QObject::connect(nextButton, &QPushButton::clicked, this, [this, stepsScrollBar]()
-                         { int nextStep = this->stepsStack->currentIndex() + 1; this->stepsStack->setCurrentIndex(nextStep); stepsScrollBar->setValue(nextStep); });
+                         { const int nextStep = this->stepsStack->currentIndex() + 1; this->stepsStack->setCurrentIndex(nextStep); stepsScrollBar->setValue(nextStep); });
 
         this->lastButton->setIconSize(buttonIconSize);
         this->lastButton->setObjectName("lastButton");
@@ -128,6 +128,6 @@ namespace sudoku
         this->lastButton->setFont(buttonFont);
         this->lastButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
         QObject::connect(lastButton, &QPushButton::clicked, this, [this, stepsScrollBar]()
-                         { int lastStep = this->stepsStack->count() - 1; this->stepsStack->setCurrentIndex(lastStep); stepsScrollBar->setValue(lastStep); });
+                         { const int lastStep = this->stepsStack->count() - 1; this->stepsStack->setCurrentIndex(lastStep); stepsScrollBar->setValue(lastStep); });
     }
 } // namespace sudoku

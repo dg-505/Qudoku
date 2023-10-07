@@ -100,10 +100,10 @@ namespace sudoku
                                     // set green background for cands found in "fields" in next step
                                     for (const Field* field : *nextStep.getFields()) // go through all fields in nextStep, where candidates were found
                                     {
-                                        std::vector<uint8_t> fieldCands = *nextStep.getCandidates(); // get the candidates found in the field
-                                        for (uint8_t c : fieldCands)
+                                        const std::vector<uint8_t> fieldCands = *nextStep.getCandidates(); // get the candidates found in the field
+                                        for (const uint8_t fieldCand : fieldCands)
                                         {
-                                            if (*field->getFID() == *nextStep.getGrid()->at(rID - 1).at(cID - 1).getFID() && candI == c)
+                                            if (*field->getFID() == *nextStep.getGrid()->at(rID - 1).at(cID - 1).getFID() && candI == fieldCand)
                                             {
                                                 cand->setStyleSheet(QStringLiteral("color: rgb(10,30,255); background-color: rgba(50, 255, 10, 1.0)"));
                                             }

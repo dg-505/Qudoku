@@ -355,7 +355,7 @@ namespace sudoku
     void MainGUI::stepByStepButtonButtonClicked() const
     {
         this->logTextBrowser->clear();
-        this->logTextBrowser->append("Solving in progress. Please wait...");
+        this->logTextBrowser->append(QStringLiteral("Solving in progress. Please wait..."));
         this->logTextBrowser->repaint();
         std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
         auto sudoku = init(&initVals);
@@ -368,7 +368,7 @@ namespace sudoku
     void MainGUI::solveButtonClicked() const
     {
         this->logTextBrowser->clear();
-        this->logTextBrowser->append("Solving in progress. Please wait...");
+        this->logTextBrowser->append(QStringLiteral("Solving in progress. Please wait..."));
         this->logTextBrowser->repaint();
         std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
         auto sudoku = init(&initVals);
