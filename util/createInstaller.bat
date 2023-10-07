@@ -1,7 +1,7 @@
 @echo off
 
 rem clean up previously created setup files
-del "..\release\Qudoku_setup.exe"
+del "..\release\Qudoku-*.exe"
 rmdir /s /q "..\release\WindowsInstaller"
 
 for /f %%A in ('powershell -ExecutionPolicy Bypass -File getExePath.ps1') do set "exePath=%%A"
