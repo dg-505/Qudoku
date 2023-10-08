@@ -110,6 +110,7 @@ namespace sudoku
         this->prevButton->setGeometry(prevButtonGeom);
         this->prevButton->setFont(buttonFont);
         this->prevButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
+        this->prevButton->setAutoRepeat(true);
         QObject::connect(prevButton, &QPushButton::clicked, this, [this, stepsScrollBar]()
                          { const int prevStep = this->stepsStack->currentIndex() - 1; this->stepsStack->setCurrentIndex(prevStep); stepsScrollBar->setValue(prevStep); });
 
@@ -119,6 +120,7 @@ namespace sudoku
         this->nextButton->setGeometry(nextButtonGeom);
         this->nextButton->setFont(buttonFont);
         this->nextButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
+        this->nextButton->setAutoRepeat(true);
         QObject::connect(nextButton, &QPushButton::clicked, this, [this, stepsScrollBar]()
                          { const int nextStep = this->stepsStack->currentIndex() + 1; this->stepsStack->setCurrentIndex(nextStep); stepsScrollBar->setValue(nextStep); });
 
