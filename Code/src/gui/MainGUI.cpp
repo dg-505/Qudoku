@@ -1,10 +1,10 @@
 #include <QtCore/QSettings>
 #include <QtCore/QTextStream>
 #include <QtGui/QIcon>
+#include <QtGui/QShortcut>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
-#include <iostream>
 
 #include "globals.h"
 #include "gui/CandidatesGUI.h"
@@ -28,7 +28,7 @@ namespace sudoku
           stepByStepButton(new QPushButton(this)),
           solveButton(new QPushButton(this)),
           clearButton(new QPushButton(this)),
-          exitButton(new QPushButton(this))
+          quitButton(new QPushButton(this))
     {
         // Main window properties
         constexpr QSize guiDim(1025, 637);
@@ -134,7 +134,8 @@ namespace sudoku
         this->loadButton->setGeometry(loadButtonGeom);
         this->loadButton->setFont(buttonFont);
         this->loadButton->setStyleSheet(buttonStyleSheet);
-        this->loadButton->setText(QStringLiteral("Load"));
+        this->loadButton->setText(QStringLiteral("Lo&ad"));
+        this->loadButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_A));
         MainGUI::connect(loadButton, &QPushButton::clicked, this, &MainGUI::loadButtonClicked, Qt::AutoConnection);
 
         // validateButton = new QPushButton(this);
@@ -148,7 +149,8 @@ namespace sudoku
         this->saveButton->setGeometry(saveButtonGeom);
         this->saveButton->setFont(buttonFont);
         this->saveButton->setStyleSheet(buttonStyleSheet);
-        this->saveButton->setText(QStringLiteral("Save"));
+        this->saveButton->setText(QStringLiteral("&Save"));
+        this->saveButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_S));
         MainGUI::connect(saveButton, &QPushButton::clicked, this, &MainGUI::saveButtonClicked, Qt::AutoConnection);
 
         this->candidatesButton->setObjectName("candidatesButton");
@@ -156,7 +158,8 @@ namespace sudoku
         this->candidatesButton->setGeometry(candidatesButtonGeom);
         this->candidatesButton->setFont(buttonFont);
         this->candidatesButton->setStyleSheet(buttonStyleSheet);
-        this->candidatesButton->setText(QStringLiteral("Candidates"));
+        this->candidatesButton->setText(QStringLiteral("&Candidates"));
+        this->candidatesButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_C));
         MainGUI::connect(candidatesButton, &QPushButton::clicked, this, &MainGUI::candidatesButtonClicked, Qt::AutoConnection);
 
         this->stepByStepButton->setObjectName("stepByStepButton");
@@ -164,7 +167,8 @@ namespace sudoku
         this->stepByStepButton->setGeometry(stepByStepButtonGeom);
         this->stepByStepButton->setFont(buttonFont);
         this->stepByStepButton->setStyleSheet(buttonStyleSheet);
-        this->stepByStepButton->setText(QStringLiteral("Step by Step"));
+        this->stepByStepButton->setText(QStringLiteral("St&ep by Step"));
+        this->stepByStepButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_E));
         MainGUI::connect(stepByStepButton, &QPushButton::clicked, this, &MainGUI::stepByStepButtonButtonClicked, Qt::AutoConnection);
 
         this->solveButton->setObjectName("solveButton");
@@ -172,7 +176,8 @@ namespace sudoku
         this->solveButton->setGeometry(solveButtonGeom);
         this->solveButton->setFont(buttonFont);
         this->solveButton->setStyleSheet(buttonStyleSheet);
-        this->solveButton->setText(QStringLiteral("Solve"));
+        this->solveButton->setText(QStringLiteral("Sol&ve"));
+        this->solveButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_V));
         MainGUI::connect(solveButton, &QPushButton::clicked, this, &MainGUI::solveButtonClicked, Qt::AutoConnection);
 
         this->clearButton->setObjectName("clearButton");
@@ -180,16 +185,18 @@ namespace sudoku
         this->clearButton->setGeometry(clearButtonGeom);
         this->clearButton->setFont(buttonFont);
         this->clearButton->setStyleSheet(buttonStyleSheet);
-        this->clearButton->setText(QStringLiteral("Clear"));
+        this->clearButton->setText(QStringLiteral("Clea&r"));
+        this->clearButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_R));
         MainGUI::connect(clearButton, &QPushButton::clicked, this, &MainGUI::clearButtonClicked, Qt::AutoConnection);
 
-        this->exitButton->setObjectName("exitButton");
-        constexpr QRect exitButtonGeom(430, 587, 107, 50);
-        this->exitButton->setGeometry(exitButtonGeom);
-        this->exitButton->setFont(buttonFont);
-        this->exitButton->setStyleSheet(buttonStyleSheet);
-        this->exitButton->setText(QStringLiteral("Exit"));
-        MainGUI::connect(exitButton, &QPushButton::clicked, [=]()
+        this->quitButton->setObjectName("quitButton");
+        constexpr QRect quitButtonGeom(430, 587, 107, 50);
+        this->quitButton->setGeometry(quitButtonGeom);
+        this->quitButton->setFont(buttonFont);
+        this->quitButton->setStyleSheet(buttonStyleSheet);
+        this->quitButton->setText(QStringLiteral("&Quit"));
+        this->quitButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_Q));
+        MainGUI::connect(quitButton, &QPushButton::clicked, [=]()
                          { QApplication::quit(); });
 
         SolvedGUI::drawFrame(gridWidget);
@@ -207,8 +214,16 @@ namespace sudoku
         MainGUI::setTabOrder(candidatesButton, stepByStepButton);
         MainGUI::setTabOrder(stepByStepButton, solveButton);
         MainGUI::setTabOrder(solveButton, clearButton);
-        MainGUI::setTabOrder(clearButton, exitButton);
-        MainGUI::setTabOrder(exitButton, loadButton);
+        MainGUI::setTabOrder(clearButton, quitButton);
+        MainGUI::setTabOrder(quitButton, loadButton);
+    }
+
+    void MainGUI::keyPressEvent(QKeyEvent* event)
+    {
+        if (event->key() == Qt::Key_Escape)
+        {
+            this->close();
+        }
     }
 
     // Button functions

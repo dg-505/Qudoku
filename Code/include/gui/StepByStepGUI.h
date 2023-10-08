@@ -30,5 +30,8 @@ namespace sudoku
             QPushButton* prevButton;
             QPushButton* nextButton;
             QPushButton* lastButton;
+
+        protected:
+            void keyPressEvent(QKeyEvent* event) override;
     };
 } // namespace sudoku

@@ -18,4 +18,12 @@ namespace sudoku
         SolvedGUI::drawFields(sudoku->getSteps()->front(), sudoku->getSteps()->front(), initVals, this);
         SolvedGUI::drawFrame(this);
     }
+
+    void CandidatesGUI::keyPressEvent(QKeyEvent* event)
+    {
+        if (event->key() == Qt::Key_Escape)
+        {
+            this->close();
+        }
+    }
 } // namespace sudoku

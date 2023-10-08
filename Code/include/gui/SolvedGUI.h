@@ -24,5 +24,8 @@ namespace sudoku
 
         private:
             Sudoku* sudoku;
+
+        protected:
+            void keyPressEvent(QKeyEvent* event) override;
     };
 } // namespace sudoku

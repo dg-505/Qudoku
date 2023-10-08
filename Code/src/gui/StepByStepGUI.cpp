@@ -8,10 +8,10 @@ namespace sudoku
     StepByStepGUI::StepByStepGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* /*parent*/)
         : sudoku(sudoku),
           stepsStack(new QStepsStack(this)),
-          firstButton(new QPushButton(QIcon(QStringLiteral(":/res/first.png")), QStringLiteral(""), this)),
-          prevButton(new QPushButton(QIcon(QStringLiteral(":/res/prev.png")), QStringLiteral(""), this)),
-          nextButton(new QPushButton(QIcon(QStringLiteral(":/res/next.png")), QStringLiteral(""), this)),
-          lastButton(new QPushButton(QIcon(QStringLiteral(":/res/last.png")), QStringLiteral(""), this))
+          firstButton(new QPushButton(QIcon(QStringLiteral(":/res/first.png")), QStringLiteral("  (Home)"), this)),
+          prevButton(new QPushButton(QIcon(QStringLiteral(":/res/prev.png")), QStringLiteral("  (PgUp)"), this)),
+          nextButton(new QPushButton(QIcon(QStringLiteral(":/res/next.png")), QStringLiteral("  (PgDn)"), this)),
+          lastButton(new QPushButton(QIcon(QStringLiteral(":/res/last.png")), QStringLiteral("  (End)"), this))
     {
         constexpr QSize guiDim(537, 637);
         this->setFixedSize(guiDim);
@@ -92,8 +92,8 @@ namespace sudoku
         QObject::connect(stepsStack, &QStepsStack::stepChanged, stepsScrollBar, &QScrollBar::setValue);
 
         // Buttons
-        const QFont buttonFont(QStringLiteral("Open Sans"), 28, QFont::Bold);
-        constexpr QSize buttonIconSize(24, 24);
+        const QFont buttonFont(QStringLiteral("Open Sans"), 10, QFont::Bold);
+        constexpr QSize buttonIconSize(20, 20);
         const QString buttonStyleSheet = QStringLiteral("QPushButton {color: black; background: rgb(239, 239, 239)}"
                                                         "QPushButton:hover {color: black; background: rgb(171, 171, 171)}"
                                                         "QPushButton:pressed {color: black; background: rgb(171, 171, 171)}");
@@ -105,6 +105,7 @@ namespace sudoku
         this->firstButton->setGeometry(firstButtonGeom);
         this->firstButton->setFont(buttonFont);
         this->firstButton->setStyleSheet(buttonStyleSheet);
+        this->firstButton->setShortcut(Qt::Key_Home);
         QObject::connect(firstButton, &QPushButton::pressed, this, [this, stepsScrollBar]()
                          { constexpr int firstStep = 0; this->stepsStack->setCurrentIndex(firstStep); stepsScrollBar->setValue(firstStep); });
 
@@ -115,6 +116,7 @@ namespace sudoku
         this->prevButton->setFont(buttonFont);
         this->prevButton->setStyleSheet(buttonStyleSheet);
         this->prevButton->setAutoRepeat(true);
+        this->prevButton->setShortcut(Qt::Key_PageUp);
         QObject::connect(prevButton, &QPushButton::pressed, this, [this, stepsScrollBar]()
                          { const int prevStep = this->stepsStack->currentIndex() - 1; this->stepsStack->setCurrentIndex(prevStep); stepsScrollBar->setValue(prevStep); });
 
@@ -125,6 +127,7 @@ namespace sudoku
         this->nextButton->setFont(buttonFont);
         this->nextButton->setStyleSheet(buttonStyleSheet);
         this->nextButton->setAutoRepeat(true);
+        this->nextButton->setShortcut(Qt::Key_PageDown);
         QObject::connect(nextButton, &QPushButton::pressed, this, [this, stepsScrollBar]()
                          { const int nextStep = this->stepsStack->currentIndex() + 1; this->stepsStack->setCurrentIndex(nextStep); stepsScrollBar->setValue(nextStep); });
 
@@ -134,7 +137,16 @@ namespace sudoku
         this->lastButton->setGeometry(lastButtonGeom);
         this->lastButton->setFont(buttonFont);
         this->lastButton->setStyleSheet(buttonStyleSheet);
+        this->lastButton->setShortcut(Qt::Key_End);
         QObject::connect(lastButton, &QPushButton::pressed, this, [this, stepsScrollBar]()
                          { const int lastStep = this->stepsStack->count() - 1; this->stepsStack->setCurrentIndex(lastStep); stepsScrollBar->setValue(lastStep); });
+    }
+
+    void StepByStepGUI::keyPressEvent(QKeyEvent* event)
+    {
+        if (event->key() == Qt::Key_Escape)
+        {
+            this->close();
+        }
     }
 } // namespace sudoku

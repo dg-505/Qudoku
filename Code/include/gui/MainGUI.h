@@ -37,7 +37,7 @@ namespace sudoku
             QPushButton* stepByStepButton;
             QPushButton* solveButton;
             QPushButton* clearButton;
-            QPushButton* exitButton;
+            QPushButton* quitButton;
             std::string filename;
 
             [[nodiscard]] auto init(std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* initVals) const -> Sudoku;
@@ -51,5 +51,8 @@ namespace sudoku
             void clearButtonClicked();
 
             void closeEvent(QCloseEvent* /*event*/) override;
+
+        protected:
+            void keyPressEvent(QKeyEvent* event) override;
     };
 } // namespace sudoku
