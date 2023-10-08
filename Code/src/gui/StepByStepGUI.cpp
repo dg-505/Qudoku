@@ -101,7 +101,7 @@ namespace sudoku
         this->firstButton->setGeometry(firstButtonGeom);
         this->firstButton->setFont(buttonFont);
         this->firstButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
-        QObject::connect(firstButton, &QPushButton::clicked, this, [this, stepsScrollBar]()
+        QObject::connect(firstButton, &QPushButton::pressed, this, [this, stepsScrollBar]()
                          { constexpr int firstStep = 0; this->stepsStack->setCurrentIndex(firstStep); stepsScrollBar->setValue(firstStep); });
 
         this->prevButton->setIconSize(buttonIconSize);
@@ -111,7 +111,7 @@ namespace sudoku
         this->prevButton->setFont(buttonFont);
         this->prevButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
         this->prevButton->setAutoRepeat(true);
-        QObject::connect(prevButton, &QPushButton::clicked, this, [this, stepsScrollBar]()
+        QObject::connect(prevButton, &QPushButton::pressed, this, [this, stepsScrollBar]()
                          { const int prevStep = this->stepsStack->currentIndex() - 1; this->stepsStack->setCurrentIndex(prevStep); stepsScrollBar->setValue(prevStep); });
 
         this->nextButton->setIconSize(buttonIconSize);
@@ -121,7 +121,7 @@ namespace sudoku
         this->nextButton->setFont(buttonFont);
         this->nextButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
         this->nextButton->setAutoRepeat(true);
-        QObject::connect(nextButton, &QPushButton::clicked, this, [this, stepsScrollBar]()
+        QObject::connect(nextButton, &QPushButton::pressed, this, [this, stepsScrollBar]()
                          { const int nextStep = this->stepsStack->currentIndex() + 1; this->stepsStack->setCurrentIndex(nextStep); stepsScrollBar->setValue(nextStep); });
 
         this->lastButton->setIconSize(buttonIconSize);
@@ -130,7 +130,7 @@ namespace sudoku
         this->lastButton->setGeometry(lastButtonGeom);
         this->lastButton->setFont(buttonFont);
         this->lastButton->setStyleSheet(QStringLiteral("color: black; background-color: rgb(239, 239, 239)"));
-        QObject::connect(lastButton, &QPushButton::clicked, this, [this, stepsScrollBar]()
+        QObject::connect(lastButton, &QPushButton::pressed, this, [this, stepsScrollBar]()
                          { const int lastStep = this->stepsStack->count() - 1; this->stepsStack->setCurrentIndex(lastStep); stepsScrollBar->setValue(lastStep); });
     }
 } // namespace sudoku
