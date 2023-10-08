@@ -86,6 +86,7 @@ namespace sudoku
         constexpr QRect stepsScrollBarGeom(0, 587, 537, 15);
         stepsScrollBar->setGeometry(stepsScrollBarGeom);
         stepsScrollBar->setRange(0, stepsStack->count() - 1);
+        stepsScrollBar->setPageStep(1);
         QObject::connect(stepsScrollBar, &QScrollBar::valueChanged, this, [this](int value)
                          { stepsStack->setCurrentIndex(value); });
         QObject::connect(stepsStack, &QStepsStack::stepChanged, stepsScrollBar, &QScrollBar::setValue);
