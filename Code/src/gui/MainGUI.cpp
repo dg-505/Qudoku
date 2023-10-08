@@ -22,6 +22,7 @@ namespace sudoku
           titleLabel(new QLabel(this, Qt::WindowFlags())),
           gridWidget(new QWidget(this)),
           fields(new std::array<QInputField*, static_cast<uint8_t>(global::order* global::order)>),
+          techniquesButton(new QPushButton(this)),
           loadButton(new QPushButton(this)),
           saveButton(new QPushButton(this)),
           candidatesButton(new QPushButton(this)),
@@ -61,7 +62,7 @@ namespace sudoku
 
         // Title label
         this->titleLabel->setObjectName("titleLabel");
-        constexpr QRect titleLabelGeom(0, 0, 423, 50);
+        constexpr QRect titleLabelGeom(0, 0, 367, 50);
         this->titleLabel->setGeometry(titleLabelGeom);
         this->titleLabel->setStyleSheet(QStringLiteral("color: black; background: rgb(239, 239, 239)"));
         const QFont titleFont(QStringLiteral("Open Sans"), 14, QFont::Bold, false);
@@ -129,8 +130,16 @@ namespace sudoku
         // Buttons
         const QFont buttonFont(QStringLiteral("Open Sans"), 11, QFont::Bold, false);
 
+        this->techniquesButton->setObjectName("techniquesButton");
+        constexpr QRect tehniquesButtonGeom(367, 0, 100, 50);
+        this->techniquesButton->setGeometry(tehniquesButtonGeom);
+        this->techniquesButton->setFont(buttonFont);
+        this->techniquesButton->setStyleSheet(buttonStyleSheet);
+        this->techniquesButton->setText(QStringLiteral("Select\n&techniques"));
+        this->techniquesButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_T));
+
         this->loadButton->setObjectName("loadButton");
-        constexpr QRect loadButtonGeom(423, 0, 114, 25);
+        constexpr QRect loadButtonGeom(467, 0, 70, 25);
         this->loadButton->setGeometry(loadButtonGeom);
         this->loadButton->setFont(buttonFont);
         this->loadButton->setStyleSheet(buttonStyleSheet);
@@ -145,7 +154,7 @@ namespace sudoku
         // validateButton->setText("Validate");
 
         this->saveButton->setObjectName("saveButton");
-        constexpr QRect saveButtonGeom(423, 25, 114, 25);
+        constexpr QRect saveButtonGeom(467, 25, 70, 25);
         this->saveButton->setGeometry(saveButtonGeom);
         this->saveButton->setFont(buttonFont);
         this->saveButton->setStyleSheet(buttonStyleSheet);

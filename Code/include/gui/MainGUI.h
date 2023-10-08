@@ -30,6 +30,7 @@ namespace sudoku
             QWidget* gridWidget;
             QInputField* field;
             std::array<QInputField*, static_cast<uint8_t>(global::order* global::order)>* fields{};
+            QPushButton* techniquesButton;
             QPushButton* loadButton;
             // QPushButton* validateButton;
             QPushButton* saveButton;
