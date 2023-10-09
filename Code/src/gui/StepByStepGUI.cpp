@@ -1,13 +1,13 @@
 #include "gui/StepByStepGUI.h"
 #include "globals.h"
 #include "gui/SolvedGUI.h"
-#include <QtWidgets/QScrollBar>
 
 namespace sudoku
 {
     StepByStepGUI::StepByStepGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* /*parent*/)
         : sudoku(sudoku),
           stepsStack(new QStepsStack(this)),
+          stepsScrollBar(new QScrollBar(Qt::Horizontal, this)),
           firstButton(new QPushButton(QIcon(QStringLiteral(":/res/first.png")), QStringLiteral("  (Home)"), this)),
           prevButton(new QPushButton(QIcon(QStringLiteral(":/res/prev.png")), QStringLiteral("  (PgUp)"), this)),
           nextButton(new QPushButton(QIcon(QStringLiteral(":/res/next.png")), QStringLiteral("  (PgDn)"), this)),
@@ -81,15 +81,14 @@ namespace sudoku
         }
 
         // Scrollbar to scroll through steps
-        auto* stepsScrollBar = new QScrollBar(Qt::Horizontal, this);
-        stepsScrollBar->setObjectName("stepsScrollBar");
+        this->stepsScrollBar->setObjectName("stepsScrollBar");
         constexpr QRect stepsScrollBarGeom(0, 587, 537, 15);
-        stepsScrollBar->setGeometry(stepsScrollBarGeom);
-        stepsScrollBar->setRange(0, stepsStack->count() - 1);
-        stepsScrollBar->setPageStep(1);
-        QObject::connect(stepsScrollBar, &QScrollBar::valueChanged, this, [this](int value)
-                         { stepsStack->setCurrentIndex(value); });
-        QObject::connect(stepsStack, &QStepsStack::stepChanged, stepsScrollBar, &QScrollBar::setValue);
+        this->stepsScrollBar->setGeometry(stepsScrollBarGeom);
+        this->stepsScrollBar->setRange(0, stepsStack->count() - 1);
+        this->stepsScrollBar->setPageStep(1);
+        QObject::connect(this->stepsScrollBar, &QScrollBar::valueChanged, this, [this](int value)
+                         { this->stepsStack->setCurrentIndex(value); });
+        QObject::connect(this->stepsStack, &QStepsStack::stepChanged, this->stepsScrollBar, &QScrollBar::setValue);
 
         // Buttons
         const QFont buttonFont(QStringLiteral("Open Sans"), 10, QFont::Bold);
@@ -98,7 +97,6 @@ namespace sudoku
                                                         "QPushButton:hover {color: black; background: rgb(171, 171, 171)}"
                                                         "QPushButton:pressed {color: black; background: rgb(171, 171, 171)}");
 
-
         this->firstButton->setIconSize(buttonIconSize);
         this->firstButton->setObjectName("firstButton");
         constexpr QRect firstButtonGeom(0, 602, 134, 35);
@@ -106,7 +104,7 @@ namespace sudoku
         this->firstButton->setFont(buttonFont);
         this->firstButton->setStyleSheet(buttonStyleSheet);
         this->firstButton->setShortcut(Qt::Key_Home);
-        QObject::connect(firstButton, &QPushButton::pressed, this, [this, stepsScrollBar]()
+        QObject::connect(firstButton, &QPushButton::pressed, this, [this]()
                          { constexpr int firstStep = 0; this->stepsStack->setCurrentIndex(firstStep); stepsScrollBar->setValue(firstStep); });
 
         this->prevButton->setIconSize(buttonIconSize);
@@ -117,7 +115,7 @@ namespace sudoku
         this->prevButton->setStyleSheet(buttonStyleSheet);
         this->prevButton->setAutoRepeat(true);
         this->prevButton->setShortcut(Qt::Key_PageUp);
-        QObject::connect(prevButton, &QPushButton::pressed, this, [this, stepsScrollBar]()
+        QObject::connect(prevButton, &QPushButton::pressed, this, [this]()
                          { const int prevStep = this->stepsStack->currentIndex() - 1; this->stepsStack->setCurrentIndex(prevStep); stepsScrollBar->setValue(prevStep); });
 
         this->nextButton->setIconSize(buttonIconSize);
@@ -128,7 +126,7 @@ namespace sudoku
         this->nextButton->setStyleSheet(buttonStyleSheet);
         this->nextButton->setAutoRepeat(true);
         this->nextButton->setShortcut(Qt::Key_PageDown);
-        QObject::connect(nextButton, &QPushButton::pressed, this, [this, stepsScrollBar]()
+        QObject::connect(nextButton, &QPushButton::pressed, this, [this]()
                          { const int nextStep = this->stepsStack->currentIndex() + 1; this->stepsStack->setCurrentIndex(nextStep); stepsScrollBar->setValue(nextStep); });
 
         this->lastButton->setIconSize(buttonIconSize);
@@ -138,7 +136,7 @@ namespace sudoku
         this->lastButton->setFont(buttonFont);
         this->lastButton->setStyleSheet(buttonStyleSheet);
         this->lastButton->setShortcut(Qt::Key_End);
-        QObject::connect(lastButton, &QPushButton::pressed, this, [this, stepsScrollBar]()
+        QObject::connect(lastButton, &QPushButton::pressed, this, [this]()
                          { const int lastStep = this->stepsStack->count() - 1; this->stepsStack->setCurrentIndex(lastStep); stepsScrollBar->setValue(lastStep); });
     }
 

@@ -3,6 +3,7 @@
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
+#include <QtWidgets/QScrollBar>
 #include <QtWidgets/QStackedWidget>
 
 #include "gui/QStepsStack.h"
@@ -23,9 +24,8 @@ namespace sudoku
 
         private:
             Sudoku* sudoku;
-
             QStepsStack* stepsStack;
-
+            QScrollBar* stepsScrollBar;
             QPushButton* firstButton;
             QPushButton* prevButton;
             QPushButton* nextButton;
