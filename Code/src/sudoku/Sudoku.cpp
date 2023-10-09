@@ -1210,6 +1210,7 @@ namespace sudoku
         }
 
         this->_logTextArea->append("Elapsed time: " + QString::number(std::chrono::duration<double, std::milli>(t_1 - t_0).count(), 'f', 1) + " ms\n");
+        this->_logTextArea->repaint();
     }
 
     void Sudoku::print() const
