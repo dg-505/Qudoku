@@ -1,11 +1,20 @@
-#include "sudoku/Sudoku.h"
 #include <QtCore/QString>
 #include <QtCore/QTextStream>
 
+#include "sudoku/Sudoku.h"
+
 namespace sudoku
 {
-    Sudoku::Sudoku(const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser& logTextArea)
-        : _logTextArea(&logTextArea)
+    Sudoku::Sudoku(const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser& logTextArea, const bool nakedSinglesEnabled, const bool hiddenSinglesEnabled, const bool nakedPairsEnabled, const bool hiddenPairsEnabled, const bool nakedTriplesEnabled, const bool hiddenTriplesEnabled, const bool blockLineChecksEnabled, const bool lineBlockChecksEnabled)
+        : _logTextArea(&logTextArea),
+          _useNakedSingles(nakedSinglesEnabled),
+          _useHiddenSingles(hiddenSinglesEnabled),
+          _useNakedPairs(nakedPairsEnabled),
+          _useHiddenPairs(hiddenPairsEnabled),
+          _useNakedTriples(nakedTriplesEnabled),
+          _useHiddenTriples(hiddenTriplesEnabled),
+          _useBlockLineChecks(blockLineChecksEnabled),
+          _useLineBlockChecks(lineBlockChecksEnabled)
     {
         // Fill values
         uint8_t fID = 1;
@@ -212,9 +221,9 @@ namespace sudoku
         return freeFields;
     }
 
-    auto Sudoku::countCandidates() -> uint8_t
+    auto Sudoku::countCandidates() -> uint16_t
     {
-        uint8_t numCands = 0;
+        uint16_t numCands = 0;
         for (uint8_t rID = 1; rID <= global::order; rID++)
         {
             for (uint8_t cID = 1; cID <= global::order; cID++)
@@ -279,7 +288,6 @@ namespace sudoku
 
     void Sudoku::processNakedSingles(const uint8_t run)
     {
-        this->_logTextArea->append(QStringLiteral("Search for NakedSingles"));
         while (true)
         {
             Field* firstNakedSingle = this->firstNakedSingle();
@@ -357,7 +365,6 @@ namespace sudoku
 
     void Sudoku::processHiddenSingles(const uint8_t run)
     {
-        this->_logTextArea->append(QStringLiteral("\nSearch for HiddenSingles"));
         while (true)
         {
             HiddenSingle* firstHiddenSingle = this->firstHiddenSingle();
@@ -484,7 +491,6 @@ namespace sudoku
 
     void Sudoku::processNakedPairs(const uint8_t run)
     {
-        this->_logTextArea->append(QStringLiteral("\nSearch for NakedPairs"));
         std::vector<NakedPair*> deadNakedPairs;
         while (true)
         {
@@ -493,7 +499,7 @@ namespace sudoku
             {
                 break;
             }
-            const uint8_t numCandsBeforeEliminatingFirstNakedPair = this->countCandidates();
+            const auto numCandsBeforeEliminatingFirstNakedPair = this->countCandidates();
             this->eliminateNakedPair(firstNakedPair);
             if (this->countCandidates() < numCandsBeforeEliminatingFirstNakedPair)
             {
@@ -565,7 +571,6 @@ namespace sudoku
 
     void Sudoku::processHiddenPairs(const uint8_t run)
     {
-        this->_logTextArea->append(QStringLiteral("\nSearch for HiddenPairs"));
         while (true)
         {
             HiddenSubset* firstHiddenPair = this->firstHiddenPair();
@@ -573,7 +578,7 @@ namespace sudoku
             {
                 break;
             }
-            const uint8_t numCandsBeforeEliminatingHiddenPair = this->countCandidates();
+            const auto numCandsBeforeEliminatingHiddenPair = this->countCandidates();
             const std::vector<uint8_t> hiddenPairCandidates = firstHiddenPair->getCandidates();
             retainAll(*firstHiddenPair->getFields().at(0)->getCandidates(), hiddenPairCandidates);
             retainAll(*firstHiddenPair->getFields().at(1)->getCandidates(), hiddenPairCandidates);
@@ -735,7 +740,6 @@ namespace sudoku
 
     void Sudoku::processNakedTriples(const uint8_t run)
     {
-        this->_logTextArea->append(QStringLiteral("\nSearch for NakedTriples"));
         std::vector<NakedTriple*> deadNakedTriples;
         while (true)
         {
@@ -744,10 +748,8 @@ namespace sudoku
             {
                 break;
             }
-
-            const uint8_t numCandsBeforeEliminatingFirstNakedTriple = this->countCandidates();
+            const auto numCandsBeforeEliminatingFirstNakedTriple = this->countCandidates();
             this->eliminateNakedTriple(firstNakedTriple);
-
             if (this->countCandidates() < numCandsBeforeEliminatingFirstNakedTriple)
             {
                 const std::string msg =
@@ -840,7 +842,6 @@ namespace sudoku
 
     void Sudoku::processHiddenTriples(const uint8_t run)
     {
-        this->_logTextArea->append(QStringLiteral("\nSearch for HiddenTriples"));
         while (true)
         {
             HiddenSubset* firstHiddenTriple = this->firstHiddenTriple();
@@ -848,7 +849,7 @@ namespace sudoku
             {
                 break;
             }
-            const int numCandsBeforeEliminatingHiddenTriple = this->countCandidates();
+            const auto numCandsBeforeEliminatingHiddenTriple = this->countCandidates();
             const std::vector<uint8_t> hiddenTripleCanidates = firstHiddenTriple->getCandidates();
             for (Field* field : firstHiddenTriple->getFields())
             {
@@ -912,7 +913,7 @@ namespace sudoku
     {
         if (allCandidatesInSameLine) // eliminate all other candidtes in the block
         {
-            const uint8_t numCandsBeforeBRC = this->countCandidates();
+            const auto numCandsBeforeBRC = this->countCandidates();
             this->removeCandidateIFromUnit(cand, containingCandidateI, lineIdOfFirst, type);
             if (this->countCandidates() < numCandsBeforeBRC)
             {
@@ -931,7 +932,6 @@ namespace sudoku
     // Block-Row-Checks (Pointing)
     void Sudoku::performBlockRowChecks(const uint8_t run)
     {
-        this->_logTextArea->append(QStringLiteral("\nPerform Block-Line-Checks"));
         for (uint8_t blockID = 1; blockID <= global::order; blockID++)
         {
             const std::array<Field*, global::order> block = this->getBlockByBlockID(blockID);
@@ -989,7 +989,6 @@ namespace sudoku
     // Row-Block-Checks (Claiming)
     void Sudoku::performRowBlockChecks(const uint8_t run)
     {
-        this->_logTextArea->append(QStringLiteral("\nPerform Line-Block-Checks"));
         for (const std::string& type : {"Row", "Col"})
         {
             for (uint8_t lineID = 1; lineID <= global::order; lineID++) // Iterate over each row/col
@@ -1016,7 +1015,7 @@ namespace sudoku
                         }
                         if (allCandidatesInSameBlock)
                         {
-                            const uint8_t numCandsBeforeRBC = this->countCandidates();
+                            const auto numCandsBeforeRBC = this->countCandidates();
                             this->removeCandidateIFromUnit(cand, containingCandidateI, blockIdOfFirst, "Block"); // remove candidate cand from block
                             if (this->countCandidates() < numCandsBeforeRBC)
                             {
@@ -1058,20 +1057,36 @@ namespace sudoku
         {
             run++;
 
-            const auto freeFieldsBeforeRun = this->getFreeFields().size();
             const auto numCandsBeforeRun = this->countCandidates();
 
             this->_logTextArea->append("BEGIN Run No. " + QString::number(run) + ":\n");
 
             // Process Singles
-            this->processNakedSingles(run);  // Check Naked Singles
-            this->processHiddenSingles(run); // Check Hidden Singles
-            const auto freeFieldsAfterSingles = this->getFreeFields().size();
+            if (this->_useNakedSingles)
+            {
+                this->_logTextArea->append(QStringLiteral("Search for NakedSingles"));
+                this->processNakedSingles(run); // Check Naked Singles
+            }
+            else
+            {
+                this->_logTextArea->append(QStringLiteral("Skip NakedSingles"));
+            }
+            if (this->_useHiddenSingles)
+            {
+                this->_logTextArea->append(QStringLiteral("\nSearch for HiddenSingles"));
+                this->processHiddenSingles(run); // Check Hidden Singles
+            }
+            else
+            {
+                this->_logTextArea->append(QStringLiteral("\nSkip HiddenSingles"));
+            }
+
+            const auto numCandsAfterSingles = this->countCandidates();
 
             // If no (more) Singles exist -> Search for Naked and Hidden Pairs
-            if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && !this->getFreeFields().empty())
+            if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && this->countCandidates() > 0)
             {
-                if (freeFieldsAfterSingles < freeFieldsBeforeRun)
+                if (numCandsAfterSingles < numCandsBeforeRun)
                 {
                     this->_logTextArea->append(QStringLiteral("\nNo further Singles found.\nProceeding with Pairs..."));
                 }
@@ -1080,10 +1095,26 @@ namespace sudoku
                     this->_logTextArea->append(QStringLiteral("\nNo Singles found.\nProceeding with pairs..."));
                 }
 
-                const uint8_t numCandsBeforePairs = this->countCandidates();
-                this->processNakedPairs(run);  // Check Naked Pairs
-                this->processHiddenPairs(run); // Check Hidden Pairs
-                const uint8_t numCandsAfterPairs = this->countCandidates();
+                const auto numCandsBeforePairs = this->countCandidates();
+                if (_useNakedPairs)
+                {
+                    this->_logTextArea->append(QStringLiteral("\nSearch for NakedPairs"));
+                    this->processNakedPairs(run); // Check Naked Pairs
+                }
+                else
+                {
+                    this->_logTextArea->append(QStringLiteral("\nSkip NakedPairs"));
+                }
+                if (_useHiddenPairs)
+                {
+                    this->_logTextArea->append(QStringLiteral("\nSearch for HiddenPairs"));
+                    this->processHiddenPairs(run); // Check Hidden Pairs
+                }
+                else
+                {
+                    this->_logTextArea->append(QStringLiteral("\nSkip HiddenPairs"));
+                }
+                const auto numCandsAfterPairs = this->countCandidates();
 
                 // If Pair techniques didn't produce Singles -> search for Naked and Hidden Triples
                 if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && !this->getFreeFields().empty())
@@ -1097,27 +1128,59 @@ namespace sudoku
                         this->_logTextArea->append(QStringLiteral("\nNo Pairs found.\nProceeding with Triples..."));
                     }
 
-                    const uint8_t numCandsBeforeTriples = this->countCandidates();
-                    this->processNakedTriples(run);  // Check Naked Triples
-                    this->processHiddenTriples(run); // Check Hidden Triples
-                    const uint8_t numCandsAfterTriples = this->countCandidates();
+                    const auto numCandsBeforeTriples = this->countCandidates();
+                    if (_useNakedTriples)
+                    {
+                        this->_logTextArea->append(QStringLiteral("\nSearch for NakedTriples"));
+                        this->processNakedTriples(run); // Check Naked Triples
+                    }
+                    else
+                    {
+                        this->_logTextArea->append(QStringLiteral("\nSkip NakedTriples"));
+                    }
+                    if (_useHiddenTriples)
+                    {
+                        this->_logTextArea->append(QStringLiteral("\nSearch for HiddenTriples"));
+                        this->processHiddenTriples(run); // Check Hidden Triples
+                    }
+                    else
+                    {
+                        this->_logTextArea->append(QStringLiteral("\nSkip HiddenTriples"));
+                    }
+                    const auto numCandsAfterTriples = this->countCandidates();
 
                     // If pair/triple techniques didn't produce Singles -> go for Row-Block-Checks and Block-Row-Checks
                     if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && !this->getFreeFields().empty())
                     {
                         if (numCandsAfterTriples < numCandsBeforeTriples)
                         {
-                            this->_logTextArea->append(QStringLiteral("\nTriple techniques didn't produce Singles.\nProceeding with LockedCandidates..."));
+                            this->_logTextArea->append(QStringLiteral("\nTriple techniques didn't produce Singles.\nProceeding with Locked Candidates..."));
                         }
                         else
                         {
-                            this->_logTextArea->append(QStringLiteral("\nNo Triples found.\nProceeding with LockedCandidates..."));
+                            this->_logTextArea->append(QStringLiteral("\nNo Triples found.\nProceeding with Locked Candidates..."));
                         }
 
-                        const uint8_t numCandsBeforeLockedCands = this->countCandidates();
-                        this->performBlockRowChecks(run); // Perfom Block-Row-Checks (Pointing)
-                        this->performRowBlockChecks(run); // Peform Row-Block-Checks (Claiming)
-                        const uint8_t numCandsAfterLockedCands = this->countCandidates();
+                        const auto numCandsBeforeLockedCands = this->countCandidates();
+                        if (this->_useBlockLineChecks)
+                        {
+                            this->_logTextArea->append(QStringLiteral("\nPerform Block-Line-Interactions"));
+                            this->performBlockRowChecks(run); // Perform Block-Row-Checks (Pointing)
+                        }
+                        else
+                        {
+                            this->_logTextArea->append(QStringLiteral("\nSkip Block-Line-Interactions"));
+                        }
+                        if (this->_useLineBlockChecks)
+                        {
+                            this->_logTextArea->append(QStringLiteral("\nPerform Line-Block-Interactions"));
+                            this->performRowBlockChecks(run); // Perform Row-Block-Checks (Claiming)
+                        }
+                        else
+                        {
+                            this->_logTextArea->append(QStringLiteral("\nSkip Line-Block-Interactions"));
+                        }
+                        const auto numCandsAfterLockedCands = this->countCandidates();
 
                         // If pair/triple/LockedCands didn't produce Singles -> go for further technique
                         if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && !this->getFreeFields().empty())
@@ -1131,9 +1194,9 @@ namespace sudoku
                                 this->_logTextArea->append(QStringLiteral("\nNo LockedCandidates found.\nNeed further techniques..."));
                             }
 
-                            const uint8_t numCandsBeforeFurtherTechnique = this->countCandidates();
+                            const auto numCandsBeforeFurtherTechnique = this->countCandidates();
                             // to do implement further techniques
-                            const uint8_t numCandsAfterFurtherTechnique = this->countCandidates();
+                            const auto numCandsAfterFurtherTechnique = this->countCandidates();
 
                             // If further technique didn't produce Singles -> go for another further technique
                             if (this->firstNakedSingle() == nullptr && this->firstHiddenSingle() == nullptr && !this->getFreeFields().empty())
@@ -1169,7 +1232,7 @@ namespace sudoku
             }
             else
             {
-                if (!this->getFreeFields().empty())
+                if (!this->getFreeFields().empty() && this->firstNakedSingle() != nullptr && _useNakedSingles)
                 {
                     this->_logTextArea->append(QStringLiteral("\nNo more HiddenSingles, but new NakedSingles.\nProceeding with next run..."));
                 }
@@ -1204,8 +1267,8 @@ namespace sudoku
         {
             this->_logTextArea->append("SOLVING SUDOKU '" + QString::fromStdString(name) + "' FAILED!\n");
             this->_logTextArea->append(QStringLiteral("\nAbort status:"));
-            this->print();
-            this->printFields();
+            // this->print();
+            // this->printFields();
             this->_logTextArea->append("\nAbort with " + QString::number(this->getFreeFields().size()) + " free fields and " + QString::number(this->countCandidates()) + " candidates\n");
         }
 

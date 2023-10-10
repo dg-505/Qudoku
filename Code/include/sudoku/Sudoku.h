@@ -22,8 +22,17 @@ namespace sudoku
             std::vector<Step> _steps;
             QLogTextBrowser* _logTextArea;
 
+            bool _useNakedSingles;
+            bool _useHiddenSingles;
+            bool _useNakedPairs;
+            bool _useHiddenPairs;
+            bool _useNakedTriples;
+            bool _useHiddenTriples;
+            bool _useBlockLineChecks;
+            bool _useLineBlockChecks;
+
         public:
-            Sudoku(const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser& logTextArea);
+            Sudoku(const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser& logTextArea, bool nakedSinglesEnabled, bool hiddenSinglesEnabled, bool nakedPairsEnabled, bool hiddenPairsEnabled, bool nakedTriplesEnabled, bool hiddenTriplesEnabled, bool blockLineChecksEnabled, bool lineBlockChecksEnabled);
 
             Sudoku(const Sudoku&) = delete;
             Sudoku(Sudoku&&) = delete;
@@ -46,7 +55,7 @@ namespace sudoku
             auto getBlockByFieldID(uint8_t fID) -> std::array<Field*, global::order>;
 
             auto getFreeFields() -> std::vector<Field*>;
-            auto countCandidates() -> uint8_t;
+            auto countCandidates() -> uint16_t;
             void filldAndEliminate(Field* field);
 
             auto firstNakedSingle() -> Field*;
