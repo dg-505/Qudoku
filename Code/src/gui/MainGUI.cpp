@@ -11,6 +11,7 @@
 #include "gui/MainGUI.h"
 #include "gui/SolvedGUI.h"
 #include "gui/StepByStepGUI.h"
+#include "gui/TechniquesDialog.h"
 
 namespace sudoku
 {
@@ -137,6 +138,7 @@ namespace sudoku
         this->techniquesButton->setStyleSheet(buttonStyleSheet);
         this->techniquesButton->setText(QStringLiteral("Select\n&techniques"));
         this->techniquesButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_T));
+        MainGUI::connect(techniquesButton, &QPushButton::clicked, this, &MainGUI::techniquesButtonClicked, Qt::AutoConnection);
 
         this->loadButton->setObjectName("loadButton");
         constexpr QRect loadButtonGeom(467, 0, 70, 25);
@@ -236,6 +238,22 @@ namespace sudoku
     }
 
     // Button functions
+
+    void MainGUI::techniquesButtonClicked()
+    {
+        auto* techniquesDialog = new TechniquesDialog(this->nakedSinglesEnabled, this->hiddenSinglesEnabled, this->nakedPairsEnabled, this->hiddenPairsEnabled, this->nakedTriplesEnabled, this->hiddenTriplesEnabled, this->blockLineChecksEnabled, this->lineBlockChecksEnabled);
+        techniquesDialog->exec();
+        this->logTextBrowser->clear();
+        this->logTextBrowser->append(QStringLiteral("Selected solving techniques:"));
+        this->logTextBrowser->append(QStringLiteral("Naked Singles: ") + (this->nakedSinglesEnabled ? QStringLiteral("          true") : QStringLiteral("          false")));
+        this->logTextBrowser->append(QStringLiteral("Hidden Singles: ") + (this->hiddenSinglesEnabled ? QStringLiteral("         true") : QStringLiteral("         false")));
+        this->logTextBrowser->append(QStringLiteral("Naked Pairs: ") + (this->nakedPairsEnabled ? QStringLiteral("            true") : QStringLiteral("            false")));
+        this->logTextBrowser->append(QStringLiteral("Hidden Pairs: ") + (this->hiddenPairsEnabled ? QStringLiteral("           true") : QStringLiteral("           false")));
+        this->logTextBrowser->append(QStringLiteral("Naked Triples: ") + (this->nakedTriplesEnabled ? QStringLiteral("          true") : QStringLiteral("          false")));
+        this->logTextBrowser->append(QStringLiteral("Hidden Triples: ") + (this->hiddenTriplesEnabled ? QStringLiteral("         true") : QStringLiteral("         false")));
+        this->logTextBrowser->append(QStringLiteral("Block-Line-Interactions: ") + (this->blockLineChecksEnabled ? QStringLiteral("true") : QStringLiteral("false")));
+        this->logTextBrowser->append(QStringLiteral("Line-Block-Interactions: ") + (this->lineBlockChecksEnabled ? QStringLiteral("true") : QStringLiteral("false")));
+    }
 
     auto MainGUI::loadButtonClicked() -> std::string
     {

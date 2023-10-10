@@ -41,9 +41,19 @@ namespace sudoku
             QPushButton* quitButton;
             std::string filename;
 
+            bool nakedSinglesEnabled = true;
+            bool hiddenSinglesEnabled = true;
+            bool nakedPairsEnabled = true;
+            bool hiddenPairsEnabled = true;
+            bool nakedTriplesEnabled = true;
+            bool hiddenTriplesEnabled = true;
+            bool blockLineChecksEnabled = true;
+            bool lineBlockChecksEnabled = true;
+
             [[nodiscard]] auto init(std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* initVals) const -> Sudoku;
             void clear();
 
+            void techniquesButtonClicked();
             auto loadButtonClicked() -> std::string;
             void saveButtonClicked() const;
             void candidatesButtonClicked() const;
