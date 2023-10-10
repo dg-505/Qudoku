@@ -7,10 +7,7 @@
 #include <QtWidgets/QMessageBox>
 
 #include "globals.h"
-#include "gui/CandidatesGUI.h"
 #include "gui/MainGUI.h"
-#include "gui/SolvedGUI.h"
-#include "gui/StepByStepGUI.h"
 #include "gui/TechniquesDialog.h"
 
 namespace sudoku
@@ -22,7 +19,9 @@ namespace sudoku
           logTextBrowser(new QLogTextBrowser(logScrollArea)),
           titleLabel(new QLabel(this, Qt::WindowFlags())),
           gridWidget(new QWidget(this)),
-          fields(new std::array<QInputField*, static_cast<uint8_t>(global::order* global::order)>),
+          rLabels(new std::array<std::unique_ptr<QLabel>, global::order>),
+          cLabels(new std::array<std::unique_ptr<QLabel>, global::order>),
+          fields(new std::array<std::unique_ptr<QInputField>, static_cast<uint8_t>(global::order* global::order)>),
           techniquesButton(new QPushButton(this)),
           loadButton(new QPushButton(this)),
           saveButton(new QPushButton(this)),
@@ -85,35 +84,37 @@ namespace sudoku
         uint16_t posY = offset;
         for (uint8_t rID = 1; rID <= global::order; rID++)
         {
-            auto* rLabel = new QLabel(gridWidget);
-            rLabel->setObjectName("rLabel" + QString::number(rID));
+            this->rLabel = std::make_unique<QLabel>(gridWidget);
+            this->rLabel->setObjectName("rLabel" + QString::number(rID));
             const QRect rLabelGeom(posY, 1, global::fieldDim, 25);
-            rLabel->setGeometry(rLabelGeom);
-            rLabel->setStyleSheet(QStringLiteral("color: rgb(100, 100, 100); background-color: rgba(239, 239, 239, 1.0); border: 1px solid rgb(171, 171, 171)"));
-            rLabel->setFont(rcLabelFont);
-            rLabel->setAlignment(Qt::AlignCenter);
-            rLabel->setText(QString::number(rID));
+            this->rLabel->setGeometry(rLabelGeom);
+            this->rLabel->setStyleSheet(QStringLiteral("color: rgb(100, 100, 100); background-color: rgba(239, 239, 239, 1.0); border: 1px solid rgb(171, 171, 171)"));
+            this->rLabel->setFont(rcLabelFont);
+            this->rLabel->setAlignment(Qt::AlignCenter);
+            this->rLabel->setText(QString::number(rID));
+            this->rLabels->at(rID - 1) = std::move(this->rLabel);
 
-            auto* cLabel = new QLabel(gridWidget);
-            cLabel->setObjectName("rLabel" + QString::number(rID));
+            this->cLabel = std::make_unique<QLabel>(gridWidget);
+            this->cLabel->setObjectName("rLabel" + QString::number(rID));
             const QRect cLabelGeom(1, posY, 25, global::fieldDim);
-            cLabel->setGeometry(cLabelGeom);
-            cLabel->setStyleSheet(QStringLiteral("color: rgb(100, 100, 100); background-color: rgba(239, 239, 239, 1.0); border: 1px solid rgb(171, 171, 171)"));
-            cLabel->setFont(rcLabelFont);
-            cLabel->setAlignment(Qt::AlignCenter);
-            cLabel->setText(QString::number(rID));
+            this->cLabel->setGeometry(cLabelGeom);
+            this->cLabel->setStyleSheet(QStringLiteral("color: rgb(100, 100, 100); background-color: rgba(239, 239, 239, 1.0); border: 1px solid rgb(171, 171, 171)"));
+            this->cLabel->setFont(rcLabelFont);
+            this->cLabel->setAlignment(Qt::AlignCenter);
+            this->cLabel->setText(QString::number(rID));
+            this->cLabels->at(rID - 1) = std::move(this->cLabel);
 
             uint16_t posX = offset;
             for (uint8_t cID = 1; cID <= global::order; cID++)
             {
-                this->field = new QInputField(gridWidget);
+                this->field = std::make_unique<QInputField>(gridWidget);
                 this->field->setObjectName("field" + QString::number(fID));
                 this->field->setGeometry(posX, posY, global::fieldDim, global::fieldDim);
                 this->field->setStyleSheet(QStringLiteral("QLineEdit {color: black; background: white} QLineEdit:focus{color: black; background: white; border: 1px solid black}"));
                 this->field->setFont(fieldsFont);
                 this->field->setMaxLength(1);
                 this->field->setAlignment(Qt::AlignCenter);
-                this->fields->at(fID - 1) = field;
+                this->fields->at(fID - 1) = std::move(this->field);
                 fID++;
                 posX += global::fieldDim;
                 if (cID % 3 == 0)
@@ -216,12 +217,12 @@ namespace sudoku
         this->move(screen()->geometry().center() - frameGeometry().center());
 
         MainGUI::setTabOrder(loadButton, saveButton);
-        MainGUI::setTabOrder(saveButton, fields->at(0));
+        MainGUI::setTabOrder(saveButton, fields->at(0).get());
         for (uint8_t fID = 1; fID < global::order * global::order; fID++)
         {
-            MainGUI::setTabOrder(fields->at(fID - 1), fields->at(fID));
+            MainGUI::setTabOrder(fields->at(fID - 1).get(), fields->at(fID).get());
         }
-        MainGUI::setTabOrder(fields->at((global::order * global::order) - 1), candidatesButton);
+        MainGUI::setTabOrder(fields->at((global::order * global::order) - 1).get(), candidatesButton);
         MainGUI::setTabOrder(candidatesButton, stepByStepButton);
         MainGUI::setTabOrder(stepByStepButton, solveButton);
         MainGUI::setTabOrder(solveButton, clearButton);
@@ -241,7 +242,7 @@ namespace sudoku
 
     void MainGUI::techniquesButtonClicked()
     {
-        auto* techniquesDialog = new TechniquesDialog(this->nakedSinglesEnabled, this->hiddenSinglesEnabled, this->nakedPairsEnabled, this->hiddenPairsEnabled, this->nakedTriplesEnabled, this->hiddenTriplesEnabled, this->blockLineChecksEnabled, this->lineBlockChecksEnabled);
+        std::unique_ptr<TechniquesDialog> techniquesDialog = std::make_unique<TechniquesDialog>(this->nakedSinglesEnabled, this->hiddenSinglesEnabled, this->nakedPairsEnabled, this->hiddenPairsEnabled, this->nakedTriplesEnabled, this->hiddenTriplesEnabled, this->blockLineChecksEnabled, this->lineBlockChecksEnabled);
         techniquesDialog->exec();
         this->logTextBrowser->clear();
         this->logTextBrowser->append(QStringLiteral("Selected solving techniques:"));
@@ -279,7 +280,7 @@ namespace sudoku
         if (sudokuString.isEmpty())
         {
             QMessageBox::critical(nullptr, QStringLiteral("Empty file"), QStringLiteral("Error reading \"%1\":\nEmpty file.").arg(filepath));
-            for (auto* field : *this->fields)
+            for (std::unique_ptr<QInputField>& field : *this->fields)
             {
                 field->clear();
             }
@@ -289,7 +290,7 @@ namespace sudoku
         if (sudokuString.length() != static_cast<uint8_t>(global::order * global::order))
         {
             QMessageBox::critical(nullptr, QStringLiteral("Invalid number of entries"), QStringLiteral("Error reading \"%1\":\nInvalid number of entries (%2).\n\nNumber of entries must be 81.").arg(filepath).arg(sudokuString.length()));
-            for (auto* field : *this->fields)
+            for (std::unique_ptr<QInputField>& field : *this->fields)
             {
                 field->clear();
             }
@@ -305,7 +306,7 @@ namespace sudoku
                 if (value == 0)
                 {
                     QMessageBox::critical(nullptr, QStringLiteral("Invalid value 0"), QStringLiteral("Error reading \"%1\":\nInvalid value \"0\" at entry %2.\n\nValues must be between 1 and 9.").arg(filepath).arg(fID + 1));
-                    for (auto* field : *this->fields)
+                    for (std::unique_ptr<QInputField>& field : *this->fields)
                     {
                         field->clear();
                     }
@@ -320,7 +321,7 @@ namespace sudoku
             else
             {
                 QMessageBox::critical(nullptr, QStringLiteral("Invalid character"), QStringLiteral("Error reading \"%1\":\nInvalid character \"%2\" at entry %3.\n\nValid characters are numbers from 1 to 9 or dot ('.').").arg(filepath).arg(inputChar).arg(fID + 1));
-                for (auto* field : *this->fields)
+                for (std::unique_ptr<QInputField>& field : *this->fields)
                 {
                     field->clear();
                 }
@@ -387,17 +388,17 @@ namespace sudoku
         this->logTextBrowser->append("Saved to \"" + filepath + "\"");
     }
 
-    void MainGUI::candidatesButtonClicked() const
+    void MainGUI::candidatesButtonClicked()
     {
         std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
         auto sudoku = init(&initVals);
-        auto* candidatesGUI = new CandidatesGUI(&sudoku, initVals, this->centralWidget());
+        this->candidatesGUI = std::make_unique<CandidatesGUI>(&sudoku, initVals, this->centralWidget());
         const QPoint candidatesGUIpos(this->pos().x(), this->pos().y() + 50);
         candidatesGUI->move(candidatesGUIpos);
         candidatesGUI->show();
     }
 
-    void MainGUI::stepByStepButtonButtonClicked() const
+    void MainGUI::stepByStepButtonButtonClicked()
     {
         this->logTextBrowser->clear();
         this->logTextBrowser->append(QStringLiteral("Solving in progress. Please wait..."));
@@ -405,12 +406,12 @@ namespace sudoku
         std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
         auto sudoku = init(&initVals);
         sudoku.solve(filename);
-        auto* stepByStepGUI = new StepByStepGUI(&sudoku, initVals, this->centralWidget());
+        this->stepByStepGUI = std::make_unique<StepByStepGUI>(&sudoku, initVals, this->centralWidget());
         stepByStepGUI->move(QPoint(this->pos().x(), this->pos().y()));
         stepByStepGUI->show();
     }
 
-    void MainGUI::solveButtonClicked() const
+    void MainGUI::solveButtonClicked()
     {
         this->logTextBrowser->clear();
         this->logTextBrowser->append(QStringLiteral("Solving in progress. Please wait..."));
@@ -418,7 +419,7 @@ namespace sudoku
         std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
         auto sudoku = init(&initVals);
         sudoku.solve(filename);
-        auto* solvedGUI = new SolvedGUI(&sudoku, initVals, this->centralWidget());
+        this->solvedGUI = std::make_unique<SolvedGUI>(&sudoku, initVals, this->centralWidget());
         const QPoint solvedGUIpos(this->pos().x(), this->pos().y() + 50);
         solvedGUI->move(solvedGUIpos);
         solvedGUI->show();
@@ -438,7 +439,7 @@ namespace sudoku
 
     void MainGUI::clear()
     {
-        for (auto* field : *this->fields)
+        for (std::unique_ptr<QInputField>& field : *this->fields)
         {
             field->clear();
         }

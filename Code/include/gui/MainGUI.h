@@ -6,8 +6,11 @@
 #include <QtWidgets/QScrollArea>
 
 #include "globals.h"
+#include "gui/CandidatesGUI.h"
 #include "gui/QInputField.h"
 #include "gui/QLogTextBrowser.h"
+#include "gui/SolvedGUI.h"
+#include "gui/StepByStepGUI.h"
 #include "sudoku/Sudoku.h"
 
 namespace sudoku
@@ -28,8 +31,12 @@ namespace sudoku
             QLogTextBrowser* logTextBrowser;
             QLabel* titleLabel;
             QWidget* gridWidget;
-            QInputField* field;
-            std::array<QInputField*, static_cast<uint8_t>(global::order* global::order)>* fields{};
+            std::array<std::unique_ptr<QLabel>, global::order>* rLabels{};
+            std::array<std::unique_ptr<QLabel>, global::order>* cLabels{};
+            std::unique_ptr<QLabel> rLabel;
+            std::unique_ptr<QLabel> cLabel;
+            std::unique_ptr<QInputField> field;
+            std::array<std::unique_ptr<QInputField>, static_cast<uint8_t>(global::order* global::order)>* fields{};
             QPushButton* techniquesButton;
             QPushButton* loadButton;
             // QPushButton* validateButton;
@@ -40,6 +47,10 @@ namespace sudoku
             QPushButton* clearButton;
             QPushButton* quitButton;
             std::string filename;
+
+            std::unique_ptr<CandidatesGUI> candidatesGUI;
+            std::unique_ptr<StepByStepGUI> stepByStepGUI;
+            std::unique_ptr<SolvedGUI> solvedGUI;
 
             bool nakedSinglesEnabled = true;
             bool hiddenSinglesEnabled = true;
@@ -56,9 +67,9 @@ namespace sudoku
             void techniquesButtonClicked();
             auto loadButtonClicked() -> std::string;
             void saveButtonClicked() const;
-            void candidatesButtonClicked() const;
-            void stepByStepButtonButtonClicked() const;
-            void solveButtonClicked() const;
+            void candidatesButtonClicked();
+            void stepByStepButtonButtonClicked();
+            void solveButtonClicked();
             void clearButtonClicked();
 
             void closeEvent(QCloseEvent* /*event*/) override;
