@@ -1,5 +1,5 @@
-#include "gui/SolvedGUI.h"
 #include "globals.h"
+#include "gui/SolvedGUI.h"
 
 namespace sudoku
 {

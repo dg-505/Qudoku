@@ -1,6 +1,6 @@
-#include "gui/StepByStepGUI.h"
 #include "globals.h"
 #include "gui/SolvedGUI.h"
+#include "gui/StepByStepGUI.h"
 
 namespace sudoku
 {
