@@ -11,38 +11,46 @@ namespace sudoku
         return _fields;
     }
 
+/*
     void HiddenSubset::setFields(const std::vector<Field*>& field)
     {
         _fields = field;
     }
+*/
 
     auto HiddenSubset::getCandidates() const -> std::vector<uint8_t>
     {
         return _candidates;
     }
 
+/*
     void HiddenSubset::setCandidates(const std::vector<uint8_t>& cand)
     {
         _candidates = cand;
     }
+*/
 
     auto HiddenSubset::getType() const -> std::string
     {
         return _type;
     }
 
+/*
     void HiddenSubset::setType(const std::string& type)
     {
         _type = type;
     }
+*/
 
     auto HiddenSubset::getUnitNumber() const -> uint8_t
     {
         return _unitNumber;
     }
 
+/*
     void HiddenSubset::setUnitNumber(const uint8_t num)
     {
         _unitNumber = num;
     }
+*/
 } // namespace sudoku

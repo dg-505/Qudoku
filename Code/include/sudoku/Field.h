@@ -17,23 +17,16 @@ namespace sudoku
             uint8_t _val = 0;                 // Wert des Feldes
 
         public:
-            // Default constructor
             Field();
-
             // Konstruktor: besetzt ein Feld f mit den zugehoerigen IDs und dem Wert val
             Field(uint8_t fID, uint8_t val);
-
-            // copy constructor
             Field(const Field& other) = default;
+            Field(Field&&) = delete;
+            auto operator=(const Field& other) -> Field&;
+            auto operator=(Field&&) -> Field& = default;
 
             // Destructor
             ~Field() = default;
-
-            // copy assignment operator
-            auto operator=(const Field& other) -> Field&;
-
-            // move constructor
-            Field(Field&&) = delete;
 
             // Row-ID, Col-ID und Block-ID aus Feld-ID bestimmen
             [[nodiscard]] static auto getRIDfromFID(uint8_t fID) -> uint8_t;

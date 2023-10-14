@@ -2,8 +2,8 @@
 
 namespace sudoku
 {
-    Step::Step(const std::array<std::array<Field, global::order>, global::order>& grid, const std::vector<Field*>& fields, const std::vector<uint8_t>& candidates, const uint8_t foundInRunNo, const std::string& foundByType)
-        : _grid(grid), _fields(fields), _candidates(candidates), _foundInRunNo(foundInRunNo), _foundByType(foundByType) {}
+    Step::Step(const std::array<std::array<Field, global::order>, global::order>& grid, const std::vector<Field*>& fields, const std::vector<uint8_t>& candidates, const uint8_t foundInRunNo, std::string foundByType)
+        : _grid(grid), _fields(fields), _candidates(candidates), _foundInRunNo(foundInRunNo), _foundByType(std::move(foundByType)) {}
 
     auto Step::getGrid() -> std::array<std::array<Field, global::order>, global::order>*
     {

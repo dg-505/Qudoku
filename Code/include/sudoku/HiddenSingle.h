@@ -18,12 +18,12 @@ namespace sudoku
             HiddenSingle(Field* field, uint8_t cand, const std::string& type);
 
             auto getField() -> Field*;
-            void setField(Field* field);
+            // void setField(Field* field);
             [[nodiscard]] auto getCandidate() const -> const uint8_t*;
-            void setCandidate(uint8_t cand);
+            // void setCandidate(uint8_t cand);
             [[nodiscard]] auto getType() const -> const std::string*;
-            void setType(const std::string& type);
+            // void setType(const std::string& type);
             auto getUnitNumber() -> uint8_t*;
-            void setUnitNumber(uint8_t num);
+            // void setUnitNumber(uint8_t num);
     };
 } // namespace sudoku

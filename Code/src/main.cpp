@@ -7,11 +7,10 @@ auto main(int argc, char* argv[]) -> int
 {
     Q_INIT_RESOURCE(resources);
 
-    const QApplication app(argc, argv);
-
-    sudoku::MainGUI mainGUI(nullptr);
-
+    std::string version;
+    version = "1.2.1";
+    const QApplication app(argc, argv, QT_VERSION);
+    sudoku::MainGUI mainGUI(version, nullptr);
     mainGUI.show();
-
     return QApplication::exec();
 }

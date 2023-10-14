@@ -23,7 +23,7 @@ namespace sudoku
             MainGUI(MainGUI&&) = delete;
             auto operator=(const MainGUI&) -> MainGUI& = delete;
             auto operator=(MainGUI&&) -> MainGUI& = delete;
-            explicit MainGUI(QWidget* parent);
+            MainGUI(const std::string& version, QWidget* parent);
             ~MainGUI() override = default;
 
         private:
@@ -31,12 +31,7 @@ namespace sudoku
             QLogTextBrowser* logTextBrowser;
             QLabel* titleLabel;
             QWidget* gridWidget;
-            std::array<std::unique_ptr<QLabel>, global::order>* rLabels{};
-            std::array<std::unique_ptr<QLabel>, global::order>* cLabels{};
-            std::unique_ptr<QLabel> rLabel;
-            std::unique_ptr<QLabel> cLabel;
-            std::unique_ptr<QInputField> field;
-            std::array<std::unique_ptr<QInputField>, static_cast<uint8_t>(global::order* global::order)>* fields{};
+            std::array<QInputField*, static_cast<uint8_t>(global::order* global::order)>* fields{};
             QPushButton* techniquesButton;
             QPushButton* loadButton;
             // QPushButton* validateButton;
@@ -47,10 +42,6 @@ namespace sudoku
             QPushButton* clearButton;
             QPushButton* quitButton;
             std::string filename;
-
-            std::unique_ptr<CandidatesGUI> candidatesGUI;
-            std::unique_ptr<StepByStepGUI> stepByStepGUI;
-            std::unique_ptr<SolvedGUI> solvedGUI;
 
             bool nakedSinglesEnabled = true;
             bool hiddenSinglesEnabled = true;

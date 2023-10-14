@@ -93,15 +93,15 @@ namespace sudoku
     {
         QStringList candidatesList;
         candidatesList.reserve(global::order);
+#pragma unroll static_cast<short>(global::order)
         for (const uint8_t cand : _candidates)
         {
-            candidatesList.append(QString::number(cand));
+            candidatesList.append(QString::number(cand, global::base));
         }
-        logTextArea.append(QStringLiteral("Field-ID %1: (%2,%3) : %4 , %5")
-                               .arg(_fID)
-                               .arg(_rID)
-                               .arg(_cID)
-                               .arg(_val)
-                               .arg("[" + candidatesList.join(QStringLiteral(", ")) + "]"));
+        logTextArea.append(QStringLiteral("Field-ID ") + QString::number(_fID, global::base) +
+                           QStringLiteral(": (") + QString::number(_rID, global::base) +
+                           QStringLiteral(",") + QString::number(_cID, global::base) +
+                           QStringLiteral(") : ") + QString::number(_val, global::base) +
+                           QStringLiteral(" , [") + candidatesList.join(QStringLiteral(", ")) + QStringLiteral("]"));
     }
 } // namespace sudoku

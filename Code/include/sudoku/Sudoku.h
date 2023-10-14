@@ -43,10 +43,10 @@ namespace sudoku
 
             auto getGrid() -> std::array<std::array<Field, global::order>, global::order>*;
             auto getSteps() -> std::vector<Step>*;
-            auto getLogTextArea() -> QLogTextBrowser*;
+            // auto getLogTextArea() -> QLogTextBrowser*;
 
-            auto getFieldByCoord(uint8_t rID, uint8_t cID) -> Field*;
-            auto getFieldByFieldID(uint8_t fID) -> Field*;
+            // auto getFieldByCoord(uint8_t rID, uint8_t cID) -> Field*;
+            // auto getFieldByFieldID(uint8_t fID) -> Field*;
             auto getRowByRowID(uint8_t rID) -> std::array<Field*, global::order>;
             auto getRowByFieldID(uint8_t fID) -> std::array<Field*, global::order>;
             auto getColByColID(uint8_t cID) -> std::array<Field*, global::order>;

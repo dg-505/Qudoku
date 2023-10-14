@@ -19,11 +19,8 @@ namespace sudoku
         else
         {
             event->ignore();
-            QMessageBox messageBox;
-            messageBox.setWindowTitle(QStringLiteral("Illegal input"));
-            messageBox.setText(QString(QStringLiteral("<html><center>Input '%1' not allowed!<br>Allowed inputs are<br>numbers from 1 to 9.</center></html>")).arg(event->text()));
-            messageBox.setIcon(QMessageBox::Critical);
-            messageBox.addButton(QMessageBox::Ok);
+            QMessageBox messageBox(QMessageBox::Critical, QStringLiteral("Illegal input"), QStringLiteral("<html><center>Input '") + event->text() + QStringLiteral("' not allowed!<br>Allowed inputs are<br>numbers from 1 to 9.</center></html>"), QMessageBox::Ok, this, Qt::WindowFlags());
+            messageBox.setStyleSheet(QStringLiteral("color: black; background: rgb(239, 239, 239)"));
             messageBox.adjustSize();
             QRect const fieldRect = QRect(mapToGlobal(rect().topLeft()), mapToGlobal(rect().bottomRight()));
             messageBox.setGeometry(fieldRect.x() + fieldRect.width() / 2 - messageBox.width() / 2,
@@ -33,9 +30,7 @@ namespace sudoku
             messageBox.exec();
         }
     }
-    void QInputField::contextMenuEvent(QContextMenuEvent* event)
-    {
-        Q_UNUSED(event); // Unused parameter to avoid a compiler warning
-        // Do nothing to disable the context menu
-    }
+
+    void QInputField::contextMenuEvent(QContextMenuEvent* /*event*/)
+    {}
 } // namespace sudoku

@@ -9,13 +9,11 @@ namespace sudoku
     {
             Q_OBJECT
         public:
-            explicit QLogTextBrowser(QWidget* parent = nullptr);
-
+            explicit QLogTextBrowser(QWidget* parent);
             QLogTextBrowser(const QLogTextBrowser&) = delete;
             QLogTextBrowser(QLogTextBrowser&&) = delete;
             auto operator=(const QLogTextBrowser&) -> QLogTextBrowser& = delete;
             auto operator=(QLogTextBrowser&&) -> QLogTextBrowser& = delete;
-
             ~QLogTextBrowser() override = default;
 
         protected:

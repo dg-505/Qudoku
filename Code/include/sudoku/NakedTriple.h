@@ -22,20 +22,20 @@ namespace sudoku
             NakedTriple(Field* field1, Field* field2, Field* field3, uint8_t cand1, uint8_t cand2, uint8_t cand3, const std::string& type);
 
             auto getField1() -> Field*;
-            void setField1(Field* field1);
+            // void setField1(Field* field1);
             auto getField2() -> Field*;
-            void setField2(Field* field2);
+            // void setField2(Field* field2);
             auto getField3() -> Field*;
-            void setField3(Field* field3);
+            // void setField3(Field* field3);
             [[nodiscard]] auto getCandidate1() const -> uint8_t;
-            void setCandidate1(uint8_t cand1);
+            // void setCandidate1(uint8_t cand1);
             [[nodiscard]] auto getCandidate2() const -> uint8_t;
-            void setCandidate2(uint8_t cand2);
+            // void setCandidate2(uint8_t cand2);
             [[nodiscard]] auto getCandidate3() const -> uint8_t;
-            void setCandidate3(uint8_t cand3);
+            // void setCandidate3(uint8_t cand3);
             auto getType() -> std::string;
-            void setType(const std::string& type);
+            // void setType(const std::string& type);
             [[nodiscard]] auto getUnitNumber() const -> uint8_t;
-            void setUnitNumber(uint8_t num);
+            // void setUnitNumber(uint8_t num);
     };
 } // namespace sudoku

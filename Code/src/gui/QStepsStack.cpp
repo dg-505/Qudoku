@@ -1,5 +1,4 @@
 #include "gui/QStepsStack.h"
-#include <QtGui/QWheelEvent>
 
 namespace sudoku
 {

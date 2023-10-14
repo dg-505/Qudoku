@@ -17,7 +17,7 @@ namespace sudoku
             std::string _foundByType;
 
         public:
-            Step(const std::array<std::array<Field, global::order>, global::order>& grid, const std::vector<Field*>& fields, const std::vector<uint8_t>& candidates, uint8_t foundInRunNo, const std::string& foundByType);
+            Step(const std::array<std::array<Field, global::order>, global::order>& grid, const std::vector<Field*>& fields, const std::vector<uint8_t>& candidates, uint8_t foundInRunNo, std::string  foundByType);
 
                 Step(const Step&) = default;
                 Step(Step&&) = delete;

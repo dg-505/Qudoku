@@ -15,7 +15,7 @@ namespace sudoku
             TechniquesDialog(TechniquesDialog&&) = delete;
             auto operator=(const TechniquesDialog&) -> TechniquesDialog& = delete;
             auto operator=(TechniquesDialog&&) -> TechniquesDialog& = delete;
-            TechniquesDialog(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled);
+            TechniquesDialog(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled, QWidget* parent);
             ~TechniquesDialog() override = default;
 
         private:

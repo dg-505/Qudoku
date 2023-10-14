@@ -11,58 +11,70 @@ namespace sudoku
         return _field1;
     }
 
+/*
     void NakedPair::setField1(Field* field1)
     {
         _field1 = field1;
     }
+*/
 
     auto NakedPair::getField2() -> Field*
     {
         return _field2;
     }
 
+/*
     void NakedPair::setField2(Field* field2)
     {
         _field2 = field2;
     }
+*/
 
     auto NakedPair::getCandidate1() const -> uint8_t
     {
         return _candidate1;
     }
 
+/*
     void NakedPair::setCandidate1(const uint8_t cand1)
     {
         _candidate1 = cand1;
     }
+*/
 
     auto NakedPair::getCandidate2() const -> uint8_t
     {
         return _candidate2;
     }
 
+/*
     void NakedPair::setCandidate2(const uint8_t cand2)
     {
         _candidate2 = cand2;
     }
+*/
 
     auto NakedPair::getType() -> std::string
     {
         return _type;
     }
 
+/*
     void NakedPair::setType(const std::string& type)
     {
         _type = type;
     }
+*/
 
     auto NakedPair::getUnitNumber() const -> uint8_t
     {
         return _unitNumber;
     }
 
+/*
     void NakedPair::setUnitNumber(const uint8_t num)
     {
         _unitNumber = num;
     }
+*/
 } // namespace sudoku

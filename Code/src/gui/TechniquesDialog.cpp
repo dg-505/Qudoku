@@ -2,23 +2,24 @@
 
 namespace sudoku
 {
-    TechniquesDialog::TechniquesDialog(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled)
-    : nakedSinglesCheckBox(new QCheckBox("Use Naked Singles", this)),
-      hiddenSinglesCheckBox(new QCheckBox("Use Hidden Singles", this)),
-      hLine0(new QFrame(this)),
-      nakedPairsCheckBox(new QCheckBox("Use Naked Pairs", this)),
-      hiddenPairsCheckBox(new QCheckBox("Use Hidden Pairs", this)),
-      hLine1(new QFrame(this)),
-      nakedTriplesCheckBox(new QCheckBox("Use Naked Triples", this)),
-      hiddenTriplesCheckBox(new QCheckBox("Use Hidden Triples", this)),
-      hLine2(new QFrame(this)),
-      blockLineChecksCheckBox(new QCheckBox("Use Block-Line-Interactions", this)),
-      lineBlockChecksCheckBox(new QCheckBox("Use Line-Block-Interactions", this)),
-      hLine3(new QFrame(this)),
-      acceptButton(new QPushButton("Accept", this)),
-      cancelButton(new QPushButton("Cancel", this))
+    TechniquesDialog::TechniquesDialog(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled, QWidget* parent)
+        : QDialog(parent, Qt::WindowFlags()),
+          nakedSinglesCheckBox(new QCheckBox(QStringLiteral("Use Naked Singles"), this)),
+          hiddenSinglesCheckBox(new QCheckBox(QStringLiteral("Use Hidden Singles"), this)),
+          hLine0(new QFrame(this, Qt::WindowFlags())),
+          nakedPairsCheckBox(new QCheckBox(QStringLiteral("Use Naked Pairs"), this)),
+          hiddenPairsCheckBox(new QCheckBox(QStringLiteral("Use Hidden Pairs"), this)),
+          hLine1(new QFrame(this, Qt::WindowFlags())),
+          nakedTriplesCheckBox(new QCheckBox(QStringLiteral("Use Naked Triples"), this)),
+          hiddenTriplesCheckBox(new QCheckBox(QStringLiteral("Use Hidden Triples"), this)),
+          hLine2(new QFrame(this, Qt::WindowFlags())),
+          blockLineChecksCheckBox(new QCheckBox(QStringLiteral("Use Block-Line-Interactions"), this)),
+          lineBlockChecksCheckBox(new QCheckBox(QStringLiteral("Use Line-Block-Interactions"), this)),
+          hLine3(new QFrame(this, Qt::WindowFlags())),
+          acceptButton(new QPushButton(QStringLiteral("Accept"), this)),
+          cancelButton(new QPushButton(QStringLiteral("Cancel"), this))
     {
-        this->setWindowTitle("Select solving techniques");
+        this->setWindowTitle(QStringLiteral("Select solving techniques"));
         this->setObjectName("techniquesDialog");
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
         this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
@@ -123,14 +124,14 @@ namespace sudoku
         this->acceptButton->setFont(buttonFont);
         this->acceptButton->setStyleSheet(buttonStyleSheet);
         QObject::connect(this->acceptButton, &QPushButton::clicked, this, [this, &nakedSinglesEnabled, &hiddenSinglesEnabled, &nakedPairsEnabled, &hiddenPairsEnabled, &nakedTriplesEnabled, &hiddenTriplesEnabled, &blockLineChecksEnabled, &lineBlockChecksEnabled]()
-                         { this->acceptChanges(nakedSinglesEnabled, hiddenSinglesEnabled, nakedPairsEnabled, hiddenPairsEnabled, nakedTriplesEnabled, hiddenTriplesEnabled, blockLineChecksEnabled, lineBlockChecksEnabled); });
+                         { this->acceptChanges(nakedSinglesEnabled, hiddenSinglesEnabled, nakedPairsEnabled, hiddenPairsEnabled, nakedTriplesEnabled, hiddenTriplesEnabled, blockLineChecksEnabled, lineBlockChecksEnabled); }, Qt::AutoConnection);
 
         this->cancelButton->setObjectName("cancelButton");
         constexpr QRect cancelButtonGeom(166, 294, 144, 30);
         this->cancelButton->setGeometry(cancelButtonGeom);
         this->cancelButton->setFont(buttonFont);
         this->cancelButton->setStyleSheet(buttonStyleSheet);
-        QObject::connect(this->cancelButton, &QPushButton::clicked, this, &TechniquesDialog::reject);
+        QObject::connect(this->cancelButton, &QPushButton::clicked, this, &TechniquesDialog::reject, Qt::AutoConnection);
     }
 
     void TechniquesDialog::acceptChanges(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled)

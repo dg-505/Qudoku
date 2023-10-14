@@ -9,13 +9,11 @@ namespace sudoku
     {
             Q_OBJECT
         public:
-            explicit QStepsStack(QWidget* parent = nullptr);
-
+            explicit QStepsStack(QWidget* parent);
             QStepsStack(const QStepsStack&) = delete;
             QStepsStack(QStepsStack&&) = delete;
             auto operator=(const QStepsStack&) -> QStepsStack& = delete;
             auto operator=(QStepsStack&&) -> QStepsStack& = delete;
-
             ~QStepsStack() override = default;
 
         signals:

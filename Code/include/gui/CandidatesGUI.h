@@ -15,7 +15,7 @@ namespace sudoku
             CandidatesGUI(CandidatesGUI&&) = delete;
             auto operator=(const CandidatesGUI&) -> CandidatesGUI& = delete;
             auto operator=(CandidatesGUI&&) -> CandidatesGUI& = delete;
-            explicit CandidatesGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* /*parent*/);
+            CandidatesGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent);
             ~CandidatesGUI() override = default;
 
         private:
