@@ -239,7 +239,7 @@ namespace sudoku
 
     void MainGUI::techniquesButtonClicked()
     {
-        std::unique_ptr<TechniquesDialog> techniquesDialog = std::make_unique<TechniquesDialog>(this->nakedSinglesEnabled, this->hiddenSinglesEnabled, this->nakedPairsEnabled, this->hiddenPairsEnabled, this->nakedTriplesEnabled, this->hiddenTriplesEnabled, this->blockLineChecksEnabled, this->lineBlockChecksEnabled, this);
+        std::unique_ptr<TechniquesDialog> techniquesDialog = std::make_unique<TechniquesDialog>(this->nakedSinglesEnabled, this->hiddenSinglesEnabled, this->nakedPairsEnabled, this->hiddenPairsEnabled, this->nakedTriplesEnabled, this->hiddenTriplesEnabled, this->blockLineChecksEnabled, this->lineBlockChecksEnabled, this->backtrackingEnabled, this);
         techniquesDialog->exec();
         this->logTextBrowser->clear();
         this->logTextBrowser->append(QStringLiteral("Selected solving techniques:"));
@@ -251,6 +251,7 @@ namespace sudoku
         this->logTextBrowser->append(QStringLiteral("Hidden Triples: ") + (this->hiddenTriplesEnabled ? QStringLiteral("         true") : QStringLiteral("         false")));
         this->logTextBrowser->append(QStringLiteral("Block-Line-Interactions: ") + (this->blockLineChecksEnabled ? QStringLiteral("true") : QStringLiteral("false")));
         this->logTextBrowser->append(QStringLiteral("Line-Block-Interactions: ") + (this->lineBlockChecksEnabled ? QStringLiteral("true") : QStringLiteral("false")));
+        this->logTextBrowser->append(QStringLiteral("Try & Error: ") + (this->backtrackingEnabled ? QStringLiteral("            true") : QStringLiteral("            false")));
     }
 
     auto MainGUI::loadButtonClicked() -> std::string
@@ -476,6 +477,6 @@ namespace sudoku
                 initVals->at(i - 1) = 0;
             }
         }
-        return {initVals, *this->logTextBrowser, this->nakedSinglesEnabled, this->hiddenSinglesEnabled, this->nakedPairsEnabled, this->hiddenPairsEnabled, this->nakedTriplesEnabled, this->hiddenTriplesEnabled, this->blockLineChecksEnabled, this->lineBlockChecksEnabled};
+        return {initVals, *this->logTextBrowser, this->nakedSinglesEnabled, this->hiddenSinglesEnabled, this->nakedPairsEnabled, this->hiddenPairsEnabled, this->nakedTriplesEnabled, this->hiddenTriplesEnabled, this->blockLineChecksEnabled, this->lineBlockChecksEnabled, this->backtrackingEnabled};
     }
 } // namespace sudoku

@@ -37,7 +37,7 @@ namespace sudoku
                                 QString::fromStdString(*sudoku->getSteps()->at(numStep).getFoundByType());
 
             // Preview of step
-            if (numStep > 0)
+            if (numStep > 0 && *sudoku->getSteps()->at(numStep).getFoundByType() != "Solution after try-and-error (backtracking)")
             {
                 auto* previewWidget = std::make_unique<QWidget>(stepsStack, Qt::WindowFlags()).release();
                 this->stepsStack->addWidget(previewWidget);

@@ -15,7 +15,7 @@ namespace sudoku
             TechniquesDialog(TechniquesDialog&&) = delete;
             auto operator=(const TechniquesDialog&) -> TechniquesDialog& = delete;
             auto operator=(TechniquesDialog&&) -> TechniquesDialog& = delete;
-            TechniquesDialog(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled, QWidget* parent);
+            TechniquesDialog(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled, bool& backtrackingEnabled, QWidget* parent);
             ~TechniquesDialog() override = default;
 
         private:
@@ -31,9 +31,11 @@ namespace sudoku
             QCheckBox* blockLineChecksCheckBox;
             QCheckBox* lineBlockChecksCheckBox;
             QFrame* hLine3;
+            QCheckBox* backtrackingCheckBox;
+            QFrame* hLine4;
             QPushButton* acceptButton;
             QPushButton* cancelButton;
 
-            void acceptChanges(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled);
+            void acceptChanges(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled, bool& backtrackingEnabled);
     };
 } // namespace sudoku

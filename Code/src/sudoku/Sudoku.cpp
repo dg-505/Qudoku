@@ -5,7 +5,7 @@
 
 namespace sudoku
 {
-    Sudoku::Sudoku(const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser& logTextArea, const bool nakedSinglesEnabled, const bool hiddenSinglesEnabled, const bool nakedPairsEnabled, const bool hiddenPairsEnabled, const bool nakedTriplesEnabled, const bool hiddenTriplesEnabled, const bool blockLineChecksEnabled, const bool lineBlockChecksEnabled)
+    Sudoku::Sudoku(const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser& logTextArea, const bool nakedSinglesEnabled, const bool hiddenSinglesEnabled, const bool nakedPairsEnabled, const bool hiddenPairsEnabled, const bool nakedTriplesEnabled, const bool hiddenTriplesEnabled, const bool blockLineChecksEnabled, const bool lineBlockChecksEnabled, const bool backtrackingEnabled)
         : _logTextArea(&logTextArea),
           _useNakedSingles(nakedSinglesEnabled),
           _useHiddenSingles(hiddenSinglesEnabled),
@@ -14,7 +14,8 @@ namespace sudoku
           _useNakedTriples(nakedTriplesEnabled),
           _useHiddenTriples(hiddenTriplesEnabled),
           _useBlockLineChecks(blockLineChecksEnabled),
-          _useLineBlockChecks(lineBlockChecksEnabled)
+          _useLineBlockChecks(lineBlockChecksEnabled),
+          _useBacktracking(backtrackingEnabled)
     {
         // Fill values
         uint8_t fID = 1;
@@ -44,7 +45,7 @@ namespace sudoku
                     {
                         candidates.push_back(cand);
                     }
-                    field->setCandidates(&candidates);
+                    field->setCandidates(candidates);
                 }
             }
         }
@@ -258,8 +259,8 @@ namespace sudoku
             this->_logTextArea->append(errorMessage);
             return;
         }
-        const uint8_t val = (*field->getCandidates())[0];
-        field->setVal(&val);
+        const uint8_t val = field->getCandidates()->front();
+        field->setVal(val);
 
         // eliminate candidate "val" from units
         auto rowFields = this->getRowByFieldID(*field->getFID());
@@ -374,7 +375,7 @@ namespace sudoku
                     if (candsInUnit.at(i - 1) == 1)
                     {
                         // Pruefe Felder in Reihe i: Welches Feld enthaelt Zahl "num"?
-#pragma unroll static_cast < short>(global::order)
+#pragma unroll static_cast<short>(global::order)
                         for (uint8_t fID = 1; fID <= global::order; fID++)
                         {
                             Field* field = unit.at(fID - 1);
@@ -402,7 +403,7 @@ namespace sudoku
                 break;
             }
             const std::vector<uint8_t> cand({*firstHiddenSingle->getCandidate()}, std::allocator<uint8_t>());
-            firstHiddenSingle->getField()->setCandidates(&cand);
+            firstHiddenSingle->getField()->setCandidates(cand);
             this->filldAndEliminate(firstHiddenSingle->getField());
 
             const std::string msg =
@@ -1123,6 +1124,48 @@ namespace sudoku
         // this->printFields();
     }
 
+    // Last resort: Try and error with backtracking
+
+    auto Sudoku::unitContainsVal(const uint8_t val, const std::array<Field*, global::order>& unit) -> bool
+    {
+#pragma unroll static_cast<short>(global::order)
+        for (auto* field : unit)
+        {
+            if (*field->getVal() == val)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    auto Sudoku::backtracking() -> bool
+    {
+        auto freeFields = this->getFreeFields();
+        if (freeFields.empty()) // Abort recursion: No free fields remaining
+        {
+            return true;
+        }
+        auto* firstFreeField = freeFields.front();
+#pragma unroll static_cast<short>(global::order)
+        for (uint8_t val = 1; val <= global::order; val++)
+        {
+            if (!this->unitContainsVal(val, this->getRowByFieldID(*firstFreeField->getFID())) &&
+                !this->unitContainsVal(val, this->getColByFieldID(*firstFreeField->getFID())) &&
+                !this->unitContainsVal(val, this->getBlockByFieldID(*firstFreeField->getFID())))
+            {
+                firstFreeField->setCandidates(std::vector<uint8_t>({val}, std::allocator<uint8_t>()));
+                this->filldAndEliminate(firstFreeField);
+                if (this->backtracking())
+                {
+                    return true;
+                }
+                firstFreeField->setVal(0);
+            }
+        }
+        return false;
+    }
+
     // Main Solving routine
     void Sudoku::solve(const std::string& name)
     {
@@ -1340,8 +1383,18 @@ namespace sudoku
 
             if (numCandsBeforeRun == numCandsAfterRun)
             {
-                t_1 = std::chrono::high_resolution_clock::now();
                 this->_logTextArea->append(QStringLiteral("Abort: No more solving techniques implemented\n"));
+                if (this->_useBacktracking)
+                {
+                    this->backtracking();
+                    t_1 = std::chrono::high_resolution_clock::now();
+                    this->_logTextArea->append(QStringLiteral("Last resort: Proceed with try-and-error (backtracking)\n"));
+                    this->_steps.emplace_back(this->_grid, std::vector<Field*>{}, std::vector<uint8_t>{}, run, "Solution after try-and-error (backtracking)");
+                }
+                else
+                {
+                    t_1 = std::chrono::high_resolution_clock::now();
+                }
                 break;
             }
         }

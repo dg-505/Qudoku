@@ -2,7 +2,7 @@
 
 namespace sudoku
 {
-    TechniquesDialog::TechniquesDialog(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled, QWidget* parent)
+    TechniquesDialog::TechniquesDialog(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled, bool& backtrackingEnabled, QWidget* parent)
         : QDialog(parent, Qt::WindowFlags()),
           nakedSinglesCheckBox(new QCheckBox(QStringLiteral("Use Naked Singles"), this)),
           hiddenSinglesCheckBox(new QCheckBox(QStringLiteral("Use Hidden Singles"), this)),
@@ -16,6 +16,8 @@ namespace sudoku
           blockLineChecksCheckBox(new QCheckBox(QStringLiteral("Use Block-Line-Interactions"), this)),
           lineBlockChecksCheckBox(new QCheckBox(QStringLiteral("Use Line-Block-Interactions"), this)),
           hLine3(new QFrame(this, Qt::WindowFlags())),
+          backtrackingCheckBox(new QCheckBox(QStringLiteral("Use Try && Error (Backtracking)"), this)),
+          hLine4(new QFrame(this, Qt::WindowFlags())),
           acceptButton(new QPushButton(QStringLiteral("Accept"), this)),
           cancelButton(new QPushButton(QStringLiteral("Cancel"), this))
     {
@@ -23,7 +25,7 @@ namespace sudoku
         this->setObjectName("techniquesDialog");
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
         this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
-        constexpr QSize dim(320, 334);
+        constexpr QSize dim(320, 375);
         this->setFixedSize(dim);
 
         const QFont checkBoxFont(QStringLiteral("Open Sans"), 12, QFont::Normal, false);
@@ -116,25 +118,41 @@ namespace sudoku
         this->hLine3->setFrameShape(QFrame::HLine);
         this->hLine3->setStyleSheet(QStringLiteral("color: rgb(171, 171, 171)"));
 
+        this->backtrackingCheckBox->setObjectName("lineBlockChecksCheckBox");
+        constexpr QRect backtrackingCheckBoxGeom(10, 294, 300, 20);
+        this->backtrackingCheckBox->setGeometry(backtrackingCheckBoxGeom);
+        this->backtrackingCheckBox->setFont(checkBoxFont);
+        this->backtrackingCheckBox->setStyleSheet(checkBoxStyleSheet);
+        this->backtrackingCheckBox->setChecked(backtrackingEnabled);
+
+        this->hLine4->setObjectName("hLine4");
+        constexpr QRect hLine4Geom(10, 324, 300, 1);
+        this->hLine4->setGeometry(hLine4Geom);
+        this->hLine4->setLineWidth(1);
+        this->hLine4->setFrameShape(QFrame::HLine);
+        this->hLine4->setStyleSheet(QStringLiteral("color: rgb(171, 171, 171)"));
+
         const QFont buttonFont(QStringLiteral("Open Sans"), 11, QFont::Bold, false);
 
         this->acceptButton->setObjectName("acceptButton");
-        constexpr QRect acceptButtonGeom(10, 294, 144, 30);
+        constexpr QRect acceptButtonGeom(10, 335, 144, 30);
         this->acceptButton->setGeometry(acceptButtonGeom);
         this->acceptButton->setFont(buttonFont);
         this->acceptButton->setStyleSheet(buttonStyleSheet);
-        QObject::connect(this->acceptButton, &QPushButton::clicked, this, [this, &nakedSinglesEnabled, &hiddenSinglesEnabled, &nakedPairsEnabled, &hiddenPairsEnabled, &nakedTriplesEnabled, &hiddenTriplesEnabled, &blockLineChecksEnabled, &lineBlockChecksEnabled]()
-                         { this->acceptChanges(nakedSinglesEnabled, hiddenSinglesEnabled, nakedPairsEnabled, hiddenPairsEnabled, nakedTriplesEnabled, hiddenTriplesEnabled, blockLineChecksEnabled, lineBlockChecksEnabled); }, Qt::AutoConnection);
+        QObject::connect(
+            this->acceptButton, &QPushButton::clicked, this, [this, &nakedSinglesEnabled, &hiddenSinglesEnabled, &nakedPairsEnabled, &hiddenPairsEnabled, &nakedTriplesEnabled, &hiddenTriplesEnabled, &blockLineChecksEnabled, &lineBlockChecksEnabled, &backtrackingEnabled]()
+            { this->acceptChanges(nakedSinglesEnabled, hiddenSinglesEnabled, nakedPairsEnabled, hiddenPairsEnabled, nakedTriplesEnabled, hiddenTriplesEnabled, blockLineChecksEnabled, lineBlockChecksEnabled, backtrackingEnabled); },
+            Qt::AutoConnection);
 
         this->cancelButton->setObjectName("cancelButton");
-        constexpr QRect cancelButtonGeom(166, 294, 144, 30);
+        constexpr QRect cancelButtonGeom(166, 335, 144, 30);
         this->cancelButton->setGeometry(cancelButtonGeom);
         this->cancelButton->setFont(buttonFont);
         this->cancelButton->setStyleSheet(buttonStyleSheet);
         QObject::connect(this->cancelButton, &QPushButton::clicked, this, &TechniquesDialog::reject, Qt::AutoConnection);
     }
 
-    void TechniquesDialog::acceptChanges(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled)
+    void TechniquesDialog::acceptChanges(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled, bool& backtrackingEnabled)
     {
         nakedSinglesEnabled = this->nakedSinglesCheckBox->isChecked();
         hiddenSinglesEnabled = this->hiddenSinglesCheckBox->isChecked();
@@ -144,6 +162,7 @@ namespace sudoku
         hiddenTriplesEnabled = this->hiddenTriplesCheckBox->isChecked();
         blockLineChecksEnabled = this->blockLineChecksCheckBox->isChecked();
         lineBlockChecksEnabled = this->lineBlockChecksCheckBox->isChecked();
+        backtrackingEnabled = this->backtrackingCheckBox->isChecked();
         this->accept();
     }
 } // namespace sudoku

@@ -42,8 +42,8 @@ namespace sudoku
             [[nodiscard]] auto getVal() const -> const uint8_t*;
 
             // set candidates and value
-            void setCandidates(const std::vector<uint8_t>* cands);
-            void setVal(const uint8_t* val);
+            void setCandidates(const std::vector<uint8_t>& cands);
+            void setVal(uint8_t val);
 
             void printField(QLogTextBrowser& logTextArea) const;
     };

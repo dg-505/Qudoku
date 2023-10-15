@@ -30,9 +30,10 @@ namespace sudoku
             bool _useHiddenTriples;
             bool _useBlockLineChecks;
             bool _useLineBlockChecks;
+            bool _useBacktracking;
 
         public:
-            Sudoku(const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser& logTextArea, bool nakedSinglesEnabled, bool hiddenSinglesEnabled, bool nakedPairsEnabled, bool hiddenPairsEnabled, bool nakedTriplesEnabled, bool hiddenTriplesEnabled, bool blockLineChecksEnabled, bool lineBlockChecksEnabled);
+            Sudoku(const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser& logTextArea, bool nakedSinglesEnabled, bool hiddenSinglesEnabled, bool nakedPairsEnabled, bool hiddenPairsEnabled, bool nakedTriplesEnabled, bool hiddenTriplesEnabled, bool blockLineChecksEnabled, bool lineBlockChecksEnabled, bool backtrackingEnabled);
 
             Sudoku(const Sudoku&) = delete;
             Sudoku(Sudoku&&) = delete;
@@ -88,6 +89,10 @@ namespace sudoku
             void eliminateBRCfromLine(uint8_t run, uint8_t blockID, uint8_t cand, const std::vector<Field*>& containingCandidateI, const std::string& type, uint8_t lineIdOfFirst, bool allCandidatesInSameLine);
             void performBlockRowChecks(uint8_t run);
             void performRowBlockChecks(uint8_t run);
+
+            // Last resort: Try and error with backtracking
+            static auto unitContainsVal(uint8_t val, const std::array<Field*, global::order>& unit) -> bool;
+            auto backtracking() -> bool;
 
             void solve(const std::string& name);
 

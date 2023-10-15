@@ -79,14 +79,14 @@ namespace sudoku
         return &_val;
     }
 
-    void Field::setCandidates(const std::vector<uint8_t>* cands)
+    void Field::setCandidates(const std::vector<uint8_t>& cands)
     {
-        _candidates = *cands;
+        _candidates = cands;
     }
 
-    void Field::setVal(const uint8_t* val)
+    void Field::setVal(const uint8_t val)
     {
-        _val = *val;
+        _val = val;
     }
 
     void Field::printField(QLogTextBrowser& logTextArea) const
