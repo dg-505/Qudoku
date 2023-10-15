@@ -240,18 +240,20 @@ namespace sudoku
     void MainGUI::techniquesButtonClicked()
     {
         std::unique_ptr<TechniquesDialog> techniquesDialog = std::make_unique<TechniquesDialog>(this->nakedSinglesEnabled, this->hiddenSinglesEnabled, this->nakedPairsEnabled, this->hiddenPairsEnabled, this->nakedTriplesEnabled, this->hiddenTriplesEnabled, this->blockLineChecksEnabled, this->lineBlockChecksEnabled, this->backtrackingEnabled, this);
-        techniquesDialog->exec();
-        this->logTextBrowser->clear();
-        this->logTextBrowser->append(QStringLiteral("Selected solving techniques:"));
-        this->logTextBrowser->append(QStringLiteral("Naked Singles: ") + (this->nakedSinglesEnabled ? QStringLiteral("          true") : QStringLiteral("          false")));
-        this->logTextBrowser->append(QStringLiteral("Hidden Singles: ") + (this->hiddenSinglesEnabled ? QStringLiteral("         true") : QStringLiteral("         false")));
-        this->logTextBrowser->append(QStringLiteral("Naked Pairs: ") + (this->nakedPairsEnabled ? QStringLiteral("            true") : QStringLiteral("            false")));
-        this->logTextBrowser->append(QStringLiteral("Hidden Pairs: ") + (this->hiddenPairsEnabled ? QStringLiteral("           true") : QStringLiteral("           false")));
-        this->logTextBrowser->append(QStringLiteral("Naked Triples: ") + (this->nakedTriplesEnabled ? QStringLiteral("          true") : QStringLiteral("          false")));
-        this->logTextBrowser->append(QStringLiteral("Hidden Triples: ") + (this->hiddenTriplesEnabled ? QStringLiteral("         true") : QStringLiteral("         false")));
-        this->logTextBrowser->append(QStringLiteral("Block-Line-Interactions: ") + (this->blockLineChecksEnabled ? QStringLiteral("true") : QStringLiteral("false")));
-        this->logTextBrowser->append(QStringLiteral("Line-Block-Interactions: ") + (this->lineBlockChecksEnabled ? QStringLiteral("true") : QStringLiteral("false")));
-        this->logTextBrowser->append(QStringLiteral("Try & Error: ") + (this->backtrackingEnabled ? QStringLiteral("            true") : QStringLiteral("            false")));
+        if (techniquesDialog->exec() == QDialog::Accepted)
+        {
+            this->logTextBrowser->clear();
+            this->logTextBrowser->append(QStringLiteral("Selected solving techniques:"));
+            this->logTextBrowser->append(QStringLiteral("Naked Singles: ") + (this->nakedSinglesEnabled ? QStringLiteral("          true") : QStringLiteral("          false")));
+            this->logTextBrowser->append(QStringLiteral("Hidden Singles: ") + (this->hiddenSinglesEnabled ? QStringLiteral("         true") : QStringLiteral("         false")));
+            this->logTextBrowser->append(QStringLiteral("Naked Pairs: ") + (this->nakedPairsEnabled ? QStringLiteral("            true") : QStringLiteral("            false")));
+            this->logTextBrowser->append(QStringLiteral("Hidden Pairs: ") + (this->hiddenPairsEnabled ? QStringLiteral("           true") : QStringLiteral("           false")));
+            this->logTextBrowser->append(QStringLiteral("Naked Triples: ") + (this->nakedTriplesEnabled ? QStringLiteral("          true") : QStringLiteral("          false")));
+            this->logTextBrowser->append(QStringLiteral("Hidden Triples: ") + (this->hiddenTriplesEnabled ? QStringLiteral("         true") : QStringLiteral("         false")));
+            this->logTextBrowser->append(QStringLiteral("Block-Line-Interactions: ") + (this->blockLineChecksEnabled ? QStringLiteral("true") : QStringLiteral("false")));
+            this->logTextBrowser->append(QStringLiteral("Line-Block-Interactions: ") + (this->lineBlockChecksEnabled ? QStringLiteral("true") : QStringLiteral("false")));
+            this->logTextBrowser->append(QStringLiteral("Try & Error: ") + (this->backtrackingEnabled ? QStringLiteral("            true") : QStringLiteral("            false")));
+        }
     }
 
     auto MainGUI::loadButtonClicked() -> std::string

@@ -18,8 +18,8 @@ namespace sudoku
           hLine3(new QFrame(this, Qt::WindowFlags())),
           backtrackingCheckBox(new QCheckBox(QStringLiteral("Use Try && Error (Backtracking)"), this)),
           hLine4(new QFrame(this, Qt::WindowFlags())),
-          acceptButton(new QPushButton(QStringLiteral("Accept"), this)),
-          cancelButton(new QPushButton(QStringLiteral("Cancel"), this))
+          acceptButton(new QPushButton(QStringLiteral("&Accept"), this)),
+          cancelButton(new QPushButton(QStringLiteral("&Cancel"), this))
     {
         this->setWindowTitle(QStringLiteral("Select solving techniques"));
         this->setObjectName("techniquesDialog");
@@ -139,6 +139,7 @@ namespace sudoku
         this->acceptButton->setGeometry(acceptButtonGeom);
         this->acceptButton->setFont(buttonFont);
         this->acceptButton->setStyleSheet(buttonStyleSheet);
+        this->acceptButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_A, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
         QObject::connect(
             this->acceptButton, &QPushButton::clicked, this, [this, &nakedSinglesEnabled, &hiddenSinglesEnabled, &nakedPairsEnabled, &hiddenPairsEnabled, &nakedTriplesEnabled, &hiddenTriplesEnabled, &blockLineChecksEnabled, &lineBlockChecksEnabled, &backtrackingEnabled]()
             { this->acceptChanges(nakedSinglesEnabled, hiddenSinglesEnabled, nakedPairsEnabled, hiddenPairsEnabled, nakedTriplesEnabled, hiddenTriplesEnabled, blockLineChecksEnabled, lineBlockChecksEnabled, backtrackingEnabled); },
@@ -148,6 +149,7 @@ namespace sudoku
         constexpr QRect cancelButtonGeom(166, 335, 144, 30);
         this->cancelButton->setGeometry(cancelButtonGeom);
         this->cancelButton->setFont(buttonFont);
+        this->cancelButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_C, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
         this->cancelButton->setStyleSheet(buttonStyleSheet);
         QObject::connect(this->cancelButton, &QPushButton::clicked, this, &TechniquesDialog::reject, Qt::AutoConnection);
     }
