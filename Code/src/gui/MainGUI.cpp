@@ -177,7 +177,7 @@ namespace sudoku
         this->stepByStepButton->setStyleSheet(buttonStyleSheet);
         this->stepByStepButton->setText(QStringLiteral("St&ep by Step"));
         this->stepByStepButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_E, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
-        MainGUI::connect(stepByStepButton, &QPushButton::clicked, this, &MainGUI::stepByStepButtonButtonClicked, Qt::AutoConnection);
+        MainGUI::connect(stepByStepButton, &QPushButton::clicked, this, &MainGUI::stepByStepButtonClicked, Qt::AutoConnection);
 
         this->solveButton->setObjectName("solveButton");
         constexpr QRect solveButtonGeom(215, 587, 107, 50);
@@ -414,7 +414,7 @@ namespace sudoku
         candidatesGUI->show();
     }
 
-    void MainGUI::stepByStepButtonButtonClicked()
+    void MainGUI::stepByStepButtonClicked()
     {
         this->logTextBrowser->clear();
         this->logTextBrowser->append(QStringLiteral("Solving in progress. Please wait..."));

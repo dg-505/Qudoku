@@ -60,7 +60,7 @@ namespace sudoku
             auto loadButtonClicked() -> std::string;
             void saveButtonClicked() const;
             void candidatesButtonClicked();
-            void stepByStepButtonButtonClicked();
+            void stepByStepButtonClicked();
             void solveButtonClicked();
             void clearButtonClicked();
 
