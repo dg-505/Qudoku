@@ -5,5 +5,6 @@
         <file>res/prev.png</file>
         <file>res/next.png</file>
         <file>res/last.png</file>
+        <file>res/loading.png</file>
     </qresource>
 </RCC>

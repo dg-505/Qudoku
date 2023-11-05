@@ -7,7 +7,10 @@
 #include <QtWidgets/QMessageBox>
 
 #include "globals.h"
+#include "gui/CandidatesGUI.h"
 #include "gui/MainGUI.h"
+#include "gui/SolvedGUI.h"
+#include "gui/StepByStepGUI.h"
 #include "gui/TechniquesDialog.h"
 
 namespace sudoku
@@ -419,7 +422,24 @@ namespace sudoku
         this->logTextBrowser->clear();
         this->logTextBrowser->append(QStringLiteral("Solving in progress. Please wait..."));
         this->logTextBrowser->repaint();
+
+        auto loadingLabel = std::make_unique<QLabel>(this->gridWidget, Qt::WindowFlags());
+        loadingLabel->setStyleSheet(QStringLiteral("background: rgba(0, 0, 0, 0)"));
+        constexpr QSize loadingLabelSize(100, 100);
+        loadingLabel->setFixedSize(loadingLabelSize);
+        loadingLabel->setPixmap(QPixmap(QStringLiteral(":/res/loading.png"), "png", Qt::AutoColor).scaled(loadingLabelSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        constexpr uint16_t pos = 281;
+        loadingLabel->move(pos - loadingLabel->width() / 2, pos - loadingLabel->height() / 2);
+        loadingLabel->show();
+        this->repaint();
+
         std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
+
+        //        WorkerThread* workerThread = new WorkerThread(this->fields, initVals, this->logTextBrowser, this->nakedSinglesEnabled, this->hiddenSinglesEnabled, this->nakedPairsEnabled, this->hiddenPairsEnabled, this->nakedTriplesEnabled, this->hiddenTriplesEnabled, this->blockLineChecksEnabled, this->lineBlockChecksEnabled, this->backtrackingEnabled);
+        //        connect(workerThread, &WorkerThread::resultReady, this, &MainGUI::handleResults);
+        //        connect(workerThread, &WorkerThread::finished, workerThread, &QObject::deleteLater);
+        //        workerThread->start();
+
         auto sudoku = init(&initVals);
         sudoku.solve(filename);
         auto* stepByStepGUI = std::make_unique<StepByStepGUI>(&sudoku, initVals, this).release();
@@ -432,6 +452,17 @@ namespace sudoku
         this->logTextBrowser->clear();
         this->logTextBrowser->append(QStringLiteral("Solving in progress. Please wait..."));
         this->logTextBrowser->repaint();
+
+        auto loadingLabel = std::make_unique<QLabel>(this->gridWidget, Qt::WindowFlags());
+        loadingLabel->setStyleSheet(QStringLiteral("background: rgba(0, 0, 0, 0)"));
+        constexpr QSize loadingLabelSize(100, 100);
+        loadingLabel->setFixedSize(loadingLabelSize);
+        loadingLabel->setPixmap(QPixmap(QStringLiteral(":/res/loading.png"), "png", Qt::AutoColor).scaled(loadingLabelSize, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+        constexpr uint16_t pos = 281;
+        loadingLabel->move(pos - loadingLabel->width() / 2, pos - loadingLabel->height() / 2);
+        loadingLabel->show();
+        this->repaint();
+
         std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
         auto sudoku = init(&initVals);
         sudoku.solve(filename);
@@ -440,6 +471,11 @@ namespace sudoku
         solvedGUI->move(solvedGUIpos);
         solvedGUI->show();
     }
+
+    //    void MainGUI::handleResults()
+    //    {
+    //        this->logTextBrowser->append(QStringLiteral("Handling Results..."));
+    //    }
 
     void MainGUI::clearButtonClicked()
     {
@@ -469,7 +505,6 @@ namespace sudoku
 #pragma unroll static_cast < short>(global::order * global::order)
         for (uint8_t i = 1; i <= global::order * global::order; i++)
         {
-
             try
             {
                 initVals->at(i - 1) = static_cast<uint8_t>(std::stoi(this->fields->at(i - 1)->text().toStdString(), nullptr, global::base));
