@@ -1412,7 +1412,28 @@ namespace sudoku
             this->_logTextArea->append("\nAbort with " + QString::number(this->getFreeFields().size(), global::base) + " free fields and " + QString::number(this->countCandidates(), global::base) + " candidates\n");
         }
 
-        this->_logTextArea->append("Elapsed time: " + QString::number(std::chrono::duration<double, std::milli>(t_1 - t_0).count(), 'f', 1) + " ms\n");
+        auto duration = std::chrono::duration<double, std::milli>(t_1 - t_0).count();
+        constexpr float sec = 1000.F;
+        constexpr float min = 60.F;
+        constexpr uint8_t minInt = 60;
+        if (duration < sec)
+        {
+            this->_logTextArea->append("Elapsed time: " + QString::number(std::chrono::duration<double, std::milli>(t_1 - t_0).count(), 'f', 1) + " ms\n");
+        }
+        else
+        {
+            duration /= sec;
+            if (duration < min)
+            {
+                this->_logTextArea->append("Elapsed time: " + QString::number(duration, 'f', 1) + " s\n");
+            }
+            else
+            {
+                auto sec = static_cast<uint8_t>(duration) % minInt;
+                duration /= min;
+                this->_logTextArea->append("Elapsed time: " + QString::number(duration, 'f', 0) + ":" + QString::number(sec, global::base) + " min\n");
+            }
+        }
         this->_logTextArea->repaint();
     }
 
