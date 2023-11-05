@@ -17,19 +17,19 @@ namespace sudoku
             std::string _foundByType;
 
         public:
-            Step(const std::array<std::array<Field, global::order>, global::order>& grid, const std::vector<Field*>& fields, const std::vector<uint8_t>& candidates, uint8_t foundInRunNo, std::string  foundByType);
+            Step(const std::array<std::array<Field, global::order>, global::order>& grid, const std::vector<Field*>& fields, const std::vector<uint8_t>& candidates, uint8_t foundInRunNo, std::string foundByType);
 
-                Step(const Step&) = default;
-                Step(Step&&) = delete;
-                auto operator=(const Step&) -> Step& = delete;
-                auto operator=(Step&&) -> Step& = delete;
+            Step(const Step&) = default;
+            Step(Step&&) = delete;
+            auto operator=(const Step&) -> Step& = delete;
+            auto operator=(Step&&) -> Step& = delete;
 
-                ~Step() = default;
+            ~Step() = default;
 
-                auto getGrid() -> std::array<std::array<Field, global::order>, global::order>*;
-                auto getFields() -> std::vector<Field*>*;
-                auto getCandidates() -> std::vector<uint8_t>*;
-                auto getFoundInRunNo() -> uint8_t*;
-                auto getFoundByType() -> std::string*;
+            auto getGrid() -> std::array<std::array<Field, global::order>, global::order>*;
+            auto getFields() -> std::vector<Field*>*;
+            auto getCandidates() -> std::vector<uint8_t>*;
+            auto getFoundInRunNo() -> uint8_t*;
+            auto getFoundByType() -> std::string*;
     };
 } // namespace sudoku
