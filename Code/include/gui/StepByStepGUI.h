@@ -30,20 +30,20 @@ namespace sudoku
             auto eventFilter(QObject* watched, QEvent* event) -> bool override;
 
         private:
-            Sudoku* sudoku;
-            std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)> initVals;
-            uint8_t currentStep;
-            uint8_t currentPage;
-            bool isPreview;
-            QWidget* stepsStack;
-            QLabel* previewLabel;
-            QLabel* msgLabel;
-            QWidget* fieldsWidget;
-            QScrollBar* stepsScrollBar;
-            QPushButton* firstButton;
-            QPushButton* prevButton;
-            QPushButton* nextButton;
-            QPushButton* lastButton;
+            Sudoku* _sudoku;
+            std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)> _initVals;
+            uint8_t _currentStep;
+            uint8_t _currentPage;
+            bool _isPreview;
+            QWidget* _stepsStack;
+            QLabel* _previewLabel;
+            QLabel* _msgLabel;
+            QWidget* _fieldsWidget;
+            QScrollBar* _stepsScrollBar;
+            QPushButton* _firstButton;
+            QPushButton* _prevButton;
+            QPushButton* _nextButton;
+            QPushButton* _lastButton;
 
         protected:
             void keyPressEvent(QKeyEvent* event) override;

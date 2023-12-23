@@ -19,7 +19,7 @@ namespace sudoku
             ~CandidatesGUI() override = default;
 
         private:
-            Sudoku* sudoku;
+            Sudoku* _sudoku;
 
         protected:
             void keyPressEvent(QKeyEvent* event) override;

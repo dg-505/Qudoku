@@ -4,7 +4,7 @@
 namespace sudoku
 {
     SolvedGUI::SolvedGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent)
-        : QMainWindow(parent, Qt::WindowFlags()), sudoku(sudoku)
+        : QMainWindow(parent, Qt::WindowFlags()), _sudoku(sudoku)
     {
         constexpr QSize guiDim(537, 537);
         this->setFixedSize(guiDim);
@@ -159,35 +159,35 @@ namespace sudoku
     {
         // Frame for the grid
         auto* hLine_1 = std::make_unique<QFrame>(parent, Qt::WindowFlags()).release();
-        hLine_1->setObjectName("hLine0");
+        hLine_1->setObjectName("_hLine0");
         constexpr QRect hLine_1Geom(25, 0, 512, 2);
         hLine_1->setGeometry(hLine_1Geom);
         hLine_1->setLineWidth(2);
         hLine_1->setFrameShape(QFrame::HLine);
         hLine_1->setStyleSheet(QStringLiteral("color: black"));
         auto* hLine0 = std::make_unique<QFrame>(parent, Qt::WindowFlags()).release();
-        hLine0->setObjectName("hLine0");
+        hLine0->setObjectName("_hLine0");
         constexpr QRect hLine0Geom(0, 25, 537, 2);
         hLine0->setGeometry(hLine0Geom);
         hLine0->setLineWidth(2);
         hLine0->setFrameShape(QFrame::HLine);
         hLine0->setStyleSheet(QStringLiteral("color: black"));
         auto* hLine1 = std::make_unique<QFrame>(parent, Qt::WindowFlags()).release();
-        hLine1->setObjectName("hLine1");
+        hLine1->setObjectName("_hLine1");
         constexpr QRect hLine1Geom(0, 195, 537, 2);
         hLine1->setGeometry(hLine1Geom);
         hLine1->setLineWidth(2);
         hLine1->setFrameShape(QFrame::HLine);
         hLine1->setStyleSheet(QStringLiteral("color: black"));
         auto* hLine2 = std::make_unique<QFrame>(parent, Qt::WindowFlags()).release();
-        hLine2->setObjectName("hLine2");
+        hLine2->setObjectName("_hLine2");
         constexpr QRect hLine2Geom(0, 365, 537, 2);
         hLine2->setGeometry(hLine2Geom);
         hLine2->setLineWidth(2);
         hLine2->setFrameShape(QFrame::HLine);
         hLine2->setStyleSheet(QStringLiteral("color: black"));
         auto* hLine3 = std::make_unique<QFrame>(parent, Qt::WindowFlags()).release();
-        hLine3->setObjectName("hLine3");
+        hLine3->setObjectName("_hLine3");
         constexpr QRect hLine3Geom(0, 535, 537, 2);
         hLine3->setGeometry(hLine3Geom);
         hLine3->setLineWidth(2);

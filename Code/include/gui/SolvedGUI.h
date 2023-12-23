@@ -23,7 +23,7 @@ namespace sudoku
             static void drawFrame(QWidget* parent);
 
         private:
-            Sudoku* sudoku;
+            Sudoku* _sudoku;
 
         protected:
             void keyPressEvent(QKeyEvent* event) override;

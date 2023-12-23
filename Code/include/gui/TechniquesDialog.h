@@ -19,22 +19,22 @@ namespace sudoku
             ~TechniquesDialog() override = default;
 
         private:
-            QCheckBox* nakedSinglesCheckBox;
-            QCheckBox* hiddenSinglesCheckBox;
-            QFrame* hLine0;
-            QCheckBox* nakedPairsCheckBox;
-            QCheckBox* hiddenPairsCheckBox;
-            QFrame* hLine1;
-            QCheckBox* nakedTriplesCheckBox;
-            QCheckBox* hiddenTriplesCheckBox;
-            QFrame* hLine2;
-            QCheckBox* blockLineChecksCheckBox;
-            QCheckBox* lineBlockChecksCheckBox;
-            QFrame* hLine3;
-            QCheckBox* backtrackingCheckBox;
-            QFrame* hLine4;
-            QPushButton* acceptButton;
-            QPushButton* cancelButton;
+            QCheckBox* _nakedSinglesCheckBox;
+            QCheckBox* _hiddenSinglesCheckBox;
+            QFrame* _hLine0;
+            QCheckBox* _nakedPairsCheckBox;
+            QCheckBox* _hiddenPairsCheckBox;
+            QFrame* _hLine1;
+            QCheckBox* _nakedTriplesCheckBox;
+            QCheckBox* _hiddenTriplesCheckBox;
+            QFrame* _hLine2;
+            QCheckBox* _blockLineChecksCheckBox;
+            QCheckBox* _lineBlockChecksCheckBox;
+            QFrame* _hLine3;
+            QCheckBox* _backtrackingCheckBox;
+            QFrame* _hLine4;
+            QPushButton* _acceptButton;
+            QPushButton* _cancelButton;
 
             void acceptChanges(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled, bool& backtrackingEnabled);
     };
