@@ -28,6 +28,10 @@ namespace sudoku
     // Helper functions
     void SolvedGUI::drawFields(Step& currStep, Step& nextStep, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent)
     {
+#pragma unroll static_cast<short>(global::order * global::order * global::order)
+        for (QLabel* label : parent->findChildren<QLabel*>(Qt::FindChildrenRecursively)) {
+            label->deleteLater();
+        }
         const QFont fieldsFont(QStringLiteral("Liberation Mono"), 32, QFont::Bold, false);
         const QFont candsFont(QStringLiteral("Liberation Mono"), 16, QFont::Bold, false);
         const QFont rcLabelFont(QStringLiteral("Open Sans"), 16, QFont::Bold, false);
@@ -45,6 +49,7 @@ namespace sudoku
             rLabel->setFont(rcLabelFont);
             rLabel->setAlignment(Qt::AlignCenter);
             rLabel->setText(QString::number(rID, global::base));
+            rLabel->show();
 
             auto* cLabel = std::make_unique<QLabel>(parent, Qt::WindowFlags()).release();
             cLabel->setObjectName("rLabel" + QString::number(rID, global::base));
@@ -54,11 +59,13 @@ namespace sudoku
             cLabel->setFont(rcLabelFont);
             cLabel->setAlignment(Qt::AlignCenter);
             cLabel->setText(QString::number(rID, global::base));
+            cLabel->show();
 
             uint16_t posX = offset;
             for (uint8_t cID = 1; cID <= global::order; cID++)
             {
                 auto* fieldLabel = std::make_unique<QLabel>(parent, Qt::WindowFlags()).release();
+                fieldLabel->show();
                 fieldLabel->setObjectName("fieldLabel" + QString::number(fID, global::base));
                 const QRect fieldGeom(posX, posY, global::fieldDim, global::fieldDim);
                 fieldLabel->setGeometry(fieldGeom);
@@ -66,9 +73,9 @@ namespace sudoku
                 fieldLabel->setStyleSheet(QStringLiteral("color: black; background-color: rgba(239, 239, 239, 1.0)"));
                 fieldLabel->setAlignment(Qt::AlignCenter);
                 fieldLabel->setFrameShape(QFrame::Panel);
-                const uint8_t val = *currStep.getGrid()->at(rID - 1).at(cID - 1).getVal();
+                const uint8_t val = *nextStep.getGrid()->at(rID - 1).at(cID - 1).getVal();
                 // If fieldLabel is solved => fill value
-                if (val != 0)
+                if (val != 0 && val == *currStep.getGrid()->at(rID - 1).at(cID - 1).getVal())
                 {
                     fieldLabel->setText(QString::number(val, global::base));
                     // If fieldLabel was NOT given initially, but is solved now => set color green
@@ -92,7 +99,6 @@ namespace sudoku
                             cand->setAlignment(Qt::AlignCenter);
                             cand->setFont(candsFont);
                             cand->setStyleSheet(QStringLiteral("color: rgb(20,50,255)"));
-
                             auto* cands = currStep.getGrid()->at(rID - 1).at(cID - 1).getCandidates();
                             if (std::find(cands->begin(), cands->end(), candI) != cands->end())
                             {
@@ -123,6 +129,11 @@ namespace sudoku
                             {
                                 cand->setText(QStringLiteral(""));
                             }
+                            if (candI == *nextStep.getGrid()->at(rID - 1).at(cID - 1).getVal()) // set green candidate background for fields solved in next step
+                            {
+                                cand->setStyleSheet(QStringLiteral("color: rgb(10,30,255); background-color: rgba(50, 255, 10, 1.0)"));
+                            }
+                            cand->show();
                             candI++;
                             candX += global::candDim;
                         }

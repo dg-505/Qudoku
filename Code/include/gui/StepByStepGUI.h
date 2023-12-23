@@ -6,7 +6,7 @@
 #include <QtWidgets/QScrollBar>
 #include <QtWidgets/QStackedWidget>
 
-#include "gui/QStepsStack.h"
+#include "globals.h"
 #include "sudoku/Sudoku.h"
 
 namespace sudoku
@@ -22,9 +22,23 @@ namespace sudoku
             StepByStepGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent);
             ~StepByStepGUI() override = default;
 
+            void drawPrevStep();
+            void drawNextStep();
+            [[nodiscard]] auto getStepMsg(uint8_t step) const -> QString;
+
+            // eventFilter to scroll through steps with mouse wheel
+            auto eventFilter(QObject* watched, QEvent* event) -> bool override;
+
         private:
             Sudoku* sudoku;
-            QStepsStack* stepsStack;
+            std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)> initVals;
+            uint8_t currentStep;
+            uint8_t currentPage;
+            bool isPreview;
+            QWidget* stepsStack;
+            QLabel* previewLabel;
+            QLabel* msgLabel;
+            QWidget* fieldsWidget;
             QScrollBar* stepsScrollBar;
             QPushButton* firstButton;
             QPushButton* prevButton;

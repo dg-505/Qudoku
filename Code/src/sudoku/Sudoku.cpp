@@ -788,15 +788,15 @@ namespace sudoku
     {
         if (*nakedTriple->getField1()->getRID() == *nakedTriple->getField2()->getRID() && *nakedTriple->getField1()->getRID() == *nakedTriple->getField3()->getRID() && *nakedTriple->getField2()->getRID() == *nakedTriple->getField3()->getRID())
         {
-            this->eliminateCandidatesOfNakedTripleInUnit(nakedTriple, this->getRowByFieldID(*nakedTriple->getField1()->getFID()));
+            Sudoku::eliminateCandidatesOfNakedTripleInUnit(nakedTriple, this->getRowByFieldID(*nakedTriple->getField1()->getFID()));
         }
         if (*nakedTriple->getField1()->getCID() == *nakedTriple->getField2()->getCID() && *nakedTriple->getField1()->getCID() == *nakedTriple->getField3()->getCID() && *nakedTriple->getField2()->getCID() == *nakedTriple->getField3()->getCID())
         {
-            this->eliminateCandidatesOfNakedTripleInUnit(nakedTriple, this->getColByFieldID(*nakedTriple->getField1()->getFID()));
+            Sudoku::eliminateCandidatesOfNakedTripleInUnit(nakedTriple, this->getColByFieldID(*nakedTriple->getField1()->getFID()));
         }
         if (*nakedTriple->getField1()->getBID() == *nakedTriple->getField2()->getBID() && *nakedTriple->getField1()->getBID() == *nakedTriple->getField3()->getBID() && *nakedTriple->getField2()->getBID() == *nakedTriple->getField3()->getBID())
         {
-            this->eliminateCandidatesOfNakedTripleInUnit(nakedTriple, this->getBlockByFieldID(*nakedTriple->getField1()->getFID()));
+            Sudoku::eliminateCandidatesOfNakedTripleInUnit(nakedTriple, this->getBlockByFieldID(*nakedTriple->getField1()->getFID()));
         }
     }
 
@@ -896,7 +896,7 @@ namespace sudoku
                                             }
                                             if (isHiddenTriple)
                                             {
-                                                return new HiddenSubset(std::vector<Field*>({field1, field2, field3}, std::allocator<Field*>()), std::vector<uint8_t>({i_1, i_2, i_3}, std::allocator<uint8_t>()), type);
+                                                return std::make_unique<HiddenSubset>(std::vector<Field*>({field1, field2, field3}, std::allocator<Field*>()), std::vector<uint8_t>({i_1, i_2, i_3}, std::allocator<uint8_t>()), type).release();
                                             }
                                         }
                                     }
@@ -1009,7 +1009,7 @@ namespace sudoku
             const std::array<Field*, global::order> block = this->getBlockByBlockID(blockID);
             for (uint8_t cand = 1; cand <= global::order; cand++)
             {
-                std::vector<Field*> containingCandidateI = this->findFieldsInUnitContainingCandidateI(block, cand);
+                std::vector<Field*> containingCandidateI = Sudoku::findFieldsInUnitContainingCandidateI(block, cand);
                 if (!containingCandidateI.empty())
                 {
                     std::string row;
@@ -1080,7 +1080,7 @@ namespace sudoku
                 auto unit = this->getUnit(type, lineID);
                 for (uint8_t cand = 1; cand <= global::order; cand++)
                 {
-                    std::vector<Field*> containingCandidateI = this->findFieldsInUnitContainingCandidateI(unit, cand);
+                    std::vector<Field*> containingCandidateI = Sudoku::findFieldsInUnitContainingCandidateI(unit, cand);
                     if (!containingCandidateI.empty()) // proceed only if there exists at least one field with candidate cand
                     {
                         const uint8_t blockIdOfFirst = *containingCandidateI.at(0)->getBID();
@@ -1150,9 +1150,9 @@ namespace sudoku
 #pragma unroll static_cast<short>(global::order)
         for (uint8_t val = 1; val <= global::order; val++)
         {
-            if (!this->unitContainsVal(val, this->getRowByFieldID(*firstFreeField->getFID())) &&
-                !this->unitContainsVal(val, this->getColByFieldID(*firstFreeField->getFID())) &&
-                !this->unitContainsVal(val, this->getBlockByFieldID(*firstFreeField->getFID())))
+            if (!Sudoku::unitContainsVal(val, this->getRowByFieldID(*firstFreeField->getFID())) &&
+                !Sudoku::unitContainsVal(val, this->getColByFieldID(*firstFreeField->getFID())) &&
+                !Sudoku::unitContainsVal(val, this->getBlockByFieldID(*firstFreeField->getFID())))
             {
                 firstFreeField->setCandidates(std::vector<uint8_t>({val}, std::allocator<uint8_t>()));
                 this->filldAndEliminate(firstFreeField);

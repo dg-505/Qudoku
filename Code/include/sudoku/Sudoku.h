@@ -35,7 +35,7 @@ namespace sudoku
         public:
             Sudoku(const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser* logTextArea, bool nakedSinglesEnabled, bool hiddenSinglesEnabled, bool nakedPairsEnabled, bool hiddenPairsEnabled, bool nakedTriplesEnabled, bool hiddenTriplesEnabled, bool blockLineChecksEnabled, bool lineBlockChecksEnabled, bool backtrackingEnabled);
 
-            Sudoku(const Sudoku&) = delete;
+            Sudoku(const Sudoku&) = default;
             Sudoku(Sudoku&&) = delete;
             auto operator=(const Sudoku&) -> Sudoku& = delete;
             auto operator=(Sudoku&&) -> Sudoku& = delete;
@@ -100,7 +100,7 @@ namespace sudoku
             void printFields() const;
             // bool validateInput(QWidget* msgParent);
 
-            [[nodiscard]] auto getUnit(const std::string& type, uint8_t unitID) -> std::array<Field*, global::order>;
+            auto getUnit(const std::string& type, uint8_t unitID) -> std::array<Field*, global::order>;
 
             static auto getUnitNumber(Field* field, const std::string& type) -> uint8_t;
     };
