@@ -1,6 +1,5 @@
 #pragma once
 
-#include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 
 #include "sudoku/Sudoku.h"
@@ -21,9 +20,6 @@ namespace sudoku
             // Helper functions
             static void drawFields(Step& currStep, Step& nextStep, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent);
             static void drawFrame(QWidget* parent);
-
-        private:
-            Sudoku* _sudoku;
 
         protected:
             void keyPressEvent(QKeyEvent* event) override;
