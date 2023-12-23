@@ -256,7 +256,7 @@ namespace sudoku
                                          QString::number(*field->getRID(), global::base) + "," +
                                          QString::number(*field->getCID(), global::base) +
                                          "): Field has more than one candidate!";
-            this->_logTextArea->append(errorMessage);
+            _logTextArea->append(errorMessage);
             return;
         }
         const uint8_t val = field->getCandidates()->front();
@@ -321,8 +321,8 @@ namespace sudoku
                 "NakedSingle {" + std::to_string(*firstNakedSingle->getVal()) +
                 "} in Field (" + std::to_string(*firstNakedSingle->getRID()) + "," +
                 std::to_string(*firstNakedSingle->getCID()) + ")";
-            this->_steps.emplace_back(this->_grid, std::vector<Field*>({firstNakedSingle}, std::allocator<Field*>()), std::vector<uint8_t>({firstNakedSingle->getCandidates()->front()}, std::allocator<uint8_t>()), run, msg);
-            this->_logTextArea->append(QString::fromStdString(msg));
+            _steps.emplace_back(_grid, std::vector<Field*>({firstNakedSingle}, std::allocator<Field*>()), std::vector<uint8_t>({firstNakedSingle->getCandidates()->front()}, std::allocator<uint8_t>()), run, msg);
+            _logTextArea->append(QString::fromStdString(msg));
         }
         // this->print();
         // this->printFields();
@@ -413,8 +413,8 @@ namespace sudoku
                 std::to_string(*firstHiddenSingle->getUnitNumber()) + ": Field (" +
                 std::to_string(*firstHiddenSingle->getField()->getRID()) + "," +
                 std::to_string(*firstHiddenSingle->getField()->getCID()) + ")";
-            this->_steps.emplace_back(this->_grid, std::vector<Field*>({firstHiddenSingle->getField()}, std::allocator<Field*>()), std::vector<uint8_t>({*firstHiddenSingle->getCandidate()}, std::allocator<uint8_t>()), run, msg);
-            this->_logTextArea->append(QString::fromStdString(msg));
+            _steps.emplace_back(_grid, std::vector<Field*>({firstHiddenSingle->getField()}, std::allocator<Field*>()), std::vector<uint8_t>({*firstHiddenSingle->getCandidate()}, std::allocator<uint8_t>()), run, msg);
+            _logTextArea->append(QString::fromStdString(msg));
         }
         // this->print();
         // this->printFields();
@@ -554,8 +554,8 @@ namespace sudoku
                     std::to_string(*firstNakedPair->getField1()->getCID()) + ");(" +
                     std::to_string(*firstNakedPair->getField2()->getRID()) + "," +
                     std::to_string(*firstNakedPair->getField2()->getCID()) + ")";
-                this->_steps.emplace_back(this->_grid, std::vector<Field*>({firstNakedPair->getField1(), firstNakedPair->getField2()}, std::allocator<Field*>()), std::vector<uint8_t>({firstNakedPair->getCandidate1(), firstNakedPair->getCandidate2()}, std::allocator<uint8_t>()), run, msg);
-                this->_logTextArea->append(QString::fromStdString(msg));
+                _steps.emplace_back(_grid, std::vector<Field*>({firstNakedPair->getField1(), firstNakedPair->getField2()}, std::allocator<Field*>()), std::vector<uint8_t>({firstNakedPair->getCandidate1(), firstNakedPair->getCandidate2()}, std::allocator<uint8_t>()), run, msg);
+                _logTextArea->append(QString::fromStdString(msg));
             }
         }
         // this->print();
@@ -643,8 +643,8 @@ namespace sudoku
                                         std::to_string(*firstHiddenPair->getFields().at(0)->getCID()) + ");(" +
                                         std::to_string(*firstHiddenPair->getFields().at(1)->getRID()) + "," +
                                         std::to_string(*firstHiddenPair->getFields().at(1)->getCID()) + ")";
-                this->_steps.emplace_back(this->_grid, std::vector<Field*>{firstHiddenPair->getFields()}, std::vector<uint8_t>{firstHiddenPair->getCandidates()}, run, msg);
-                this->_logTextArea->append(QString::fromStdString(msg));
+                _steps.emplace_back(_grid, std::vector<Field*>{firstHiddenPair->getFields()}, std::vector<uint8_t>{firstHiddenPair->getCandidates()}, run, msg);
+                _logTextArea->append(QString::fromStdString(msg));
             }
             // this->print();
             // this->printFields();
@@ -828,8 +828,8 @@ namespace sudoku
                     std::to_string(*firstNakedTriple->getField2()->getCID()) + ");(" +
                     std::to_string(*firstNakedTriple->getField3()->getRID()) + "," +
                     std::to_string(*firstNakedTriple->getField3()->getCID()) + ")";
-                this->_steps.emplace_back(this->_grid, std::vector<Field*>({firstNakedTriple->getField1(), firstNakedTriple->getField2(), firstNakedTriple->getField3()}, std::allocator<Field*>()), std::vector<uint8_t>({firstNakedTriple->getCandidate1(), firstNakedTriple->getCandidate2(), firstNakedTriple->getCandidate3()}, std::allocator<uint8_t>()), run, msg);
-                this->_logTextArea->append(QString::fromStdString(msg));
+                _steps.emplace_back(_grid, std::vector<Field*>({firstNakedTriple->getField1(), firstNakedTriple->getField2(), firstNakedTriple->getField3()}, std::allocator<Field*>()), std::vector<uint8_t>({firstNakedTriple->getCandidate1(), firstNakedTriple->getCandidate2(), firstNakedTriple->getCandidate3()}, std::allocator<uint8_t>()), run, msg);
+                _logTextArea->append(QString::fromStdString(msg));
             }
             if (this->firstNakedSingle() != nullptr || this->firstHiddenSingle() != nullptr)
             {
@@ -940,8 +940,8 @@ namespace sudoku
                                         std::to_string(*firstHiddenTriple->getFields().at(1)->getCID()) + ");(" +
                                         std::to_string(*firstHiddenTriple->getFields().at(2)->getRID()) + "," +
                                         std::to_string(*firstHiddenTriple->getFields().at(2)->getCID()) + ")";
-                this->_steps.emplace_back(this->_grid, std::vector<Field*>{firstHiddenTriple->getFields()}, std::vector<uint8_t>{firstHiddenTriple->getCandidates()}, run, msg);
-                this->_logTextArea->append(QString::fromStdString(msg));
+                _steps.emplace_back(_grid, std::vector<Field*>{firstHiddenTriple->getFields()}, std::vector<uint8_t>{firstHiddenTriple->getCandidates()}, run, msg);
+                _logTextArea->append(QString::fromStdString(msg));
             }
             if (this->firstNakedSingle() != nullptr || this->firstHiddenSingle() != nullptr)
             {
@@ -995,8 +995,8 @@ namespace sudoku
                                         std::to_string(cand) + "} in Block " +
                                         std::to_string(blockID) + ": Only in " +
                                         type + " " + std::to_string(lineIdOfFirst);
-                this->_steps.emplace_back(this->_grid, containingCandidateI, std::vector<uint8_t>({cand}, std::allocator<uint8_t>()), run, msg);
-                this->_logTextArea->append(QString::fromStdString(msg));
+                _steps.emplace_back(_grid, containingCandidateI, std::vector<uint8_t>({cand}, std::allocator<uint8_t>()), run, msg);
+                _logTextArea->append(QString::fromStdString(msg));
             }
         }
     }
@@ -1112,8 +1112,8 @@ namespace sudoku
                                            type + " " +
                                            std::to_string(lineID) + ": Only in Block " +
                                            std::to_string(blockIdOfFirst));
-                                this->_steps.emplace_back(this->_grid, containingCandidateI, std::vector<uint8_t>({cand}, std::allocator<uint8_t>()), run, msg);
-                                this->_logTextArea->append(QString::fromStdString(msg));
+                                _steps.emplace_back(_grid, containingCandidateI, std::vector<uint8_t>({cand}, std::allocator<uint8_t>()), run, msg);
+                                _logTextArea->append(QString::fromStdString(msg));
                             }
                         }
                     }
@@ -1169,14 +1169,14 @@ namespace sudoku
     // Main Solving routine
     void Sudoku::solve(const std::string& name)
     {
-        this->_logTextArea->clear();
-        this->_logTextArea->append("START SOLVING SUDOKU '" + QString::fromStdString(name) + "'");
-        this->_logTextArea->append("Initial free fields: " + QString::number(this->getFreeFields().size(), global::base));
-        this->_logTextArea->append("Initial candidates: " + QString::number(this->countCandidates(), global::base) + "\n");
+        _logTextArea->clear();
+        _logTextArea->append("START SOLVING SUDOKU '" + QString::fromStdString(name) + "'");
+        _logTextArea->append("Initial free fields: " + QString::number(this->getFreeFields().size(), global::base));
+        _logTextArea->append("Initial candidates: " + QString::number(this->countCandidates(), global::base) + "\n");
 
         uint8_t run = 0;
 
-        this->_steps.emplace_back(this->_grid, std::vector<Field*>{}, std::vector<uint8_t>{}, run, "Initial status");
+        _steps.emplace_back(_grid, std::vector<Field*>{}, std::vector<uint8_t>{}, run, "Initial status");
 
         std::chrono::high_resolution_clock::time_point t_1;
         const std::chrono::high_resolution_clock::time_point t_0 = std::chrono::high_resolution_clock::now();
@@ -1189,26 +1189,26 @@ namespace sudoku
 
             const auto numCandsBeforeRun = this->countCandidates();
 
-            this->_logTextArea->append("BEGIN Run No. " + QString::number(run, global::base) + ":\n");
+            _logTextArea->append("BEGIN Run No. " + QString::number(run, global::base) + ":\n");
 
             // Process Singles
-            if (this->_useNakedSingles)
+            if (_useNakedSingles)
             {
-                this->_logTextArea->append(QStringLiteral("Search for NakedSingles"));
+                _logTextArea->append(QStringLiteral("Search for NakedSingles"));
                 this->processNakedSingles(run); // Check Naked Singles
             }
             else
             {
-                this->_logTextArea->append(QStringLiteral("Skip NakedSingles"));
+                _logTextArea->append(QStringLiteral("Skip NakedSingles"));
             }
-            if (this->_useHiddenSingles)
+            if (_useHiddenSingles)
             {
-                this->_logTextArea->append(QStringLiteral("\nSearch for HiddenSingles"));
+                _logTextArea->append(QStringLiteral("\nSearch for HiddenSingles"));
                 this->processHiddenSingles(run); // Check Hidden Singles
             }
             else
             {
-                this->_logTextArea->append(QStringLiteral("\nSkip HiddenSingles"));
+                _logTextArea->append(QStringLiteral("\nSkip HiddenSingles"));
             }
 
             const auto numCandsAfterSingles = this->countCandidates();
@@ -1218,31 +1218,31 @@ namespace sudoku
             {
                 if (numCandsAfterSingles < numCandsBeforeRun)
                 {
-                    this->_logTextArea->append(QStringLiteral("\nNo further Singles found.\nProceeding with Pairs..."));
+                    _logTextArea->append(QStringLiteral("\nNo further Singles found.\nProceeding with Pairs..."));
                 }
                 else
                 {
-                    this->_logTextArea->append(QStringLiteral("\nNo Singles found.\nProceeding with pairs..."));
+                    _logTextArea->append(QStringLiteral("\nNo Singles found.\nProceeding with pairs..."));
                 }
 
                 const auto numCandsBeforePairs = this->countCandidates();
                 if (_useNakedPairs)
                 {
-                    this->_logTextArea->append(QStringLiteral("\nSearch for NakedPairs"));
+                    _logTextArea->append(QStringLiteral("\nSearch for NakedPairs"));
                     this->processNakedPairs(run); // Check Naked Pairs
                 }
                 else
                 {
-                    this->_logTextArea->append(QStringLiteral("\nSkip NakedPairs"));
+                    _logTextArea->append(QStringLiteral("\nSkip NakedPairs"));
                 }
                 if (_useHiddenPairs)
                 {
-                    this->_logTextArea->append(QStringLiteral("\nSearch for HiddenPairs"));
+                    _logTextArea->append(QStringLiteral("\nSearch for HiddenPairs"));
                     this->processHiddenPairs(run); // Check Hidden Pairs
                 }
                 else
                 {
-                    this->_logTextArea->append(QStringLiteral("\nSkip HiddenPairs"));
+                    _logTextArea->append(QStringLiteral("\nSkip HiddenPairs"));
                 }
                 const auto numCandsAfterPairs = this->countCandidates();
 
@@ -1251,31 +1251,31 @@ namespace sudoku
                 {
                     if (numCandsAfterPairs < numCandsBeforePairs)
                     {
-                        this->_logTextArea->append(QStringLiteral("\nPair techniques didn't produce Singles.\nProceeding with Triples..."));
+                        _logTextArea->append(QStringLiteral("\nPair techniques didn't produce Singles.\nProceeding with Triples..."));
                     }
                     else
                     {
-                        this->_logTextArea->append(QStringLiteral("\nNo Pairs found.\nProceeding with Triples..."));
+                        _logTextArea->append(QStringLiteral("\nNo Pairs found.\nProceeding with Triples..."));
                     }
 
                     const auto numCandsBeforeTriples = this->countCandidates();
                     if (_useNakedTriples)
                     {
-                        this->_logTextArea->append(QStringLiteral("\nSearch for NakedTriples"));
+                        _logTextArea->append(QStringLiteral("\nSearch for NakedTriples"));
                         this->processNakedTriples(run); // Check Naked Triples
                     }
                     else
                     {
-                        this->_logTextArea->append(QStringLiteral("\nSkip NakedTriples"));
+                        _logTextArea->append(QStringLiteral("\nSkip NakedTriples"));
                     }
                     if (_useHiddenTriples)
                     {
-                        this->_logTextArea->append(QStringLiteral("\nSearch for HiddenTriples"));
+                        _logTextArea->append(QStringLiteral("\nSearch for HiddenTriples"));
                         this->processHiddenTriples(run); // Check Hidden Triples
                     }
                     else
                     {
-                        this->_logTextArea->append(QStringLiteral("\nSkip HiddenTriples"));
+                        _logTextArea->append(QStringLiteral("\nSkip HiddenTriples"));
                     }
                     const auto numCandsAfterTriples = this->countCandidates();
 
@@ -1284,31 +1284,31 @@ namespace sudoku
                     {
                         if (numCandsAfterTriples < numCandsBeforeTriples)
                         {
-                            this->_logTextArea->append(QStringLiteral("\nTriple techniques didn't produce Singles.\nProceeding with Locked Candidates..."));
+                            _logTextArea->append(QStringLiteral("\nTriple techniques didn't produce Singles.\nProceeding with Locked Candidates..."));
                         }
                         else
                         {
-                            this->_logTextArea->append(QStringLiteral("\nNo Triples found.\nProceeding with Locked Candidates..."));
+                            _logTextArea->append(QStringLiteral("\nNo Triples found.\nProceeding with Locked Candidates..."));
                         }
 
                         const auto numCandsBeforeLockedCands = this->countCandidates();
-                        if (this->_useBlockLineChecks)
+                        if (_useBlockLineChecks)
                         {
-                            this->_logTextArea->append(QStringLiteral("\nPerform Block-Line-Interactions"));
+                            _logTextArea->append(QStringLiteral("\nPerform Block-Line-Interactions"));
                             this->performBlockRowChecks(run); // Perform Block-Row-Checks (Pointing)
                         }
                         else
                         {
-                            this->_logTextArea->append(QStringLiteral("\nSkip Block-Line-Interactions"));
+                            _logTextArea->append(QStringLiteral("\nSkip Block-Line-Interactions"));
                         }
-                        if (this->_useLineBlockChecks)
+                        if (_useLineBlockChecks)
                         {
-                            this->_logTextArea->append(QStringLiteral("\nPerform Line-Block-Interactions"));
+                            _logTextArea->append(QStringLiteral("\nPerform Line-Block-Interactions"));
                             this->performRowBlockChecks(run); // Perform Row-Block-Checks (Claiming)
                         }
                         else
                         {
-                            this->_logTextArea->append(QStringLiteral("\nSkip Line-Block-Interactions"));
+                            _logTextArea->append(QStringLiteral("\nSkip Line-Block-Interactions"));
                         }
                         const auto numCandsAfterLockedCands = this->countCandidates();
 
@@ -1317,11 +1317,11 @@ namespace sudoku
                         {
                             if (numCandsAfterLockedCands < numCandsBeforeLockedCands)
                             {
-                                this->_logTextArea->append(QStringLiteral("\nLockedCandidates didn't produce Singles.\nNeed further techniques..."));
+                                _logTextArea->append(QStringLiteral("\nLockedCandidates didn't produce Singles.\nNeed further techniques..."));
                             }
                             else
                             {
-                                this->_logTextArea->append(QStringLiteral("\nNo LockedCandidates found.\nNeed further techniques..."));
+                                _logTextArea->append(QStringLiteral("\nNo LockedCandidates found.\nNeed further techniques..."));
                             }
 
                             const auto numCandsBeforeFurtherTechnique = this->countCandidates();
@@ -1333,63 +1333,63 @@ namespace sudoku
                             {
                                 if (numCandsAfterFurtherTechnique < numCandsBeforeFurtherTechnique)
                                 {
-                                    this->_logTextArea->append(QStringLiteral("\nFurther technique didn't produce Singles.\nNo further techniques implemented..."));
+                                    _logTextArea->append(QStringLiteral("\nFurther technique didn't produce Singles.\nNo further techniques implemented..."));
                                 }
                                 else
                                 {
-                                    this->_logTextArea->append(QStringLiteral("\nNo more further technique.\nNo further techniques implemented..."));
+                                    _logTextArea->append(QStringLiteral("\nNo more further technique.\nNo further techniques implemented..."));
                                 }
                             }
                             else
                             {
-                                this->_logTextArea->append(QStringLiteral("\nFurther technique produced Singles.\nProceeding with next run..."));
+                                _logTextArea->append(QStringLiteral("\nFurther technique produced Singles.\nProceeding with next run..."));
                             }
                         }
                         else
                         {
-                            this->_logTextArea->append(QStringLiteral("\nLockedCandidates produced Singles.\nProceeding with next run..."));
+                            _logTextArea->append(QStringLiteral("\nLockedCandidates produced Singles.\nProceeding with next run..."));
                         }
                     }
                     else
                     {
-                        this->_logTextArea->append(QStringLiteral("\nTriple techniques produced Singles.\nProceeding with next run..."));
+                        _logTextArea->append(QStringLiteral("\nTriple techniques produced Singles.\nProceeding with next run..."));
                     }
                 }
                 else
                 {
-                    this->_logTextArea->append(QStringLiteral("\nPair techniques produced Singles.\nProceeding with next run..."));
+                    _logTextArea->append(QStringLiteral("\nPair techniques produced Singles.\nProceeding with next run..."));
                 }
             }
             else
             {
                 if (!this->getFreeFields().empty() && this->firstNakedSingle() != nullptr && _useNakedSingles)
                 {
-                    this->_logTextArea->append(QStringLiteral("\nNo more HiddenSingles, but new NakedSingles.\nProceeding with next run..."));
+                    _logTextArea->append(QStringLiteral("\nNo more HiddenSingles, but new NakedSingles.\nProceeding with next run..."));
                 }
             }
 
             const auto freeFieldsAfterRun = this->getFreeFields().size();
             const auto numCandsAfterRun = this->countCandidates();
 
-            this->_logTextArea->append("\nEND Run No. " + QString::number(run, global::base) + ":");
-            this->_logTextArea->append(QString::number(freeFieldsAfterRun, global::base) + " free fields, " + QString::number(numCandsAfterRun, global::base) + " candidates\n‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒\n");
+            _logTextArea->append("\nEND Run No. " + QString::number(run, global::base) + ":");
+            _logTextArea->append(QString::number(freeFieldsAfterRun, global::base) + " free fields, " + QString::number(numCandsAfterRun, global::base) + " candidates\n‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒‒\n");
 
             if (numCandsAfterRun == 0)
             {
                 t_1 = std::chrono::high_resolution_clock::now();
-                this->_logTextArea->append(QStringLiteral("Finished: No free fields remaining\n"));
+                _logTextArea->append(QStringLiteral("Finished: No free fields remaining\n"));
                 break;
             }
 
             if (numCandsBeforeRun == numCandsAfterRun)
             {
-                this->_logTextArea->append(QStringLiteral("Abort: No more solving techniques implemented\n"));
-                if (this->_useBacktracking)
+                _logTextArea->append(QStringLiteral("Abort: No more solving techniques implemented\n"));
+                if (_useBacktracking)
                 {
                     this->backtracking();
                     t_1 = std::chrono::high_resolution_clock::now();
-                    this->_logTextArea->append(QStringLiteral("Last resort: Proceed with try-and-error (backtracking)\n"));
-                    this->_steps.emplace_back(this->_grid, std::vector<Field*>{}, std::vector<uint8_t>{}, run, "Solution after try-and-error (backtracking)");
+                    _logTextArea->append(QStringLiteral("Last resort: Proceed with try-and-error (backtracking)\n"));
+                    _steps.emplace_back(_grid, std::vector<Field*>{}, std::vector<uint8_t>{}, run, "Solution after try-and-error (backtracking)");
                 }
                 else
                 {
@@ -1401,15 +1401,15 @@ namespace sudoku
 
         if (this->getFreeFields().empty())
         {
-            this->_logTextArea->append("SUDOKU '" + QString::fromStdString(name) + "' SUCESSFULLY SOLVED!\n");
+            _logTextArea->append("SUDOKU '" + QString::fromStdString(name) + "' SUCESSFULLY SOLVED!\n");
         }
         else
         {
-            this->_logTextArea->append("SOLVING SUDOKU '" + QString::fromStdString(name) + "' FAILED!\n");
-            this->_logTextArea->append(QStringLiteral("\nAbort status:"));
+            _logTextArea->append("SOLVING SUDOKU '" + QString::fromStdString(name) + "' FAILED!\n");
+            _logTextArea->append(QStringLiteral("\nAbort status:"));
             this->print();
             this->printFields();
-            this->_logTextArea->append("\nAbort with " + QString::number(this->getFreeFields().size(), global::base) + " free fields and " + QString::number(this->countCandidates(), global::base) + " candidates\n");
+            _logTextArea->append("\nAbort with " + QString::number(this->getFreeFields().size(), global::base) + " free fields and " + QString::number(this->countCandidates(), global::base) + " candidates\n");
         }
 
         auto duration = std::chrono::duration<double, std::milli>(t_1 - t_0).count();
@@ -1418,23 +1418,23 @@ namespace sudoku
         constexpr uint8_t minInt = 60;
         if (duration < sec)
         {
-            this->_logTextArea->append("Elapsed time: " + QString::number(std::chrono::duration<double, std::milli>(t_1 - t_0).count(), 'f', 1) + " ms\n");
+            _logTextArea->append("Elapsed time: " + QString::number(std::chrono::duration<double, std::milli>(t_1 - t_0).count(), 'f', 1) + " ms\n");
         }
         else
         {
             duration /= sec;
             if (duration < min)
             {
-                this->_logTextArea->append("Elapsed time: " + QString::number(duration, 'f', 1) + " s\n");
+                _logTextArea->append("Elapsed time: " + QString::number(duration, 'f', 1) + " s\n");
             }
             else
             {
                 auto sec = static_cast<uint8_t>(duration) % minInt;
                 duration /= min;
-                this->_logTextArea->append("Elapsed time: " + QString::number(duration, 'f', 0) + ":" + QString::number(sec, global::base) + " min\n");
+                _logTextArea->append("Elapsed time: " + QString::number(duration, 'f', 0) + ":" + QString::number(sec, global::base) + " min\n");
             }
         }
-        this->_logTextArea->repaint();
+        _logTextArea->repaint();
     }
 
     void Sudoku::print() const

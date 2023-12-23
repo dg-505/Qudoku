@@ -48,33 +48,33 @@ namespace sudoku
         // Log scroll area and text browser
         const QFont logFont(QStringLiteral("Liberation Mono"), 10, QFont::Bold, false);
         
-        this->_logScrollArea->setObjectName("logScrollArea");
+        _logScrollArea->setObjectName("logScrollArea");
         constexpr QRect logScrollAreaGeom(537, 0, 488, 637);
-        this->_logScrollArea->setGeometry(logScrollAreaGeom);
+        _logScrollArea->setGeometry(logScrollAreaGeom);
 
-        this->_logTextBrowser->setObjectName("logTextBrowser");
+        _logTextBrowser->setObjectName("logTextBrowser");
         constexpr QRect logTextBrowserGeom(0, 0, 488, 637);
-        this->_logTextBrowser->setGeometry(logTextBrowserGeom);
-        this->_logTextBrowser->setStyleSheet(QStringLiteral("color: black; background: white"));
-        this->_logTextBrowser->setWordWrapMode(QTextOption::NoWrap);
-        this->_logTextBrowser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
-        this->_logTextBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
-        this->_logTextBrowser->setFont(logFont);
+        _logTextBrowser->setGeometry(logTextBrowserGeom);
+        _logTextBrowser->setStyleSheet(QStringLiteral("color: black; background: white"));
+        _logTextBrowser->setWordWrapMode(QTextOption::NoWrap);
+        _logTextBrowser->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOn);
+        _logTextBrowser->setHorizontalScrollBarPolicy(Qt::ScrollBarAsNeeded);
+        _logTextBrowser->setFont(logFont);
 
         // Title label
-        this->_titleLabel->setObjectName("titleLabel");
+        _titleLabel->setObjectName("titleLabel");
         constexpr QRect titleLabelGeom(0, 0, 367, 50);
-        this->_titleLabel->setGeometry(titleLabelGeom);
-        this->_titleLabel->setStyleSheet(QStringLiteral("color: black; background: rgb(239, 239, 239)"));
+        _titleLabel->setGeometry(titleLabelGeom);
+        _titleLabel->setStyleSheet(QStringLiteral("color: black; background: rgb(239, 239, 239)"));
         const QFont titleFont(QStringLiteral("Open Sans"), 14, QFont::Bold, false);
-        this->_titleLabel->setFont(titleFont);
-        this->_titleLabel->setAlignment(Qt::AlignCenter);
-        this->_titleLabel->setText(QStringLiteral("Please fill in the initially given fields"));
+        _titleLabel->setFont(titleFont);
+        _titleLabel->setAlignment(Qt::AlignCenter);
+        _titleLabel->setText(QStringLiteral("Please fill in the initially given fields"));
 
         // Set up the fields
-        this->_gridWidget->setObjectName("gridWidget");
+        _gridWidget->setObjectName("gridWidget");
         constexpr QRect gridWidgetGeom(0, 50, 537, 537);
-        this->_gridWidget->setGeometry(gridWidgetGeom);
+        _gridWidget->setGeometry(gridWidgetGeom);
 
         const QFont fieldsFont(QStringLiteral("Liberation Mono"), 32, QFont::Bold, false);
         const QFont rcLabelFont(QStringLiteral("Open Sans"), 16, QFont::Bold, false);
@@ -113,7 +113,7 @@ namespace sudoku
                 field->setFont(fieldsFont);
                 field->setMaxLength(1);
                 field->setAlignment(Qt::AlignCenter);
-                this->_fields->at(fID - 1) = field;
+                _fields->at(fID - 1) = field;
                 fID++;
                 posX += global::fieldDim;
                 if (cID % 3 == 0)
@@ -131,22 +131,22 @@ namespace sudoku
         // Buttons
         const QFont buttonFont(QStringLiteral("Open Sans"), 11, QFont::Bold, false);
 
-        this->_techniquesButton->setObjectName("techniquesButton");
+        _techniquesButton->setObjectName("techniquesButton");
         constexpr QRect tehniquesButtonGeom(367, 0, 100, 50);
-        this->_techniquesButton->setGeometry(tehniquesButtonGeom);
-        this->_techniquesButton->setFont(buttonFont);
-        this->_techniquesButton->setStyleSheet(buttonStyleSheet);
-        this->_techniquesButton->setText(QStringLiteral("Select\n&techniques"));
-        this->_techniquesButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_T, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _techniquesButton->setGeometry(tehniquesButtonGeom);
+        _techniquesButton->setFont(buttonFont);
+        _techniquesButton->setStyleSheet(buttonStyleSheet);
+        _techniquesButton->setText(QStringLiteral("Select\n&techniques"));
+        _techniquesButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_T, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
         MainGUI::connect(_techniquesButton, &QPushButton::clicked, this, &MainGUI::techniquesButtonClicked, Qt::AutoConnection);
         
-        this->_loadButton->setObjectName("loadButton");
+        _loadButton->setObjectName("loadButton");
         constexpr QRect loadButtonGeom(467, 0, 70, 25);
-        this->_loadButton->setGeometry(loadButtonGeom);
-        this->_loadButton->setFont(buttonFont);
-        this->_loadButton->setStyleSheet(buttonStyleSheet);
-        this->_loadButton->setText(QStringLiteral("Lo&ad"));
-        this->_loadButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_A, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _loadButton->setGeometry(loadButtonGeom);
+        _loadButton->setFont(buttonFont);
+        _loadButton->setStyleSheet(buttonStyleSheet);
+        _loadButton->setText(QStringLiteral("Lo&ad"));
+        _loadButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_A, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
         MainGUI::connect(_loadButton, &QPushButton::clicked, this, &MainGUI::loadButtonClicked, Qt::AutoConnection);
 
         // validateButton = new QPushButton(this);
@@ -155,58 +155,58 @@ namespace sudoku
         // validateButton->setFont(buttonFont);
         // validateButton->setText("Validate");
         
-        this->_saveButton->setObjectName("saveButton");
+        _saveButton->setObjectName("saveButton");
         constexpr QRect saveButtonGeom(467, 25, 70, 25);
-        this->_saveButton->setGeometry(saveButtonGeom);
-        this->_saveButton->setFont(buttonFont);
-        this->_saveButton->setStyleSheet(buttonStyleSheet);
-        this->_saveButton->setText(QStringLiteral("&Save"));
-        this->_saveButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_S, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _saveButton->setGeometry(saveButtonGeom);
+        _saveButton->setFont(buttonFont);
+        _saveButton->setStyleSheet(buttonStyleSheet);
+        _saveButton->setText(QStringLiteral("&Save"));
+        _saveButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_S, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
         MainGUI::connect(_saveButton, &QPushButton::clicked, this, &MainGUI::saveButtonClicked, Qt::AutoConnection);
 
-        this->_candidatesButton->setObjectName("candidatesButton");
+        _candidatesButton->setObjectName("candidatesButton");
         constexpr QRect candidatesButtonGeom(0, 587, 107, 50);
-        this->_candidatesButton->setGeometry(candidatesButtonGeom);
-        this->_candidatesButton->setFont(buttonFont);
-        this->_candidatesButton->setStyleSheet(buttonStyleSheet);
-        this->_candidatesButton->setText(QStringLiteral("&Candidates"));
-        this->_candidatesButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_C, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _candidatesButton->setGeometry(candidatesButtonGeom);
+        _candidatesButton->setFont(buttonFont);
+        _candidatesButton->setStyleSheet(buttonStyleSheet);
+        _candidatesButton->setText(QStringLiteral("&Candidates"));
+        _candidatesButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_C, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
         MainGUI::connect(_candidatesButton, &QPushButton::clicked, this, &MainGUI::candidatesButtonClicked, Qt::AutoConnection);
 
-        this->_stepByStepButton->setObjectName("stepByStepButton");
+        _stepByStepButton->setObjectName("stepByStepButton");
         constexpr QRect stepByStepButtonGeom(107, 587, 108, 50);
-        this->_stepByStepButton->setGeometry(stepByStepButtonGeom);
-        this->_stepByStepButton->setFont(buttonFont);
-        this->_stepByStepButton->setStyleSheet(buttonStyleSheet);
-        this->_stepByStepButton->setText(QStringLiteral("St&ep by Step"));
-        this->_stepByStepButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_E, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _stepByStepButton->setGeometry(stepByStepButtonGeom);
+        _stepByStepButton->setFont(buttonFont);
+        _stepByStepButton->setStyleSheet(buttonStyleSheet);
+        _stepByStepButton->setText(QStringLiteral("St&ep by Step"));
+        _stepByStepButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_E, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
         MainGUI::connect(_stepByStepButton, &QPushButton::clicked, this, &MainGUI::stepByStepButtonClicked, Qt::AutoConnection);
         
-        this->_solveButton->setObjectName("solveButton");
+        _solveButton->setObjectName("solveButton");
         constexpr QRect solveButtonGeom(215, 587, 107, 50);
-        this->_solveButton->setGeometry(solveButtonGeom);
-        this->_solveButton->setFont(buttonFont);
-        this->_solveButton->setStyleSheet(buttonStyleSheet);
-        this->_solveButton->setText(QStringLiteral("Sol&ve"));
-        this->_solveButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_V, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _solveButton->setGeometry(solveButtonGeom);
+        _solveButton->setFont(buttonFont);
+        _solveButton->setStyleSheet(buttonStyleSheet);
+        _solveButton->setText(QStringLiteral("Sol&ve"));
+        _solveButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_V, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
         MainGUI::connect(_solveButton, &QPushButton::clicked, this, &MainGUI::solveButtonClicked, Qt::AutoConnection);
         
-        this->_clearButton->setObjectName("clearButton");
+        _clearButton->setObjectName("clearButton");
         constexpr QRect clearButtonGeom(322, 587, 108, 50);
-        this->_clearButton->setGeometry(clearButtonGeom);
-        this->_clearButton->setFont(buttonFont);
-        this->_clearButton->setStyleSheet(buttonStyleSheet);
-        this->_clearButton->setText(QStringLiteral("Clea&r"));
-        this->_clearButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_R, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _clearButton->setGeometry(clearButtonGeom);
+        _clearButton->setFont(buttonFont);
+        _clearButton->setStyleSheet(buttonStyleSheet);
+        _clearButton->setText(QStringLiteral("Clea&r"));
+        _clearButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_R, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
         MainGUI::connect(_clearButton, &QPushButton::clicked, this, &MainGUI::clearButtonClicked, Qt::AutoConnection);
         
-        this->_quitButton->setObjectName("quitButton");
+        _quitButton->setObjectName("quitButton");
         constexpr QRect quitButtonGeom(430, 587, 107, 50);
-        this->_quitButton->setGeometry(quitButtonGeom);
-        this->_quitButton->setFont(buttonFont);
-        this->_quitButton->setStyleSheet(buttonStyleSheet);
-        this->_quitButton->setText(QStringLiteral("&Quit"));
-        this->_quitButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_Q, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _quitButton->setGeometry(quitButtonGeom);
+        _quitButton->setFont(buttonFont);
+        _quitButton->setStyleSheet(buttonStyleSheet);
+        _quitButton->setText(QStringLiteral("&Quit"));
+        _quitButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_Q, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
         MainGUI::connect(_quitButton, &QPushButton::clicked, [=]()
                          { QApplication::quit(); });
 
@@ -242,20 +242,20 @@ namespace sudoku
 
     void MainGUI::techniquesButtonClicked()
     {
-        std::unique_ptr<TechniquesDialog> techniquesDialog = std::make_unique<TechniquesDialog>(this->_nakedSinglesEnabled, this->_hiddenSinglesEnabled, this->_nakedPairsEnabled, this->_hiddenPairsEnabled, this->_nakedTriplesEnabled, this->_hiddenTriplesEnabled, this->_blockLineChecksEnabled, this->_lineBlockChecksEnabled, this->_backtrackingEnabled, this);
+        std::unique_ptr<TechniquesDialog> techniquesDialog = std::make_unique<TechniquesDialog>(_nakedSinglesEnabled, _hiddenSinglesEnabled, _nakedPairsEnabled, _hiddenPairsEnabled, _nakedTriplesEnabled, _hiddenTriplesEnabled, _blockLineChecksEnabled, _lineBlockChecksEnabled, _backtrackingEnabled, this);
         if (techniquesDialog->exec() == QDialog::Accepted)
         {
-            this->_logTextBrowser->clear();
-            this->_logTextBrowser->append(QStringLiteral("Selected solving techniques:"));
-            this->_logTextBrowser->append(QStringLiteral("Naked Singles: ") + (this->_nakedSinglesEnabled ? QStringLiteral("          true") : QStringLiteral("          false")));
-            this->_logTextBrowser->append(QStringLiteral("Hidden Singles: ") + (this->_hiddenSinglesEnabled ? QStringLiteral("         true") : QStringLiteral("         false")));
-            this->_logTextBrowser->append(QStringLiteral("Naked Pairs: ") + (this->_nakedPairsEnabled ? QStringLiteral("            true") : QStringLiteral("            false")));
-            this->_logTextBrowser->append(QStringLiteral("Hidden Pairs: ") + (this->_hiddenPairsEnabled ? QStringLiteral("           true") : QStringLiteral("           false")));
-            this->_logTextBrowser->append(QStringLiteral("Naked Triples: ") + (this->_nakedTriplesEnabled ? QStringLiteral("          true") : QStringLiteral("          false")));
-            this->_logTextBrowser->append(QStringLiteral("Hidden Triples: ") + (this->_hiddenTriplesEnabled ? QStringLiteral("         true") : QStringLiteral("         false")));
-            this->_logTextBrowser->append(QStringLiteral("Block-Line-Interactions: ") + (this->_blockLineChecksEnabled ? QStringLiteral("true") : QStringLiteral("false")));
-            this->_logTextBrowser->append(QStringLiteral("Line-Block-Interactions: ") + (this->_lineBlockChecksEnabled ? QStringLiteral("true") : QStringLiteral("false")));
-            this->_logTextBrowser->append(QStringLiteral("Try & Error: ") + (this->_backtrackingEnabled ? QStringLiteral("            true") : QStringLiteral("            false")));
+            _logTextBrowser->clear();
+            _logTextBrowser->append(QStringLiteral("Selected solving techniques:"));
+            _logTextBrowser->append(QStringLiteral("Naked Singles: ") + (_nakedSinglesEnabled ? QStringLiteral("          true") : QStringLiteral("          false")));
+            _logTextBrowser->append(QStringLiteral("Hidden Singles: ") + (_hiddenSinglesEnabled ? QStringLiteral("         true") : QStringLiteral("         false")));
+            _logTextBrowser->append(QStringLiteral("Naked Pairs: ") + (_nakedPairsEnabled ? QStringLiteral("            true") : QStringLiteral("            false")));
+            _logTextBrowser->append(QStringLiteral("Hidden Pairs: ") + (_hiddenPairsEnabled ? QStringLiteral("           true") : QStringLiteral("           false")));
+            _logTextBrowser->append(QStringLiteral("Naked Triples: ") + (_nakedTriplesEnabled ? QStringLiteral("          true") : QStringLiteral("          false")));
+            _logTextBrowser->append(QStringLiteral("Hidden Triples: ") + (_hiddenTriplesEnabled ? QStringLiteral("         true") : QStringLiteral("         false")));
+            _logTextBrowser->append(QStringLiteral("Block-Line-Interactions: ") + (_blockLineChecksEnabled ? QStringLiteral("true") : QStringLiteral("false")));
+            _logTextBrowser->append(QStringLiteral("Line-Block-Interactions: ") + (_lineBlockChecksEnabled ? QStringLiteral("true") : QStringLiteral("false")));
+            _logTextBrowser->append(QStringLiteral("Try & Error: ") + (_backtrackingEnabled ? QStringLiteral("            true") : QStringLiteral("            false")));
         }
     }
 
@@ -267,14 +267,14 @@ namespace sudoku
         if (filepath.isEmpty())
         {
             // User cancelled file selection
-            this->_logTextBrowser->append(QStringLiteral("File opening cancelled!"));
+            _logTextBrowser->append(QStringLiteral("File opening cancelled!"));
             return {};
         }
 
         QFile file(filepath);
         if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         {
-            this->_logTextBrowser->append(QStringLiteral("Failed to open file:"));
+            _logTextBrowser->append(QStringLiteral("Failed to open file:"));
             return {};
         }
 
@@ -283,11 +283,11 @@ namespace sudoku
 
         if (sudokuString.isEmpty())
         {
-            QMessageBox msgBox(QMessageBox::Critical, QStringLiteral("Empty file"), QStringLiteral("Error reading \"") + filepath + QStringLiteral("\":\nEmpty file."), QMessageBox::Ok, this->_gridWidget, Qt::WindowFlags());
+            QMessageBox msgBox(QMessageBox::Critical, QStringLiteral("Empty file"), QStringLiteral("Error reading \"") + filepath + QStringLiteral("\":\nEmpty file."), QMessageBox::Ok, _gridWidget, Qt::WindowFlags());
             msgBox.setStyleSheet(msgBoxStyleSheet);
             msgBox.exec();
 #pragma unroll static_cast < short>(global::order * global::order)
-            for (auto* inputField : *this->_fields)
+            for (auto* inputField : *_fields)
             {
                 inputField->clear();
             }
@@ -296,11 +296,11 @@ namespace sudoku
 
         if (sudokuString.length() != static_cast<uint8_t>(global::order * global::order))
         {
-            QMessageBox msgBox(QMessageBox::Critical, QStringLiteral("Empty file"), QStringLiteral("Error reading \"") + filepath + QStringLiteral("\":\nEmpty file."), QMessageBox::Ok, this->_gridWidget, Qt::WindowFlags());
+            QMessageBox msgBox(QMessageBox::Critical, QStringLiteral("Empty file"), QStringLiteral("Error reading \"") + filepath + QStringLiteral("\":\nEmpty file."), QMessageBox::Ok, _gridWidget, Qt::WindowFlags());
             msgBox.setStyleSheet(msgBoxStyleSheet);
             msgBox.exec();
 #pragma unroll static_cast < short>(global::order * global::order)
-            for (auto* inputField : *this->_fields)
+            for (auto* inputField : *_fields)
             {
                 inputField->clear();
             }
@@ -315,29 +315,29 @@ namespace sudoku
                 const uint8_t value = inputChar.digitValue();
                 if (value == 0)
                 {
-                    QMessageBox msgBox(QMessageBox::Critical, QStringLiteral("Empty file"), QStringLiteral("Error reading \"") + filepath + QStringLiteral("\":\nEmpty file."), QMessageBox::Ok, this->_gridWidget, Qt::WindowFlags());
+                    QMessageBox msgBox(QMessageBox::Critical, QStringLiteral("Empty file"), QStringLiteral("Error reading \"") + filepath + QStringLiteral("\":\nEmpty file."), QMessageBox::Ok, _gridWidget, Qt::WindowFlags());
                     msgBox.setStyleSheet(msgBoxStyleSheet);
                     msgBox.exec();
 #pragma unroll static_cast < short>(global::order * global::order)
-                    for (auto* inputField : *this->_fields)
+                    for (auto* inputField : *_fields)
                     {
                         inputField->clear();
                     }
                     return {};
                 }
-                this->_fields->at(fID - 1)->setText(inputChar);
+                _fields->at(fID - 1)->setText(inputChar);
             }
             else if (inputChar == '.')
             {
-                this->_fields->at(fID - 1)->clear();
+                _fields->at(fID - 1)->clear();
             }
             else
             {
-                QMessageBox msgBox(QMessageBox::Critical, QStringLiteral("Empty file"), QStringLiteral("Error reading \"") + filepath + QStringLiteral("\":\nEmpty file."), QMessageBox::Ok, this->_gridWidget, Qt::WindowFlags());
+                QMessageBox msgBox(QMessageBox::Critical, QStringLiteral("Empty file"), QStringLiteral("Error reading \"") + filepath + QStringLiteral("\":\nEmpty file."), QMessageBox::Ok, _gridWidget, Qt::WindowFlags());
                 msgBox.setStyleSheet(msgBoxStyleSheet);
                 msgBox.exec();
 #pragma unroll static_cast < short>(global::order * global::order)
-                for (auto* inputField : *this->_fields)
+                for (auto* inputField : *_fields)
                 {
                     inputField->clear();
                 }
@@ -349,7 +349,7 @@ namespace sudoku
 
         if (!extraLine.isEmpty())
         {
-            QMessageBox msgBox(QMessageBox::Warning, QStringLiteral("Empty file"), QStringLiteral("Error reading \"") + filepath + QStringLiteral("\":\nEmpty file."), QMessageBox::Ok, this->_gridWidget, Qt::WindowFlags());
+            QMessageBox msgBox(QMessageBox::Warning, QStringLiteral("Empty file"), QStringLiteral("Error reading \"") + filepath + QStringLiteral("\":\nEmpty file."), QMessageBox::Ok, _gridWidget, Qt::WindowFlags());
             msgBox.setStyleSheet(msgBoxStyleSheet);
             msgBox.exec();
         }
@@ -359,8 +359,8 @@ namespace sudoku
         // size_t const lastDot = filepath.toStdString().find_last_of('.');
         // filename = filepath.toStdString().substr(lastSeparator + 1, lastDot - lastSeparator - 1);
 
-        this->_logTextBrowser->clear();
-        this->_logTextBrowser->append("Sudoku \"" + filepath + "\" successfully loaded");
+        _logTextBrowser->clear();
+        _logTextBrowser->append("Sudoku \"" + filepath + "\" successfully loaded");
         file.close();
         
         return _filename;
@@ -382,7 +382,7 @@ namespace sudoku
         QFile file(filepath);
         if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         {
-            this->_logTextBrowser->append(QStringLiteral("Failed to open file for writing:"));
+            _logTextBrowser->append(QStringLiteral("Failed to open file for writing:"));
             return;
         }
 
@@ -404,7 +404,7 @@ namespace sudoku
         out << "\n";
         file.close();
 
-        this->_logTextBrowser->append("Saved to \"" + filepath + "\"");
+        _logTextBrowser->append("Saved to \"" + filepath + "\"");
     }
 
     void MainGUI::candidatesButtonClicked()
@@ -419,11 +419,11 @@ namespace sudoku
 
     void MainGUI::stepByStepButtonClicked()
     {
-        this->_logTextBrowser->clear();
-        this->_logTextBrowser->append(QStringLiteral("Solving in progress. Please wait..."));
-        this->_logTextBrowser->repaint();
+        _logTextBrowser->clear();
+        _logTextBrowser->append(QStringLiteral("Solving in progress. Please wait..."));
+        _logTextBrowser->repaint();
 
-        auto loadingLabel = std::make_unique<QLabel>(this->_gridWidget, Qt::WindowFlags());
+        auto loadingLabel = std::make_unique<QLabel>(_gridWidget, Qt::WindowFlags());
         loadingLabel->setStyleSheet(QStringLiteral("background: rgba(0, 0, 0, 0)"));
         constexpr QSize loadingLabelSize(100, 100);
         loadingLabel->setFixedSize(loadingLabelSize);
@@ -449,11 +449,11 @@ namespace sudoku
 
     void MainGUI::solveButtonClicked()
     {
-        this->_logTextBrowser->clear();
-        this->_logTextBrowser->append(QStringLiteral("Solving in progress. Please wait..."));
-        this->_logTextBrowser->repaint();
+        _logTextBrowser->clear();
+        _logTextBrowser->append(QStringLiteral("Solving in progress. Please wait..."));
+        _logTextBrowser->repaint();
 
-        auto loadingLabel = std::make_unique<QLabel>(this->_gridWidget, Qt::WindowFlags());
+        auto loadingLabel = std::make_unique<QLabel>(_gridWidget, Qt::WindowFlags());
         loadingLabel->setStyleSheet(QStringLiteral("background: rgba(0, 0, 0, 0)"));
         constexpr QSize loadingLabelSize(100, 100);
         loadingLabel->setFixedSize(loadingLabelSize);
@@ -492,11 +492,11 @@ namespace sudoku
     void MainGUI::clear()
     {
 #pragma unroll static_cast < short>(global::order * global::order)
-        for (auto* inputField : *this->_fields)
+        for (auto* inputField : *_fields)
         {
             inputField->clear();
         }
-        this->_logTextBrowser->clear();
+        _logTextBrowser->clear();
         _filename = "";
     }
 
@@ -507,13 +507,13 @@ namespace sudoku
         {
             try
             {
-                initVals->at(i - 1) = static_cast<uint8_t>(std::stoi(this->_fields->at(i - 1)->text().toStdString(), nullptr, global::base));
+                initVals->at(i - 1) = static_cast<uint8_t>(std::stoi(_fields->at(i - 1)->text().toStdString(), nullptr, global::base));
             }
             catch (const std::exception& e)
             {
                 initVals->at(i - 1) = 0;
             }
         }
-        return std::make_unique<Sudoku>(initVals, this->_logTextBrowser, this->_nakedSinglesEnabled, this->_hiddenSinglesEnabled, this->_nakedPairsEnabled, this->_hiddenPairsEnabled, this->_nakedTriplesEnabled, this->_hiddenTriplesEnabled, this->_blockLineChecksEnabled, this->_lineBlockChecksEnabled, this->_backtrackingEnabled).release();
+        return std::make_unique<Sudoku>(initVals, _logTextBrowser, _nakedSinglesEnabled, _hiddenSinglesEnabled, _nakedPairsEnabled, _hiddenPairsEnabled, _nakedTriplesEnabled, _hiddenTriplesEnabled, _blockLineChecksEnabled, _lineBlockChecksEnabled, _backtrackingEnabled).release();
     }
 } // namespace sudoku

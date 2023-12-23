@@ -34,137 +34,137 @@ namespace sudoku
                                                         "QPushButton:hover {color: black; background: rgb(171, 171, 171)}"
                                                         "QPushButton:pressed {color: black; background: rgb(171, 171, 171)}");
 
-        this->_nakedSinglesCheckBox->setObjectName("_nakedSinglesCheckBox");
+        _nakedSinglesCheckBox->setObjectName("_nakedSinglesCheckBox");
         constexpr QRect nakedSinglesCheckBoxGeom(10, 10, 300, 20);
-        this->_nakedSinglesCheckBox->setGeometry(nakedSinglesCheckBoxGeom);
-        this->_nakedSinglesCheckBox->setFont(checkBoxFont);
-        this->_nakedSinglesCheckBox->setStyleSheet(checkBoxStyleSheet);
-        this->_nakedSinglesCheckBox->setChecked(nakedSinglesEnabled);
+        _nakedSinglesCheckBox->setGeometry(nakedSinglesCheckBoxGeom);
+        _nakedSinglesCheckBox->setFont(checkBoxFont);
+        _nakedSinglesCheckBox->setStyleSheet(checkBoxStyleSheet);
+        _nakedSinglesCheckBox->setChecked(nakedSinglesEnabled);
 
-        this->_hiddenSinglesCheckBox->setObjectName("_hiddenSinglesCheckBox");
+        _hiddenSinglesCheckBox->setObjectName("_hiddenSinglesCheckBox");
         constexpr QRect hiddenSinglesCheckBoxGeom(10, 40, 300, 20);
-        this->_hiddenSinglesCheckBox->setGeometry(hiddenSinglesCheckBoxGeom);
-        this->_hiddenSinglesCheckBox->setFont(checkBoxFont);
-        this->_hiddenSinglesCheckBox->setStyleSheet(checkBoxStyleSheet);
-        this->_hiddenSinglesCheckBox->setChecked(hiddenSinglesEnabled);
+        _hiddenSinglesCheckBox->setGeometry(hiddenSinglesCheckBoxGeom);
+        _hiddenSinglesCheckBox->setFont(checkBoxFont);
+        _hiddenSinglesCheckBox->setStyleSheet(checkBoxStyleSheet);
+        _hiddenSinglesCheckBox->setChecked(hiddenSinglesEnabled);
 
-        this->_hLine0->setObjectName("_hLine0");
+        _hLine0->setObjectName("_hLine0");
         constexpr QRect hLine0Geom(10, 70, 300, 1);
-        this->_hLine0->setGeometry(hLine0Geom);
-        this->_hLine0->setLineWidth(1);
-        this->_hLine0->setFrameShape(QFrame::HLine);
-        this->_hLine0->setStyleSheet(QStringLiteral("color: rgb(171, 171, 171)"));
+        _hLine0->setGeometry(hLine0Geom);
+        _hLine0->setLineWidth(1);
+        _hLine0->setFrameShape(QFrame::HLine);
+        _hLine0->setStyleSheet(QStringLiteral("color: rgb(171, 171, 171)"));
 
-        this->_nakedPairsCheckBox->setObjectName("_nakedPairsCheckBox");
+        _nakedPairsCheckBox->setObjectName("_nakedPairsCheckBox");
         constexpr QRect nakedPairsCheckBoxGeom(10, 81, 300, 20);
-        this->_nakedPairsCheckBox->setGeometry(nakedPairsCheckBoxGeom);
-        this->_nakedPairsCheckBox->setFont(checkBoxFont);
-        this->_nakedPairsCheckBox->setStyleSheet(checkBoxStyleSheet);
-        this->_nakedPairsCheckBox->setChecked(nakedPairsEnabled);
+        _nakedPairsCheckBox->setGeometry(nakedPairsCheckBoxGeom);
+        _nakedPairsCheckBox->setFont(checkBoxFont);
+        _nakedPairsCheckBox->setStyleSheet(checkBoxStyleSheet);
+        _nakedPairsCheckBox->setChecked(nakedPairsEnabled);
 
-        this->_hiddenPairsCheckBox->setObjectName("_hiddenPairsCheckBox");
+        _hiddenPairsCheckBox->setObjectName("_hiddenPairsCheckBox");
         constexpr QRect hiddenPairsCheckBoxGeom(10, 111, 300, 20);
-        this->_hiddenPairsCheckBox->setGeometry(hiddenPairsCheckBoxGeom);
-        this->_hiddenPairsCheckBox->setFont(checkBoxFont);
-        this->_hiddenPairsCheckBox->setStyleSheet(checkBoxStyleSheet);
-        this->_hiddenPairsCheckBox->setChecked(hiddenPairsEnabled);
+        _hiddenPairsCheckBox->setGeometry(hiddenPairsCheckBoxGeom);
+        _hiddenPairsCheckBox->setFont(checkBoxFont);
+        _hiddenPairsCheckBox->setStyleSheet(checkBoxStyleSheet);
+        _hiddenPairsCheckBox->setChecked(hiddenPairsEnabled);
 
-        this->_hLine1->setObjectName("_hLine1");
+        _hLine1->setObjectName("_hLine1");
         constexpr QRect hLine1Geom(10, 141, 300, 1);
-        this->_hLine1->setGeometry(hLine1Geom);
-        this->_hLine1->setLineWidth(1);
-        this->_hLine1->setFrameShape(QFrame::HLine);
-        this->_hLine1->setStyleSheet(QStringLiteral("color: rgb(171, 171, 171)"));
+        _hLine1->setGeometry(hLine1Geom);
+        _hLine1->setLineWidth(1);
+        _hLine1->setFrameShape(QFrame::HLine);
+        _hLine1->setStyleSheet(QStringLiteral("color: rgb(171, 171, 171)"));
 
-        this->_nakedTriplesCheckBox->setObjectName("_nakedTriplesCheckBox");
+        _nakedTriplesCheckBox->setObjectName("_nakedTriplesCheckBox");
         constexpr QRect nakedTriplesCheckBoxGeom(10, 152, 300, 20);
-        this->_nakedTriplesCheckBox->setGeometry(nakedTriplesCheckBoxGeom);
-        this->_nakedTriplesCheckBox->setFont(checkBoxFont);
-        this->_nakedTriplesCheckBox->setStyleSheet(checkBoxStyleSheet);
-        this->_nakedTriplesCheckBox->setChecked(nakedTriplesEnabled);
+        _nakedTriplesCheckBox->setGeometry(nakedTriplesCheckBoxGeom);
+        _nakedTriplesCheckBox->setFont(checkBoxFont);
+        _nakedTriplesCheckBox->setStyleSheet(checkBoxStyleSheet);
+        _nakedTriplesCheckBox->setChecked(nakedTriplesEnabled);
 
-        this->_hiddenTriplesCheckBox->setObjectName("_hiddenTriplesCheckBox");
+        _hiddenTriplesCheckBox->setObjectName("_hiddenTriplesCheckBox");
         constexpr QRect hiddenTriplesCheckBoxGeom(10, 182, 300, 20);
-        this->_hiddenTriplesCheckBox->setGeometry(hiddenTriplesCheckBoxGeom);
-        this->_hiddenTriplesCheckBox->setFont(checkBoxFont);
-        this->_hiddenTriplesCheckBox->setStyleSheet(checkBoxStyleSheet);
-        this->_hiddenTriplesCheckBox->setChecked(hiddenTriplesEnabled);
+        _hiddenTriplesCheckBox->setGeometry(hiddenTriplesCheckBoxGeom);
+        _hiddenTriplesCheckBox->setFont(checkBoxFont);
+        _hiddenTriplesCheckBox->setStyleSheet(checkBoxStyleSheet);
+        _hiddenTriplesCheckBox->setChecked(hiddenTriplesEnabled);
 
-        this->_hLine2->setObjectName("_hLine2");
+        _hLine2->setObjectName("_hLine2");
         constexpr QRect hLine2Geom(10, 212, 300, 1);
-        this->_hLine2->setGeometry(hLine2Geom);
-        this->_hLine2->setLineWidth(1);
-        this->_hLine2->setFrameShape(QFrame::HLine);
-        this->_hLine2->setStyleSheet(QStringLiteral("color: rgb(171, 171, 171)"));
+        _hLine2->setGeometry(hLine2Geom);
+        _hLine2->setLineWidth(1);
+        _hLine2->setFrameShape(QFrame::HLine);
+        _hLine2->setStyleSheet(QStringLiteral("color: rgb(171, 171, 171)"));
 
-        this->_blockLineChecksCheckBox->setObjectName("_blockLineChecksCheckBox");
+        _blockLineChecksCheckBox->setObjectName("_blockLineChecksCheckBox");
         constexpr QRect blockLineChecksCheckBoxGeom(10, 223, 300, 20);
-        this->_blockLineChecksCheckBox->setGeometry(blockLineChecksCheckBoxGeom);
-        this->_blockLineChecksCheckBox->setFont(checkBoxFont);
-        this->_blockLineChecksCheckBox->setStyleSheet(checkBoxStyleSheet);
-        this->_blockLineChecksCheckBox->setChecked(blockLineChecksEnabled);
+        _blockLineChecksCheckBox->setGeometry(blockLineChecksCheckBoxGeom);
+        _blockLineChecksCheckBox->setFont(checkBoxFont);
+        _blockLineChecksCheckBox->setStyleSheet(checkBoxStyleSheet);
+        _blockLineChecksCheckBox->setChecked(blockLineChecksEnabled);
 
-        this->_lineBlockChecksCheckBox->setObjectName("_lineBlockChecksCheckBox");
+        _lineBlockChecksCheckBox->setObjectName("_lineBlockChecksCheckBox");
         constexpr QRect lineBlockChecksCheckBoxGeom(10, 253, 300, 20);
-        this->_lineBlockChecksCheckBox->setGeometry(lineBlockChecksCheckBoxGeom);
-        this->_lineBlockChecksCheckBox->setFont(checkBoxFont);
-        this->_lineBlockChecksCheckBox->setStyleSheet(checkBoxStyleSheet);
-        this->_lineBlockChecksCheckBox->setChecked(lineBlockChecksEnabled);
+        _lineBlockChecksCheckBox->setGeometry(lineBlockChecksCheckBoxGeom);
+        _lineBlockChecksCheckBox->setFont(checkBoxFont);
+        _lineBlockChecksCheckBox->setStyleSheet(checkBoxStyleSheet);
+        _lineBlockChecksCheckBox->setChecked(lineBlockChecksEnabled);
 
-        this->_hLine3->setObjectName("_hLine3");
+        _hLine3->setObjectName("_hLine3");
         constexpr QRect hLine3Geom(10, 283, 300, 1);
-        this->_hLine3->setGeometry(hLine3Geom);
-        this->_hLine3->setLineWidth(1);
-        this->_hLine3->setFrameShape(QFrame::HLine);
-        this->_hLine3->setStyleSheet(QStringLiteral("color: rgb(171, 171, 171)"));
+        _hLine3->setGeometry(hLine3Geom);
+        _hLine3->setLineWidth(1);
+        _hLine3->setFrameShape(QFrame::HLine);
+        _hLine3->setStyleSheet(QStringLiteral("color: rgb(171, 171, 171)"));
 
-        this->_backtrackingCheckBox->setObjectName("_lineBlockChecksCheckBox");
+        _backtrackingCheckBox->setObjectName("_lineBlockChecksCheckBox");
         constexpr QRect backtrackingCheckBoxGeom(10, 294, 300, 20);
-        this->_backtrackingCheckBox->setGeometry(backtrackingCheckBoxGeom);
-        this->_backtrackingCheckBox->setFont(checkBoxFont);
-        this->_backtrackingCheckBox->setStyleSheet(checkBoxStyleSheet);
-        this->_backtrackingCheckBox->setChecked(backtrackingEnabled);
+        _backtrackingCheckBox->setGeometry(backtrackingCheckBoxGeom);
+        _backtrackingCheckBox->setFont(checkBoxFont);
+        _backtrackingCheckBox->setStyleSheet(checkBoxStyleSheet);
+        _backtrackingCheckBox->setChecked(backtrackingEnabled);
 
-        this->_hLine4->setObjectName("_hLine4");
+        _hLine4->setObjectName("_hLine4");
         constexpr QRect hLine4Geom(10, 324, 300, 1);
-        this->_hLine4->setGeometry(hLine4Geom);
-        this->_hLine4->setLineWidth(1);
-        this->_hLine4->setFrameShape(QFrame::HLine);
-        this->_hLine4->setStyleSheet(QStringLiteral("color: rgb(171, 171, 171)"));
+        _hLine4->setGeometry(hLine4Geom);
+        _hLine4->setLineWidth(1);
+        _hLine4->setFrameShape(QFrame::HLine);
+        _hLine4->setStyleSheet(QStringLiteral("color: rgb(171, 171, 171)"));
 
         const QFont buttonFont(QStringLiteral("Open Sans"), 11, QFont::Bold, false);
 
-        this->_acceptButton->setObjectName("_acceptButton");
+        _acceptButton->setObjectName("_acceptButton");
         constexpr QRect acceptButtonGeom(10, 335, 144, 30);
-        this->_acceptButton->setGeometry(acceptButtonGeom);
-        this->_acceptButton->setFont(buttonFont);
-        this->_acceptButton->setStyleSheet(buttonStyleSheet);
-        this->_acceptButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_A, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _acceptButton->setGeometry(acceptButtonGeom);
+        _acceptButton->setFont(buttonFont);
+        _acceptButton->setStyleSheet(buttonStyleSheet);
+        _acceptButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_A, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
         QObject::connect(
-            this->_acceptButton, &QPushButton::clicked, this, [this, &nakedSinglesEnabled, &hiddenSinglesEnabled, &nakedPairsEnabled, &hiddenPairsEnabled, &nakedTriplesEnabled, &hiddenTriplesEnabled, &blockLineChecksEnabled, &lineBlockChecksEnabled, &backtrackingEnabled]()
+            _acceptButton, &QPushButton::clicked, this, [this, &nakedSinglesEnabled, &hiddenSinglesEnabled, &nakedPairsEnabled, &hiddenPairsEnabled, &nakedTriplesEnabled, &hiddenTriplesEnabled, &blockLineChecksEnabled, &lineBlockChecksEnabled, &backtrackingEnabled]()
             { this->acceptChanges(nakedSinglesEnabled, hiddenSinglesEnabled, nakedPairsEnabled, hiddenPairsEnabled, nakedTriplesEnabled, hiddenTriplesEnabled, blockLineChecksEnabled, lineBlockChecksEnabled, backtrackingEnabled); },
             Qt::AutoConnection);
 
-        this->_cancelButton->setObjectName("_cancelButton");
+        _cancelButton->setObjectName("_cancelButton");
         constexpr QRect cancelButtonGeom(166, 335, 144, 30);
-        this->_cancelButton->setGeometry(cancelButtonGeom);
-        this->_cancelButton->setFont(buttonFont);
-        this->_cancelButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_C, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
-        this->_cancelButton->setStyleSheet(buttonStyleSheet);
-        QObject::connect(this->_cancelButton, &QPushButton::clicked, this, &TechniquesDialog::reject, Qt::AutoConnection);
+        _cancelButton->setGeometry(cancelButtonGeom);
+        _cancelButton->setFont(buttonFont);
+        _cancelButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_C, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _cancelButton->setStyleSheet(buttonStyleSheet);
+        QObject::connect(_cancelButton, &QPushButton::clicked, this, &TechniquesDialog::reject, Qt::AutoConnection);
     }
 
     void TechniquesDialog::acceptChanges(bool& nakedSinglesEnabled, bool& hiddenSinglesEnabled, bool& nakedPairsEnabled, bool& hiddenPairsEnabled, bool& nakedTriplesEnabled, bool& hiddenTriplesEnabled, bool& blockLineChecksEnabled, bool& lineBlockChecksEnabled, bool& backtrackingEnabled)
     {
-        nakedSinglesEnabled = this->_nakedSinglesCheckBox->isChecked();
-        hiddenSinglesEnabled = this->_hiddenSinglesCheckBox->isChecked();
-        nakedPairsEnabled = this->_nakedPairsCheckBox->isChecked();
-        hiddenPairsEnabled = this->_hiddenPairsCheckBox->isChecked();
-        nakedTriplesEnabled = this->_nakedTriplesCheckBox->isChecked();
-        hiddenTriplesEnabled = this->_hiddenTriplesCheckBox->isChecked();
-        blockLineChecksEnabled = this->_blockLineChecksCheckBox->isChecked();
-        lineBlockChecksEnabled = this->_lineBlockChecksCheckBox->isChecked();
-        backtrackingEnabled = this->_backtrackingCheckBox->isChecked();
+        nakedSinglesEnabled = _nakedSinglesCheckBox->isChecked();
+        hiddenSinglesEnabled = _hiddenSinglesCheckBox->isChecked();
+        nakedPairsEnabled = _nakedPairsCheckBox->isChecked();
+        hiddenPairsEnabled = _hiddenPairsCheckBox->isChecked();
+        nakedTriplesEnabled = _nakedTriplesCheckBox->isChecked();
+        hiddenTriplesEnabled = _hiddenTriplesCheckBox->isChecked();
+        blockLineChecksEnabled = _blockLineChecksCheckBox->isChecked();
+        lineBlockChecksEnabled = _lineBlockChecksCheckBox->isChecked();
+        backtrackingEnabled = _backtrackingCheckBox->isChecked();
         this->accept();
     }
 } // namespace sudoku
