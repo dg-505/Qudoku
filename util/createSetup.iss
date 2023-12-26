@@ -182,7 +182,7 @@ begin
 end;
 
 [Files]
-Source: "../release/WindowsInstaller/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs; Tasks: desktopicon
+Source: "../release/WindowsInstaller/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs;
 Source: "../release/WindowsInstaller/data/example.txt"; DestDir: "{code:GetDataDir}"; Flags: confirmoverwrite recursesubdirs uninsneveruninstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
