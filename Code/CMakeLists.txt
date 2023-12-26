@@ -1,6 +1,17 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(Qudoku VERSION 1.0 LANGUAGES CXX)
+# extract version number from InnoSetup script
+file(READ "../util/createSetup.iss" ISS_CONTENT)
+string(REGEX MATCH "Version \"([0-9]+\\.[0-9]+\\.[0-9]+)\"" _ ${ISS_CONTENT})
+set(VERSION_NUMBER "${CMAKE_MATCH_1}")
+message("Qudoku Version: ${VERSION_NUMBER}")
+# Replace old version number with new version number
+set(MAIN_CPP_FILE "./src/main.cpp")
+file(READ ${MAIN_CPP_FILE} MAIN_CPP_CONTENTS)
+string(REGEX REPLACE "\"([0-9]+\\.[0-9]+\\.[0-9]+)\";" "\"${VERSION_NUMBER}\";" MODIFIED_CONTENT "${MAIN_CPP_CONTENTS}")
+file(WRITE ${MAIN_CPP_FILE} "${MODIFIED_CONTENT}")
+
+project(Qudoku VERSION ${VERSION_NUMBER} LANGUAGES CXX)
 
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
