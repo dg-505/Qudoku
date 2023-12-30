@@ -22,12 +22,12 @@ namespace sudoku
     {
         constexpr QSize guiDim(537, 637);
         this->setFixedSize(guiDim);
-        this->setObjectName("StepByStepGUI");
+        this->setObjectName(QStringLiteral("StepByStepGUI"));
         this->setWindowTitle(QStringLiteral("Step-by-step solution"));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
         this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
-        
-        _stepsStack->setObjectName("stepsStack");
+
+        _stepsStack->setObjectName(QStringLiteral("stepsStack"));
         constexpr QRect stepsStackGeom(0, 0, 537, 587);
         _stepsStack->setGeometry(stepsStackGeom);
         _stepsStack->installEventFilter(this);
@@ -38,15 +38,15 @@ namespace sudoku
         const QString msg = this->getStepMsg(_currentStep);
         
         _fieldsWidget->setGeometry(stepFieldsGeom);
-        
-        _msgLabel->setObjectName("msgLabel");
+
+        _msgLabel->setObjectName(QStringLiteral("msgLabel"));
         _msgLabel->setGeometry(messageLabelGeom);
         _msgLabel->setStyleSheet(QStringLiteral("color: black; background-color: rgba(239, 239, 239, 0.0)"));
         _msgLabel->setFont(messageFont);
         _msgLabel->setAlignment(Qt::AlignCenter);
         _msgLabel->setText(msg);
-        
-        _previewLabel->setObjectName("p");
+
+        _previewLabel->setObjectName(QStringLiteral("p"));
         constexpr QRect previewLabelGeom(0, 0, 100, 25);
         _previewLabel->setGeometry(previewLabelGeom);
         _previewLabel->setStyleSheet(QStringLiteral("color: rgb(239, 239, 239); background-color: rgba(100, 100, 100, 1.0)"));
@@ -59,7 +59,7 @@ namespace sudoku
         SolvedGUI::drawFrame(_fieldsWidget);
 
         // Scrollbar to scroll through steps
-        _stepsScrollBar->setObjectName("stepsScrollBar");
+        _stepsScrollBar->setObjectName(QStringLiteral("stepsScrollBar"));
         constexpr QRect stepsScrollBarGeom(0, 587, 537, 15);
         _stepsScrollBar->setGeometry(stepsScrollBarGeom);
         _stepsScrollBar->setContextMenuPolicy(Qt::NoContextMenu);
@@ -86,7 +86,7 @@ namespace sudoku
                                                         "QPushButton:pressed {color: black; background: rgb(171, 171, 171)}");
         
         _firstButton->setIconSize(buttonIconSize);
-        _firstButton->setObjectName("firstButton");
+        _firstButton->setObjectName(QStringLiteral("firstButton"));
         constexpr QRect firstButtonGeom(0, 602, 134, 35);
         _firstButton->setGeometry(firstButtonGeom);
         _firstButton->setFont(buttonFont);
@@ -106,7 +106,7 @@ namespace sudoku
             Qt::AutoConnection);
         
         _prevButton->setIconSize(buttonIconSize);
-        _prevButton->setObjectName("prevButton");
+        _prevButton->setObjectName(QStringLiteral("prevButton"));
         constexpr QRect prevButtonGeom(134, 602, 134, 35);
         _prevButton->setGeometry(prevButtonGeom);
         _prevButton->setFont(buttonFont);
@@ -116,7 +116,7 @@ namespace sudoku
         QObject::connect(_prevButton, &QPushButton::clicked, this, &StepByStepGUI::drawPrevStep, Qt::AutoConnection);
         
         _nextButton->setIconSize(buttonIconSize);
-        _nextButton->setObjectName("nextButton");
+        _nextButton->setObjectName(QStringLiteral("nextButton"));
         constexpr QRect nextButtonGeom(269, 602, 134, 35);
         _nextButton->setGeometry(nextButtonGeom);
         _nextButton->setFont(buttonFont);
@@ -126,7 +126,7 @@ namespace sudoku
         QObject::connect(_nextButton, &QPushButton::clicked, this, &StepByStepGUI::drawNextStep, Qt::AutoConnection);
         
         _lastButton->setIconSize(buttonIconSize);
-        _lastButton->setObjectName("lastButton");
+        _lastButton->setObjectName(QStringLiteral("lastButton"));
         constexpr QRect lastButtonGeom(403, 602, 134, 35);
         _lastButton->setGeometry(lastButtonGeom);
         _lastButton->setFont(buttonFont);

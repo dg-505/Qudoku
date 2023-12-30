@@ -9,7 +9,7 @@ namespace sudoku
     {
         constexpr QSize guiDim(537, 537);
         this->setFixedSize(guiDim);
-        this->setObjectName("CandidatesGUI");
+        this->setObjectName(QStringLiteral("CandidatesGUI"));
         this->setWindowTitle(QStringLiteral("Candidates"));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
         this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
