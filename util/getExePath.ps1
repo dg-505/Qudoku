@@ -7,9 +7,14 @@ Add-Type -AssemblyName System.IO
 #$FolderBrowser.ShowDialog()
 #Write-Output $FolderBrowser.SelectedPath
 
-$dir = [System.IO.Path]::GetDirectoryName($MyInvocation.MyCommand.Definition)
+$cwd = [System.IO.Path]::GetDirectoryName($MyInvocation.MyCommand.Definition)
+$relativeBuildPath = "..\build\QtCreator\Release\"
+$buildDir = Join-Path -Path $cwd -ChildPath $relativeBuildPath
+$exeName = "Qudoku.exe"
+$exePath = Join-Path -Path $buildDir -ChildPath $exeName
 $OpenFileDialog = New-Object System.Windows.Forms.OpenFileDialog
-$OpenFileDialog.InitialDirectory = $dir
+$OpenFileDialog.InitialDirectory = $buildDir
+$OpenFileDialog.FileName = $exePath
 $OpenFileDialog.Filter = "Applications (*.exe)|*.exe"
 $OpenFileDialog.ShowDialog() | Out-Null
 
