@@ -6,6 +6,9 @@
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
 #include <QtWidgets/QShortcut>
+#ifndef _WIN32
+#include <unistd.h>
+#endif
 
 #include "globals.h"
 #include "gui/CandidatesGUI.h"
@@ -264,7 +267,19 @@ namespace sudoku
     {
         const QString msgBoxStyleSheet = QStringLiteral("color: black; background: rgb(239, 239, 239)");
         // Read the data directory from the Qudoku.ini file created during installation
-        const QString filepath = QFileDialog::getOpenFileName(this, QStringLiteral("Open Sudoku from file"), (QSettings(QStringLiteral("./Qudoku.ini"), QSettings::IniFormat, nullptr)).value("DIRS/DataDir").toString(), QString(), nullptr, QFileDialog::Options());
+#ifdef _WIN32
+        auto settings = QSettings(QStringLiteral("./Qudoku.ini"), QSettings::IniFormat, nullptr);
+#else
+        constexpr int16_t buffer = 4096;
+        std::array<char, buffer> path{};
+        const ssize_t len = readlink("/proc/self/exe", path.data(), sizeof(path) - 1);
+        path[len] = '\0';
+        std::string iniPath = std::string(path.data()) + ".ini";
+        auto settings = QSettings(QString::fromStdString(iniPath), QSettings::IniFormat, nullptr);
+#endif
+        auto dataDir = settings.value(QStringLiteral("DIRS/DataDir"), QVariant()).toString();
+        _logTextBrowser->append("Data directory: " + dataDir);
+        const QString filepath = QFileDialog::getOpenFileName(this, QStringLiteral("Open Sudoku from file"), dataDir, QString(), nullptr, QFileDialog::Options());
         if (filepath.isEmpty())
         {
             // User cancelled file selection
@@ -370,7 +385,16 @@ namespace sudoku
     void MainGUI::saveButtonClicked() const
     {
         // Read the data directory from the Qudoku.ini file created during installation
-        const QSettings settings(QStringLiteral("./Qudoku.ini"), QSettings::IniFormat, nullptr);
+#ifdef _WIN32
+        auto settings = QSettings(QStringLiteral("./Qudoku.ini"), QSettings::IniFormat, nullptr);
+#else
+        constexpr int16_t buffer = 4096;
+        std::array<char, buffer> path{};
+        const ssize_t len = readlink("/proc/self/exe", path.data(), sizeof(path) - 1);
+        path[len] = '\0';
+        std::string iniPath = std::string(path.data()) + ".ini";
+        auto settings = QSettings(QString::fromStdString(iniPath), QSettings::IniFormat, nullptr);
+#endif
         const QString dataDir = settings.value(QStringLiteral("DIRS/DataDir"), QVariant()).toString();
         const QString filepath = QFileDialog::getSaveFileName(this->centralWidget(), QStringLiteral("Save Sudoku to file"), dataDir, QString(), nullptr, QFileDialog::Options());
 
