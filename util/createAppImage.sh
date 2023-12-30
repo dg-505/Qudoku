@@ -7,7 +7,7 @@ if [ -t 0 ]; then
 	cd ../../util
 
 
-	FILE=`zenity --file-selection --title="Select a File"`
+	FILE=`zenity --file-selection --title="Select a File" --filename=../build/Focal/Release/Qudoku`
 	case $? in
          0)
                 echo "\"$FILE\" selected.";;
