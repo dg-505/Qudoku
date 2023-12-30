@@ -33,7 +33,7 @@ namespace sudoku
         _stepsStack->installEventFilter(this);
 
         constexpr QRect messageLabelGeom(25, 0, 512, 50);
-        const QFont messageFont(QStringLiteral("Open Sans"), 14, QFont::Bold, false);
+        const QFont messageFont(QStringLiteral("Open Sans"), 12, QFont::Bold, false);
         constexpr QRect stepFieldsGeom(0, 50, 537, 537);
         const QString msg = this->getStepMsg(_currentStep);
         

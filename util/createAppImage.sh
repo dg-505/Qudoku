@@ -18,7 +18,7 @@ if [ -t 0 ]; then
 esac
 	cp $FILE ../release/AppImage
 	cp ./icons/Qudoku_256.png ../release/AppImage
-	export PATH=/home/joni/Qt/6.5.2/gcc_64/bin/:$PATH
+	export PATH=~/Qt/5.15.16/gcc_64/bin/:$PATH
 	./linuxdeployqt-continuous-x86_64.AppImage ../release/AppImage/Qudoku -appimage -no-translations
 	version=$(grep "#define Version" ./createSetup.iss)
 	version=$(echo "$version" | sed 's/^.\{17\}\(.*\)..$/\1/')

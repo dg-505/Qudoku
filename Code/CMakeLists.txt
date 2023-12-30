@@ -20,16 +20,16 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
 
 set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/res/Qudoku.rc")
 
-if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
-    qt_add_executable(Qudoku
-        MANUAL_FINALIZATION
+if(${QT_VERSION_MAJOR} GREATER_EQUAL 5)
+    add_executable(Qudoku
+        #MANUAL_FINALIZATION
         ${PROJECT_SOURCES}
         src/main.cpp ${app_icon_resource_windows} include/globals.h
         src/gui/TechniquesDialog.cpp include/gui/CandidatesGUI.h include/gui/MainGUI.h include/gui/QInputField.h include/gui/QLogTextBrowser.h include/gui/SolvedGUI.h include/gui/StepByStepGUI.h

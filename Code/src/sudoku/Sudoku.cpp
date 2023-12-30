@@ -1440,7 +1440,7 @@ namespace sudoku
     void Sudoku::print() const
     {
         QString printString;
-        QTextStream printStream(&printString, QIODeviceBase::ReadWrite);
+        QTextStream printStream(&printString, QIODevice::ReadWrite);
 
         printStream << "col  1  2  3   4  5  6   7  8  9  " << Qt::endl;
         printStream << "row ----------------------------- " << Qt::endl;
@@ -1483,7 +1483,7 @@ namespace sudoku
     void Sudoku::printFields() const
     {
         QString printString;
-        QTextStream printStream(&printString, QIODeviceBase::ReadWrite);
+        QTextStream printStream(&printString, QIODevice::ReadWrite);
         for (uint8_t rID = 1; rID <= global::order; rID++)
         {
 #pragma unroll static_cast<short>(global::order)

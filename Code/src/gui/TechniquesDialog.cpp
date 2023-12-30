@@ -28,7 +28,7 @@ namespace sudoku
         constexpr QSize dim(320, 375);
         this->setFixedSize(dim);
 
-        const QFont checkBoxFont(QStringLiteral("Open Sans"), 12, QFont::Normal, false);
+        const QFont checkBoxFont(QStringLiteral("Open Sans"), 11, QFont::Normal, false);
         const QString checkBoxStyleSheet = QStringLiteral("color: black; background: rgb(239, 239, 239)");
         const QString buttonStyleSheet = QStringLiteral("QPushButton {color: black; background: rgb(239, 239, 239)}"
                                                         "QPushButton:hover {color: black; background: rgb(171, 171, 171)}"
@@ -139,7 +139,7 @@ namespace sudoku
         _acceptButton->setGeometry(acceptButtonGeom);
         _acceptButton->setFont(buttonFont);
         _acceptButton->setStyleSheet(buttonStyleSheet);
-        _acceptButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_A, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _acceptButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_A, 0, 0, 0));
         QObject::connect(
             _acceptButton, &QPushButton::clicked, this, [this, &nakedSinglesEnabled, &hiddenSinglesEnabled, &nakedPairsEnabled, &hiddenPairsEnabled, &nakedTriplesEnabled, &hiddenTriplesEnabled, &blockLineChecksEnabled, &lineBlockChecksEnabled, &backtrackingEnabled]()
             { this->acceptChanges(nakedSinglesEnabled, hiddenSinglesEnabled, nakedPairsEnabled, hiddenPairsEnabled, nakedTriplesEnabled, hiddenTriplesEnabled, blockLineChecksEnabled, lineBlockChecksEnabled, backtrackingEnabled); },
@@ -149,7 +149,7 @@ namespace sudoku
         constexpr QRect cancelButtonGeom(166, 335, 144, 30);
         _cancelButton->setGeometry(cancelButtonGeom);
         _cancelButton->setFont(buttonFont);
-        _cancelButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_C, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _cancelButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_C, 0, 0, 0));
         _cancelButton->setStyleSheet(buttonStyleSheet);
         QObject::connect(_cancelButton, &QPushButton::clicked, this, &TechniquesDialog::reject, Qt::AutoConnection);
     }

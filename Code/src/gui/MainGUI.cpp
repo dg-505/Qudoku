@@ -1,10 +1,11 @@
 #include <QtCore/QSettings>
 #include <QtCore/QTextStream>
 #include <QtGui/QIcon>
-#include <QtGui/QShortcut>
+#include <QtGui/QScreen>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
+#include <QtWidgets/QShortcut>
 
 #include "globals.h"
 #include "gui/CandidatesGUI.h"
@@ -66,7 +67,7 @@ namespace sudoku
         constexpr QRect titleLabelGeom(0, 0, 367, 50);
         _titleLabel->setGeometry(titleLabelGeom);
         _titleLabel->setStyleSheet(QStringLiteral("color: black; background: rgb(239, 239, 239)"));
-        const QFont titleFont(QStringLiteral("Open Sans"), 14, QFont::Bold, false);
+        const QFont titleFont(QStringLiteral("Open Sans"), 12, QFont::Bold, false);
         _titleLabel->setFont(titleFont);
         _titleLabel->setAlignment(Qt::AlignCenter);
         _titleLabel->setText(QStringLiteral("Please fill in the initially given fields"));
@@ -76,8 +77,8 @@ namespace sudoku
         constexpr QRect gridWidgetGeom(0, 50, 537, 537);
         _gridWidget->setGeometry(gridWidgetGeom);
 
-        const QFont fieldsFont(QStringLiteral("Liberation Mono"), 32, QFont::Bold, false);
-        const QFont rcLabelFont(QStringLiteral("Open Sans"), 16, QFont::Bold, false);
+        const QFont fieldsFont(QStringLiteral("Liberation Mono"), 28, QFont::Bold, false);
+        const QFont rcLabelFont(QStringLiteral("Open Sans"), 14, QFont::Bold, false);
 
         uint8_t fID = 1;
         constexpr uint8_t offset = 27;
@@ -129,7 +130,7 @@ namespace sudoku
         }
 
         // Buttons
-        const QFont buttonFont(QStringLiteral("Open Sans"), 11, QFont::Bold, false);
+        const QFont buttonFont(QStringLiteral("Open Sans"), 10, QFont::Bold, false);
 
         _techniquesButton->setObjectName("techniquesButton");
         constexpr QRect tehniquesButtonGeom(367, 0, 100, 50);
@@ -137,7 +138,7 @@ namespace sudoku
         _techniquesButton->setFont(buttonFont);
         _techniquesButton->setStyleSheet(buttonStyleSheet);
         _techniquesButton->setText(QStringLiteral("Select\n&techniques"));
-        _techniquesButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_T, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _techniquesButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_T, 0, 0, 0));
         MainGUI::connect(_techniquesButton, &QPushButton::clicked, this, &MainGUI::techniquesButtonClicked, Qt::AutoConnection);
         
         _loadButton->setObjectName("loadButton");
@@ -146,7 +147,7 @@ namespace sudoku
         _loadButton->setFont(buttonFont);
         _loadButton->setStyleSheet(buttonStyleSheet);
         _loadButton->setText(QStringLiteral("Lo&ad"));
-        _loadButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_A, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _loadButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_A, 0, 0, 0));
         MainGUI::connect(_loadButton, &QPushButton::clicked, this, &MainGUI::loadButtonClicked, Qt::AutoConnection);
 
         // validateButton = new QPushButton(this);
@@ -161,7 +162,7 @@ namespace sudoku
         _saveButton->setFont(buttonFont);
         _saveButton->setStyleSheet(buttonStyleSheet);
         _saveButton->setText(QStringLiteral("&Save"));
-        _saveButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_S, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _saveButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_S, 0, 0, 0));
         MainGUI::connect(_saveButton, &QPushButton::clicked, this, &MainGUI::saveButtonClicked, Qt::AutoConnection);
 
         _candidatesButton->setObjectName("candidatesButton");
@@ -170,7 +171,7 @@ namespace sudoku
         _candidatesButton->setFont(buttonFont);
         _candidatesButton->setStyleSheet(buttonStyleSheet);
         _candidatesButton->setText(QStringLiteral("&Candidates"));
-        _candidatesButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_C, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _candidatesButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_C, 0, 0, 0));
         MainGUI::connect(_candidatesButton, &QPushButton::clicked, this, &MainGUI::candidatesButtonClicked, Qt::AutoConnection);
 
         _stepByStepButton->setObjectName("stepByStepButton");
@@ -179,7 +180,7 @@ namespace sudoku
         _stepByStepButton->setFont(buttonFont);
         _stepByStepButton->setStyleSheet(buttonStyleSheet);
         _stepByStepButton->setText(QStringLiteral("St&ep by Step"));
-        _stepByStepButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_E, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _stepByStepButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_E, 0, 0, 0));
         MainGUI::connect(_stepByStepButton, &QPushButton::clicked, this, &MainGUI::stepByStepButtonClicked, Qt::AutoConnection);
         
         _solveButton->setObjectName("solveButton");
@@ -188,7 +189,7 @@ namespace sudoku
         _solveButton->setFont(buttonFont);
         _solveButton->setStyleSheet(buttonStyleSheet);
         _solveButton->setText(QStringLiteral("Sol&ve"));
-        _solveButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_V, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _solveButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_V, 0, 0, 0));
         MainGUI::connect(_solveButton, &QPushButton::clicked, this, &MainGUI::solveButtonClicked, Qt::AutoConnection);
         
         _clearButton->setObjectName("clearButton");
@@ -197,7 +198,7 @@ namespace sudoku
         _clearButton->setFont(buttonFont);
         _clearButton->setStyleSheet(buttonStyleSheet);
         _clearButton->setText(QStringLiteral("Clea&r"));
-        _clearButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_R, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _clearButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_R, 0, 0, 0));
         MainGUI::connect(_clearButton, &QPushButton::clicked, this, &MainGUI::clearButtonClicked, Qt::AutoConnection);
         
         _quitButton->setObjectName("quitButton");
@@ -206,7 +207,7 @@ namespace sudoku
         _quitButton->setFont(buttonFont);
         _quitButton->setStyleSheet(buttonStyleSheet);
         _quitButton->setText(QStringLiteral("&Quit"));
-        _quitButton->setShortcut(QKeySequence(Qt::ALT | Qt::Key_Q, QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0), QKeyCombination::fromCombined(0)));
+        _quitButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Q, 0, 0, 0));
         MainGUI::connect(_quitButton, &QPushButton::clicked, [=]()
                          { QApplication::quit(); });
 
@@ -370,7 +371,7 @@ namespace sudoku
     {
         // Read the data directory from the Qudoku.ini file created during installation
         const QSettings settings(QStringLiteral("./Qudoku.ini"), QSettings::IniFormat, nullptr);
-        const QString dataDir = settings.value("DIRS/DataDir").toString();
+        const QString dataDir = settings.value(QStringLiteral("DIRS/DataDir"), QVariant()).toString();
         const QString filepath = QFileDialog::getSaveFileName(this->centralWidget(), QStringLiteral("Save Sudoku to file"), dataDir, QString(), nullptr, QFileDialog::Options());
 
         if (filepath.isEmpty())

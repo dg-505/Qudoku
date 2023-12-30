@@ -31,12 +31,12 @@ namespace sudoku
     void SolvedGUI::drawFields(Step& currStep, Step& nextStep, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent)
     {
 #pragma unroll static_cast<short>(global::order * global::order * global::order)
-        for (QLabel* label : parent->findChildren<QLabel*>(Qt::FindChildrenRecursively)) {
+        for (QLabel* label : parent->findChildren<QLabel*>(QString(), Qt::FindChildrenRecursively)) {
             label->deleteLater();
         }
-        const QFont fieldsFont(QStringLiteral("Liberation Mono"), 32, QFont::Bold, false);
-        const QFont candsFont(QStringLiteral("Liberation Mono"), 16, QFont::Bold, false);
-        const QFont rcLabelFont(QStringLiteral("Open Sans"), 16, QFont::Bold, false);
+        const QFont fieldsFont(QStringLiteral("Liberation Mono"), 28, QFont::Bold, false);
+        const QFont candsFont(QStringLiteral("Liberation Mono"), 12, QFont::Bold, false);
+        const QFont rcLabelFont(QStringLiteral("Open Sans"), 14, QFont::Bold, false);
 
         uint8_t fID = 1;
         constexpr uint8_t offset = 27;
@@ -129,7 +129,7 @@ namespace sudoku
                             }
                             else
                             {
-                                cand->setText(QStringLiteral(""));
+                                cand->setText(QLatin1String(""));
                             }
                             if (candI == *nextStep.getGrid()->at(rID - 1).at(cID - 1).getVal()) // set green candidate background for fields solved in next step
                             {
