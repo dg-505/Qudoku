@@ -1,35 +1,96 @@
-Repository structure:
-"Code" contains the source code of the program
+Qudoku is a tool that can solve sudoku puzzles with human-like techniques.
+It is able to display the solution step-by-step with a description of what
+each step does.
 
-"util" contains:
- - some auxiliary files e.g. needed to create a Setup for Windows, an AppImage for Linux
+
+
+##############################
+##### Usage instructions #####
+##############################
+
+
+
+Type in the fields that are pre-defined and those you alread have solved.
+
+You can load (Alt+L) and save (Alt+S) sudokus in the following format:
+.3..........195.....8....6.8...6....4..8....1....2.....6....28....419..5.......7.
+Compare the example in "Qudoku/Code/data/example.txt".
+Example from upload.wikimedia.org/wikipedia/commons/9/99/Sudoku_problem_1.svg
+
+If you want to select specific solving techniques that shall be used during the
+solving process, you can choose them via the "Select techniques" button
+    (Alt+T).
+
+To view all candidates at this given status, click the "Candidates" button
+    (Alt+C).
+To view the step-by-step solution process, click the "Step-by-step" button
+    (Alt+E).
+To view the solution, click the "Solve" button.
+     (Alt+V)
+To clear the fields and the output window, click the "Clear" button.
+    (Alt+C)
+To exit and close the program, click the "Quit" button.
+    (Alt+Q)
+
+
+
+##########################################
+##### Build and release instructions #####
+##########################################
+
+
+
+Qudoku is currently built with Qt version 5.15.16 on Windows 10 version 22H2
+and on Ubuntu 20.04.6.
+
+Repository structure:
+"Qudoku/Code" contains the source code of the program.
+
+"Qudoku/util" contains:
+ - some auxiliary files e.g. needed to create a Setup for Windows,
+   an AppImage and a .deb package for Linux
  - source files for the icons
 
 
+
 Workflow to create a new release on Windows (tested on Windows 10 22H2):
-1.) Compile the source code with your preferred method (tested with Qt Creator)
-2.) Run the shell script "util/icons/createIcons.sh" if the icons got changed
-3.) Run the shell script "util/createInstaller.sh" to create a Setup file in the "release" directory
-    When asked, specifiy the directory where the compiled "Qudoku.exe" is located
-4.) Execute "release/Qudoku_setup.exe" to install the application
-
-
-
-Workflow to create a new release on Linux (tested on Ubuntu 22.04.3):
-1.) Compile the source code using your preferred method (tested using the terminal). Needs Qt installed.
-    To compile on Ubuntu 22.04.3 I needed some additional steps:
-    sudo apt install sudo apt install libgl1-mesa-dev # install some OpenGL dependencies
-    sudo apt install libxcb-cursor0 # install some xcb dependencies for the X11 window manager
-
-    Compilation:
-    cmake -DCMAKE_PREFIX_PATH=/PATH/TO/Qt/6.5.2/gcc_64 /PATH/TO/Code/CMakeLists.txt
-    make
-
+1.) From the directory "Qudoku\util\icons\" run the bash script "createIcons.sh"
+    if the icons got changed.
+2.) Compile the source code with your preferred method (tested with Qt Creator).
+    Needs Qt 5.15.16 installed and it's location known by the compiler or IDE.
+3.) From the directory "Qudoku\util\" run the bash script "createInstaller.bat"
+    to create a Setup file in the "Qudoku\release\" directory. When prompted,
+    select the executable program "Qudoku.exe", for which the installer shall be
+    created (default is "Qudoku\build\QtCreator\Release\Qudoku.exe").
+4.) Execute "Qudoku\release\Qudoku-X.Y.Z.exe" to install the application.
 
 Tools needed to create a Windows installer:
 
 WinDeployQt (is part of the Qt framework):
-installed in "C:/Qt/6.5.2/mingw_64/bin/windeployqt6.exe"
+installed in "C:\Qt\5.15.16\mingw81_64\bin\windeployqt.exe"
 
 InnoSetup Compiler:
-installed in ""C:/Program Files (x86)/Inno Setup 6/ISCC.exe"
+installed in "C:\Program Files (x86)\Inno Setup 6\ISCC.exe"
+
+
+
+Workflow to create a new release on Linux (tested on Ubuntu 20.04.6):
+1.) From the directory "Qudoku/util/icons/" run the bash script "createIcons.sh"
+    if the icons got changed.
+2.) Compile the source code using your preferred method (tested with CLion).
+    Needs Qt 5.15.16 installed and it's location known by the compiler or IDE.
+3.) From the directory "Qudoku/util/" run the bash script "createDeb.sh" to
+    create a .deb package in the "Qudoku/release" directory. When prompted,
+    select the executable binary "Qudoku", for which the .deb package shall be
+    created (default is "Qudoku/build/Focal/Release/Qudoku") and the path to the
+    Qt installation (default is "~/Qt/5.15.16/gcc_64").
+4.) From the directory "Qudoku/util/" run the bash script "createAppImage.sh" to
+    create an AppImage in the "Qudoku/release" directory. When prompted, select
+    the executable binary "Qudoku", for which the AppImage shall be created
+    (default is "Qudoku/build/Focal/Release/Qudoku").
+
+To install the .deb package, run "sudo dpkg -i Qudoku/release/qudoku-X.Y.Z"
+or install it via a software center.
+
+To execute theAppImage on Ubuntu 22.04 or newer, your system needs FUSE
+version 2.x installed: You can install it via "sudo apt install libfuse2".
