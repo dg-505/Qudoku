@@ -22,6 +22,7 @@ namespace sudoku
     // Main GUI setup
     MainGUI::MainGUI(const std::string& version, QWidget* parent)
         : QMainWindow(parent, Qt::WindowFlags()),
+          _menuBar(new QMenuBar(this)),
           _logScrollArea(new QScrollArea(this)),
           _logTextBrowser(new QLogTextBrowser(_logScrollArea)),
           _titleLabel(new QLabel(this, Qt::WindowFlags())),
@@ -37,13 +38,19 @@ namespace sudoku
           _quitButton(new QPushButton(this))
     {
         // Main window properties
-        constexpr QSize guiDim(1025, 637);
+        constexpr QSize guiDim(1025, 662);
         this->setFixedSize(guiDim);
         this->setObjectName(QStringLiteral("MainGUI"));
         const std::string title = "Qudoku - Qt based cross platform sudoku solver (Version " + version + ")";
         this->setWindowTitle(QString::fromStdString(title));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
         this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
+
+        // Menu bar
+        _menuBar->setObjectName(QStringLiteral("menuBar"));
+        constexpr QRect menuBarGeom(0, 0, 537, 25);
+        _menuBar->setGeometry(menuBarGeom);
+        _menuBar->addMenu(QStringLiteral("&Menu"));
 
         const QString buttonStyleSheet = QStringLiteral("QPushButton {color: black; background: rgb(239, 239, 239)}"
                                                         "QPushButton:hover {color: black; background: rgb(171, 171, 171)}"
@@ -53,11 +60,11 @@ namespace sudoku
         const QFont logFont(QStringLiteral("Liberation Mono"), 10, QFont::Bold, false);
 
         _logScrollArea->setObjectName(QStringLiteral("logScrollArea"));
-        constexpr QRect logScrollAreaGeom(537, 0, 488, 637);
+        constexpr QRect logScrollAreaGeom(537, 0, 488, 662);
         _logScrollArea->setGeometry(logScrollAreaGeom);
 
         _logTextBrowser->setObjectName(QStringLiteral("logTextBrowser"));
-        constexpr QRect logTextBrowserGeom(0, 0, 488, 637);
+        constexpr QRect logTextBrowserGeom(0, 0, 488, 662);
         _logTextBrowser->setGeometry(logTextBrowserGeom);
         _logTextBrowser->setStyleSheet(QStringLiteral("color: black; background: white"));
         _logTextBrowser->setWordWrapMode(QTextOption::NoWrap);
@@ -67,7 +74,7 @@ namespace sudoku
 
         // Title label
         _titleLabel->setObjectName(QStringLiteral("titleLabel"));
-        constexpr QRect titleLabelGeom(0, 0, 367, 50);
+        constexpr QRect titleLabelGeom(0, 25, 367, 50);
         _titleLabel->setGeometry(titleLabelGeom);
         _titleLabel->setStyleSheet(QStringLiteral("color: black; background: rgb(239, 239, 239)"));
         const QFont titleFont(QStringLiteral("Open Sans"), 12, QFont::Bold, false);
@@ -77,7 +84,7 @@ namespace sudoku
 
         // Set up the fields
         _gridWidget->setObjectName(QStringLiteral("gridWidget"));
-        constexpr QRect gridWidgetGeom(0, 50, 537, 537);
+        constexpr QRect gridWidgetGeom(0, 75, 537, 537);
         _gridWidget->setGeometry(gridWidgetGeom);
 
         const QFont fieldsFont(QStringLiteral("Liberation Mono"), 28, QFont::Bold, false);
@@ -136,7 +143,7 @@ namespace sudoku
         const QFont buttonFont(QStringLiteral("Open Sans"), 10, QFont::Bold, false);
 
         _techniquesButton->setObjectName(QStringLiteral("techniquesButton"));
-        constexpr QRect tehniquesButtonGeom(367, 0, 100, 50);
+        constexpr QRect tehniquesButtonGeom(367, 25, 100, 50);
         _techniquesButton->setGeometry(tehniquesButtonGeom);
         _techniquesButton->setFont(buttonFont);
         _techniquesButton->setStyleSheet(buttonStyleSheet);
@@ -145,7 +152,7 @@ namespace sudoku
         MainGUI::connect(_techniquesButton, &QPushButton::clicked, this, &MainGUI::techniquesButtonClicked, Qt::AutoConnection);
 
         _loadButton->setObjectName(QStringLiteral("loadButton"));
-        constexpr QRect loadButtonGeom(467, 0, 70, 25);
+        constexpr QRect loadButtonGeom(467, 25, 70, 25);
         _loadButton->setGeometry(loadButtonGeom);
         _loadButton->setFont(buttonFont);
         _loadButton->setStyleSheet(buttonStyleSheet);
@@ -160,7 +167,7 @@ namespace sudoku
         // validateButton->setText("Validate");
 
         _saveButton->setObjectName(QStringLiteral("saveButton"));
-        constexpr QRect saveButtonGeom(467, 25, 70, 25);
+        constexpr QRect saveButtonGeom(467, 50, 70, 25);
         _saveButton->setGeometry(saveButtonGeom);
         _saveButton->setFont(buttonFont);
         _saveButton->setStyleSheet(buttonStyleSheet);
@@ -169,7 +176,7 @@ namespace sudoku
         MainGUI::connect(_saveButton, &QPushButton::clicked, this, &MainGUI::saveButtonClicked, Qt::AutoConnection);
 
         _candidatesButton->setObjectName(QStringLiteral("candidatesButton"));
-        constexpr QRect candidatesButtonGeom(0, 587, 107, 50);
+        constexpr QRect candidatesButtonGeom(0, 612, 107, 50);
         _candidatesButton->setGeometry(candidatesButtonGeom);
         _candidatesButton->setFont(buttonFont);
         _candidatesButton->setStyleSheet(buttonStyleSheet);
@@ -178,7 +185,7 @@ namespace sudoku
         MainGUI::connect(_candidatesButton, &QPushButton::clicked, this, &MainGUI::candidatesButtonClicked, Qt::AutoConnection);
 
         _stepByStepButton->setObjectName(QStringLiteral("stepByStepButton"));
-        constexpr QRect stepByStepButtonGeom(107, 587, 108, 50);
+        constexpr QRect stepByStepButtonGeom(107, 612, 108, 50);
         _stepByStepButton->setGeometry(stepByStepButtonGeom);
         _stepByStepButton->setFont(buttonFont);
         _stepByStepButton->setStyleSheet(buttonStyleSheet);
@@ -187,7 +194,7 @@ namespace sudoku
         MainGUI::connect(_stepByStepButton, &QPushButton::clicked, this, &MainGUI::stepByStepButtonClicked, Qt::AutoConnection);
 
         _solveButton->setObjectName(QStringLiteral("solveButton"));
-        constexpr QRect solveButtonGeom(215, 587, 107, 50);
+        constexpr QRect solveButtonGeom(215, 612, 107, 50);
         _solveButton->setGeometry(solveButtonGeom);
         _solveButton->setFont(buttonFont);
         _solveButton->setStyleSheet(buttonStyleSheet);
@@ -196,7 +203,7 @@ namespace sudoku
         MainGUI::connect(_solveButton, &QPushButton::clicked, this, &MainGUI::solveButtonClicked, Qt::AutoConnection);
 
         _clearButton->setObjectName(QStringLiteral("clearButton"));
-        constexpr QRect clearButtonGeom(322, 587, 108, 50);
+        constexpr QRect clearButtonGeom(322, 612, 108, 50);
         _clearButton->setGeometry(clearButtonGeom);
         _clearButton->setFont(buttonFont);
         _clearButton->setStyleSheet(buttonStyleSheet);
@@ -205,7 +212,7 @@ namespace sudoku
         MainGUI::connect(_clearButton, &QPushButton::clicked, this, &MainGUI::clearButtonClicked, Qt::AutoConnection);
 
         _quitButton->setObjectName(QStringLiteral("quitButton"));
-        constexpr QRect quitButtonGeom(430, 587, 107, 50);
+        constexpr QRect quitButtonGeom(430, 612, 107, 50);
         _quitButton->setGeometry(quitButtonGeom);
         _quitButton->setFont(buttonFont);
         _quitButton->setStyleSheet(buttonStyleSheet);
@@ -437,7 +444,7 @@ namespace sudoku
         std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
         auto* sudoku = init(&initVals);
         auto* candidatesGUI = std::make_unique<CandidatesGUI>(sudoku, initVals, this).release();
-        const QPoint candidatesGUIpos(this->pos().x(), this->pos().y() + 50);
+        const QPoint candidatesGUIpos(this->pos().x(), this->pos().y() + 75);
         candidatesGUI->move(candidatesGUIpos);
         candidatesGUI->show();
     }

@@ -20,7 +20,7 @@ namespace sudoku
           _nextButton(new QPushButton(QIcon(QStringLiteral(":/res/next.png")), QStringLiteral("  (PgDn)"), this)),
           _lastButton(new QPushButton(QIcon(QStringLiteral(":/res/last.png")), QStringLiteral("  (End)"), this))
     {
-        constexpr QSize guiDim(537, 637);
+        constexpr QSize guiDim(537, 662);
         this->setFixedSize(guiDim);
         this->setObjectName(QStringLiteral("StepByStepGUI"));
         this->setWindowTitle(QStringLiteral("Step-by-step solution"));
@@ -28,13 +28,13 @@ namespace sudoku
         this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
 
         _stepsStack->setObjectName(QStringLiteral("stepsStack"));
-        constexpr QRect stepsStackGeom(0, 0, 537, 587);
+        constexpr QRect stepsStackGeom(0, 0, 537, 612);
         _stepsStack->setGeometry(stepsStackGeom);
         _stepsStack->installEventFilter(this);
 
-        constexpr QRect messageLabelGeom(25, 0, 512, 50);
-        const QFont messageFont(QStringLiteral("Open Sans"), 12, QFont::Bold, false);
-        constexpr QRect stepFieldsGeom(0, 50, 537, 537);
+        constexpr QRect messageLabelGeom(25, 0, 512, 75);
+        const QFont messageFont(QStringLiteral("Open Sans"), 14, QFont::Bold, false);
+        constexpr QRect stepFieldsGeom(0, 75, 537, 537);
         const QString msg = this->getStepMsg(_currentStep);
         
         _fieldsWidget->setGeometry(stepFieldsGeom);
@@ -60,7 +60,7 @@ namespace sudoku
 
         // Scrollbar to scroll through steps
         _stepsScrollBar->setObjectName(QStringLiteral("stepsScrollBar"));
-        constexpr QRect stepsScrollBarGeom(0, 587, 537, 15);
+        constexpr QRect stepsScrollBarGeom(0, 612, 537, 15);
         _stepsScrollBar->setGeometry(stepsScrollBarGeom);
         _stepsScrollBar->setContextMenuPolicy(Qt::NoContextMenu);
         _stepsScrollBar->setRange(0, static_cast<uint8_t>(2) * static_cast<uint8_t>(_sudoku->getSteps()->size()) - 2);
@@ -87,7 +87,7 @@ namespace sudoku
         
         _firstButton->setIconSize(buttonIconSize);
         _firstButton->setObjectName(QStringLiteral("firstButton"));
-        constexpr QRect firstButtonGeom(0, 602, 134, 35);
+        constexpr QRect firstButtonGeom(0, 627, 134, 35);
         _firstButton->setGeometry(firstButtonGeom);
         _firstButton->setFont(buttonFont);
         _firstButton->setStyleSheet(buttonStyleSheet);
@@ -107,7 +107,7 @@ namespace sudoku
         
         _prevButton->setIconSize(buttonIconSize);
         _prevButton->setObjectName(QStringLiteral("prevButton"));
-        constexpr QRect prevButtonGeom(134, 602, 134, 35);
+        constexpr QRect prevButtonGeom(134, 627, 134, 35);
         _prevButton->setGeometry(prevButtonGeom);
         _prevButton->setFont(buttonFont);
         _prevButton->setStyleSheet(buttonStyleSheet);
@@ -117,7 +117,7 @@ namespace sudoku
         
         _nextButton->setIconSize(buttonIconSize);
         _nextButton->setObjectName(QStringLiteral("nextButton"));
-        constexpr QRect nextButtonGeom(269, 602, 134, 35);
+        constexpr QRect nextButtonGeom(269, 627, 134, 35);
         _nextButton->setGeometry(nextButtonGeom);
         _nextButton->setFont(buttonFont);
         _nextButton->setStyleSheet(buttonStyleSheet);
@@ -127,7 +127,7 @@ namespace sudoku
         
         _lastButton->setIconSize(buttonIconSize);
         _lastButton->setObjectName(QStringLiteral("lastButton"));
-        constexpr QRect lastButtonGeom(403, 602, 134, 35);
+        constexpr QRect lastButtonGeom(403, 627, 134, 35);
         _lastButton->setGeometry(lastButtonGeom);
         _lastButton->setFont(buttonFont);
         _lastButton->setStyleSheet(buttonStyleSheet);
