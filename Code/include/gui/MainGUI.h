@@ -3,7 +3,6 @@
 // #include <QtCore/QThread>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
-#include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QScrollArea>
 
@@ -84,7 +83,6 @@ namespace sudoku
             // void handleResults();
 
         private:
-            QMenuBar* _menuBar;
             QScrollArea* _logScrollArea;
             QLogTextBrowser* _logTextBrowser;
             QLabel* _titleLabel;
