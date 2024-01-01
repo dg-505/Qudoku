@@ -88,6 +88,12 @@ Workflow to create a new release on Linux (tested on Ubuntu 20.04.6):
     create an AppImage in the "Qudoku/release" directory. When prompted, select
     the executable binary "Qudoku", for which the AppImage shall be created
     (default is "Qudoku/build/Focal/Release/Qudoku").
+    This needs "qmake" available in the "~/Qt/5.15.16/gcc_64/bin/" directory.
+
+Tools needed to create an AppImage:
+
+LinuxDeployQt continuous build:
+installed in "Qudoku/util/linuxdeployqt-continuous-x86_64.AppImage"
 
 To install the .deb package, run "sudo dpkg -i Qudoku/release/qudoku-X.Y.Z"
 or install it via a software center.
