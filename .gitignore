@@ -3,7 +3,7 @@
 /release/
 /Code/build/
 
-# Ignore teset sudoku files
+# Ignore test sudoku files
 /Code/data/*
 !/Code/data/example.txt
 
@@ -14,3 +14,8 @@
 
 # Ignore LinuxDeployQt
 /util/linuxdeployqt-continuous-x86_64.AppImage
+
+# Ignore sync files
+.owncloudsync.log
+.sync_journal.db
+.sync_journal.db-wal
