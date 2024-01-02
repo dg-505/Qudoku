@@ -1,6 +1,7 @@
 #pragma once
 
 // #include <QtCore/QThread>
+#include <QtWidgets/QComboBox>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
@@ -86,6 +87,8 @@ namespace sudoku
             QScrollArea* _logScrollArea;
             QLogTextBrowser* _logTextBrowser;
             QLabel* _titleLabel;
+            QLabel* _languageLabel;
+            QComboBox* _languageComboBox;
             QWidget* _gridWidget;
             std::array<QInputField*, static_cast<uint8_t>(global::order* global::order)>* _fields{};
             QPushButton* _techniquesButton;

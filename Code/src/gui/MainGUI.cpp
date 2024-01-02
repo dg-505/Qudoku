@@ -25,6 +25,8 @@ namespace sudoku
           _logScrollArea(new QScrollArea(this)),
           _logTextBrowser(new QLogTextBrowser(_logScrollArea)),
           _titleLabel(new QLabel(this, Qt::WindowFlags())),
+          _languageLabel(new QLabel(this, Qt::WindowFlags())),
+          _languageComboBox(new QComboBox(this)),
           _gridWidget(new QWidget(this, Qt::WindowFlags())),
           _fields(new std::array<QInputField*, static_cast<uint8_t>(global::order* global::order)>),
           _techniquesButton(new QPushButton(this)),
@@ -67,13 +69,51 @@ namespace sudoku
 
         // Title label
         _titleLabel->setObjectName(QStringLiteral("titleLabel"));
-        constexpr QRect titleLabelGeom(0, 0, 367, 50);
+        constexpr QRect titleLabelGeom(0, 0, 267, 50);
         _titleLabel->setGeometry(titleLabelGeom);
         _titleLabel->setStyleSheet(QStringLiteral("color: black; background: rgb(239, 239, 239)"));
         const QFont titleFont(QStringLiteral("Open Sans"), 12, QFont::Bold, false);
         _titleLabel->setFont(titleFont);
         _titleLabel->setAlignment(Qt::AlignCenter);
-        _titleLabel->setText(QStringLiteral("Please fill in the initially given fields"));
+        _titleLabel->setText(QStringLiteral("Enter predefined fields"));
+
+        const QFont buttonFont(QStringLiteral("Open Sans"), 10, QFont::Bold, false);
+
+        _languageLabel->setObjectName(QStringLiteral("languageLabel"));
+        constexpr QRect languageLabelGeom(267, 0, 100, 25);
+        _languageLabel->setGeometry(languageLabelGeom);
+        _languageLabel->setStyleSheet(QStringLiteral("color: black; background: rgb(239, 239, 239)"));
+        _languageLabel->setFont(buttonFont);
+        _languageLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+        _languageLabel->setText(QStringLiteral("Language:"));
+
+        _languageComboBox->setObjectName(QStringLiteral("languageComboBox"));
+        constexpr QRect languageComboBoxGeom(267, 25, 100, 25);
+        _languageComboBox->setGeometry(languageComboBoxGeom);
+        _languageComboBox->setStyleSheet(QStringLiteral("color: black; background: rgb(239, 239, 239)"));
+        _languageComboBox->setFont(buttonFont);
+        _languageComboBox->addItems(QStringList()
+                                    << "cs_CZ"
+                                    << "da_DK"
+                                    << "de_DE"
+                                    << "en_US"
+                                    << "es_ES"
+                                    << "fi_FI"
+                                    << "fr_FR"
+                                    << "it_IT"
+                                    << "ja_JP"
+                                    << "ko_KR"
+                                    << "nb_NO"
+                                    << "nl_NL"
+                                    << "pl_PL"
+                                    << "pt_BR"
+                                    << "pt_PT"
+                                    << "ru_RU"
+                                    << "sv_SE"
+                                    << "tr_TR"
+                                    << "uk_UA"
+                                    << "zh_CN");
+        _languageComboBox->setCurrentText(QStringLiteral("en_US"));
 
         // Set up the fields
         _gridWidget->setObjectName(QStringLiteral("gridWidget"));
@@ -133,8 +173,6 @@ namespace sudoku
         }
 
         // Buttons
-        const QFont buttonFont(QStringLiteral("Open Sans"), 10, QFont::Bold, false);
-
         _techniquesButton->setObjectName(QStringLiteral("techniquesButton"));
         constexpr QRect tehniquesButtonGeom(367, 0, 100, 50);
         _techniquesButton->setGeometry(tehniquesButtonGeom);
@@ -218,7 +256,7 @@ namespace sudoku
 
         // center window
         this->move(screen()->geometry().center() - frameGeometry().center());
-        
+
         MainGUI::setTabOrder(_loadButton, _saveButton);
         MainGUI::setTabOrder(_saveButton, _fields->at(0));
 #pragma unroll static_cast < short>(global::order * global::order)
@@ -378,7 +416,7 @@ namespace sudoku
         _logTextBrowser->clear();
         _logTextBrowser->append("Sudoku \"" + filepath + "\" successfully loaded");
         file.close();
-        
+
         return _filename;
     }
 
