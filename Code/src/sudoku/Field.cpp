@@ -1,4 +1,4 @@
-#include <QtCore/QStringList>
+#include <QStringList>
 
 #include "globals.h"
 #include "sudoku/Field.h"

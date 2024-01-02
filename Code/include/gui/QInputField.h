@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QtGui/QKeyEvent>
-#include <QtWidgets/QLineEdit>
+#include <QKeyEvent>
+#include <QLineEdit>
 
 namespace sudoku
 {

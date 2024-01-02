@@ -1,11 +1,11 @@
 #pragma once
 
-// #include <QtCore/QThread>
-#include <QtWidgets/QComboBox>
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QScrollArea>
+// #include <QThread>
+#include <QComboBox>
+#include <QLabel>
+#include <QMainWindow>
+#include <QPushButton>
+#include <QScrollArea>
 
 #include "globals.h"
 #include "gui/QInputField.h"

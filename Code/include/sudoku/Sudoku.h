@@ -4,7 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "Step.h"
 #include "globals.h"
 #include "gui/QLogTextBrowser.h"
 #include "sudoku/Field.h"
@@ -12,6 +11,7 @@
 #include "sudoku/HiddenSubset.h"
 #include "sudoku/NakedPair.h"
 #include "sudoku/NakedTriple.h"
+#include "sudoku/Step.h"
 
 namespace sudoku
 {

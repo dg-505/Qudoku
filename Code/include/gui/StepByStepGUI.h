@@ -1,10 +1,9 @@
 #pragma once
 
-#include <QtWidgets/QLabel>
-#include <QtWidgets/QMainWindow>
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QScrollBar>
-#include <QtWidgets/QStackedWidget>
+#include <QLabel>
+#include <QMainWindow>
+#include <QPushButton>
+#include <QScrollBar>
 
 #include "globals.h"
 #include "sudoku/Sudoku.h"

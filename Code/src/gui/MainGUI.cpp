@@ -1,11 +1,11 @@
-#include <QtCore/QSettings>
-#include <QtCore/QTextStream>
-#include <QtGui/QIcon>
-#include <QtGui/QScreen>
-#include <QtWidgets/QApplication>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QShortcut>
+#include <QApplication>
+#include <QFileDialog>
+#include <QIcon>
+#include <QMessageBox>
+#include <QScreen>
+#include <QSettings>
+#include <QShortcut>
+#include <QTextStream>
 #ifndef _WIN32
 #include <unistd.h>
 #endif

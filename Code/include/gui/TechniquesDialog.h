@@ -1,9 +1,9 @@
 #pragma once
 
-#include <QtWidgets/QCheckBox>
-#include <QtWidgets/QDialog>
-#include <QtWidgets/QFrame>
-#include <QtWidgets/QPushButton>
+#include <QCheckBox>
+#include <QDialog>
+#include <QFrame>
+#include <QPushButton>
 
 namespace sudoku
 {

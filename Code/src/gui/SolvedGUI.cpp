@@ -1,4 +1,4 @@
-#include <QtWidgets/QLabel>
+#include <QLabel>
 
 #include "globals.h"
 #include "gui/SolvedGUI.h"

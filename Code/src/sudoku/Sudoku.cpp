@@ -1,5 +1,5 @@
-#include <QtCore/QString>
-#include <QtCore/QTextStream>
+#include <QString>
+#include <QTextStream>
 
 #include "sudoku/Sudoku.h"
 

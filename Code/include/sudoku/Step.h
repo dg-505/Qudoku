@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include "Field.h"
 #include "globals.h"
+#include "sudoku/Field.h"
 
 namespace sudoku
 {

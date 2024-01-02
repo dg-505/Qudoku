@@ -1,7 +1,7 @@
 #pragma once
 
-#include <QtGui/QWheelEvent>
-#include <QtWidgets/QTextBrowser>
+#include <QTextBrowser>
+#include <QWheelEvent>
 
 namespace sudoku
 {

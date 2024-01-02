@@ -1,4 +1,4 @@
-#include <QtWidgets/QScrollBar>
+#include <QScrollBar>
 
 #include "gui/QLogTextBrowser.h"
 

@@ -1,7 +1,6 @@
-#include <QtWidgets/QApplication>
+#include <QApplication>
 
 #include "gui/MainGUI.h"
-//#include "qtresource.h"
 
 auto main(int argc, char* argv[]) -> int
 {
