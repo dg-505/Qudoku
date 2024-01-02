@@ -27,11 +27,11 @@ rem remove unnecessary stuff
 rmdir /s /q "..\release\WindowsInstaller\iconengines"
 rmdir /s /q "..\release\WindowsInstaller\imageformats"
 rmdir /s /q "..\release\WindowsInstaller\translations"
-rmdir /s /q "..\release\WindowsInstaller\styles"
 del "..\release\WindowsInstaller\D3Dcompiler_47.dll"
-del "..\release\WindowsInstaller\opengl32sw.dll"
 del "..\release\WindowsInstaller\libEGL.dll"
 del "..\release\WindowsInstaller\libGLESv2.dll"
+del "..\release\WindowsInstaller\opengl32sw.dll"
+del "..\release\WindowsInstaller\Qt5Svg.dll"
 
 rem Create Installer executable
 "C:\Program Files (x86)\Inno Setup 6\ISCC.exe" createSetup.iss
