@@ -93,26 +93,26 @@ namespace sudoku
         _languageComboBox->setStyleSheet(QStringLiteral("color: black; background: rgb(239, 239, 239)"));
         _languageComboBox->setFont(buttonFont);
         _languageComboBox->addItems(QStringList()
-                                    << "cs_CZ"
-                                    << "da_DK"
-                                    << "de_DE"
-                                    << "en_US"
-                                    << "es_ES"
-                                    << "fi_FI"
-                                    << "fr_FR"
-                                    << "it_IT"
-                                    << "ja_JP"
-                                    << "ko_KR"
-                                    << "nb_NO"
-                                    << "nl_NL"
-                                    << "pl_PL"
-                                    << "pt_BR"
-                                    << "pt_PT"
-                                    << "ru_RU"
-                                    << "sv_SE"
-                                    << "tr_TR"
-                                    << "uk_UA"
-                                    << "zh_CN");
+                                    << QStringLiteral("cs_CZ")
+                                    << QStringLiteral("da_DK")
+                                    << QStringLiteral("de_DE")
+                                    << QStringLiteral("en_US")
+                                    << QStringLiteral("es_ES")
+                                    << QStringLiteral("fi_FI")
+                                    << QStringLiteral("fr_FR")
+                                    << QStringLiteral("it_IT")
+                                    << QStringLiteral("ja_JP")
+                                    << QStringLiteral("ko_KR")
+                                    << QStringLiteral("nb_NO")
+                                    << QStringLiteral("nl_NL")
+                                    << QStringLiteral("pl_PL")
+                                    << QStringLiteral("pt_BR")
+                                    << QStringLiteral("pt_PT")
+                                    << QStringLiteral("ru_RU")
+                                    << QStringLiteral("sv_SE")
+                                    << QStringLiteral("tr_TR")
+                                    << QStringLiteral("uk_UA")
+                                    << QStringLiteral("zh_CN"));
         _languageComboBox->setCurrentText(QStringLiteral("en_US"));
 
         // Set up the fields
