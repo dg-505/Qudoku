@@ -37,6 +37,7 @@ namespace sudoku
           _clearButton(new QPushButton(this)),
           _quitButton(new QPushButton(this)),
           _version(std::move(version))
+    {
 
         // Read settings from ini file
 #ifdef _WIN32
