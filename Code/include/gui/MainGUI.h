@@ -6,6 +6,8 @@
 #include <QMainWindow>
 #include <QPushButton>
 #include <QScrollArea>
+#include <QSettings>
+#include <QTranslator>
 
 #include "globals.h"
 #include "gui/QInputField.h"
@@ -78,7 +80,7 @@ namespace sudoku
             MainGUI(MainGUI&&) = delete;
             auto operator=(const MainGUI&) -> MainGUI& = delete;
             auto operator=(MainGUI&&) -> MainGUI& = delete;
-            MainGUI(const std::string& version, QWidget* parent);
+            MainGUI(std::string version, QWidget* parent);
             ~MainGUI() override = default;
 
             // void handleResults();
@@ -112,6 +114,12 @@ namespace sudoku
             bool _lineBlockChecksEnabled = true;
             bool _backtrackingEnabled = true;
 
+            std::string _version;
+            QSettings* _settings;
+            QString _i18nDir;
+            QString _language;
+            QTranslator _translator;
+
             auto init(std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* initVals) const -> Sudoku*;
             void clear();
 
@@ -129,5 +137,6 @@ namespace sudoku
 
         protected:
             void keyPressEvent(QKeyEvent* event) override;
+            void changeEvent(QEvent* event) override;
     };
 } // namespace sudoku

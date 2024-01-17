@@ -36,6 +36,9 @@ add_executable(Qudoku
         resources.qrc
 )
 
+if (NOT WIN32)
+    target_link_directories(Qudoku PRIVATE /opt/qudoku/lib)
+endif ()
 target_link_libraries(Qudoku PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 
 set_target_properties(Qudoku PROPERTIES WIN32_EXECUTABLE TRUE)

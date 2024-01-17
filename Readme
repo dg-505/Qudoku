@@ -100,3 +100,55 @@ or install it via a software center.
 
 To execute theAppImage on Ubuntu 22.04 or newer, your system needs FUSE
 version 2.x installed: You can install it via "sudo apt install libfuse2".
+
+
+
+####################################################
+##### File system structure (deb installation) #####
+####################################################
+
+
+
+/
+|-- home
+    |-- <USER>
+        |-- .qudoku (created on first app start)
+            |-- data
+                |-- example.txt
+            |-- Qudoku.ini (configuration file)
+|-- opt
+    |-- qudoku
+        |-- bin
+            |-- platforms
+                |-- libqxcb.so (platform plugin)
+            |-- Qudoku (executable binary)
+        |-- i18n
+            |-- *.qm (translation files)
+        |-- lib
+            |-- libicudata.so.56 (all required shared libraries)
+            |-- libicui18n.so.56
+            |-- libicuuc.so.56
+            |-- libQt5Core.so.5
+            |-- libQt5DBus.so.5
+            |-- libQt5Gui.so.5
+            |-- libQt5Widgets.so.5
+            |-- libQt5XcbQpa.so.5
+            |-- libxcb-xinerama.so.0
+        |-- Readme
+        |-- license.txt
+|-- usr
+    |-- local
+        |-- bin
+            |-- qudoku (bash script located in the default $PATH to call the
+                        actual program from /opt/qudoku/bin/Qudoku)
+        |-- share
+            |-- applications
+                |-- qudoku.desktop (Desktop configuration file)
+            |-- icons
+                |-- hicolor
+                    |-- {XY}x{XY}
+                        |-- apps
+                            |-- qudoku.png (PNG icons)
+                    |-- scalable
+                        |-- apps
+                            |-- qudoku.svg (SVG icon)

@@ -3,7 +3,6 @@
 #include <QIcon>
 #include <QMessageBox>
 #include <QScreen>
-#include <QSettings>
 #include <QShortcut>
 #include <QTextStream>
 #ifndef _WIN32
@@ -20,7 +19,7 @@
 namespace sudoku
 {
     // Main GUI setup
-    MainGUI::MainGUI(const std::string& version, QWidget* parent)
+    MainGUI::MainGUI(std::string version, QWidget* parent)
         : QMainWindow(parent, Qt::WindowFlags()),
           _logScrollArea(new QScrollArea(this)),
           _logTextBrowser(new QLogTextBrowser(_logScrollArea)),
@@ -36,14 +35,25 @@ namespace sudoku
           _stepByStepButton(new QPushButton(this)),
           _solveButton(new QPushButton(this)),
           _clearButton(new QPushButton(this)),
-          _quitButton(new QPushButton(this))
-    {
+          _quitButton(new QPushButton(this)),
+          _version(std::move(version))
+
+        // Read settings from ini file
+#ifdef _WIN32
+        // On Windows, ini location is next to the executable
+        _settings = std::make_unique<QSettings>(QStringLiteral("./Qudoku.ini"), QSettings::IniFormat, nullptr).release();
+#else
+        // On Linux, ini location is /home/<USER>/.qudoku/Qudoku.ini
+        _settings = std::make_unique<QSettings>(QDir::homePath() + "/.qudoku/Qudoku.ini", QSettings::IniFormat, nullptr).release();
+#endif
+
         // Main window properties
         constexpr QSize guiDim(1025, 637);
         this->setFixedSize(guiDim);
         this->setObjectName(QStringLiteral("MainGUI"));
-        const std::string title = "Qudoku - Qt based cross platform sudoku solver (Version " + version + ")";
-        this->setWindowTitle(QString::fromStdString(title));
+        const QString i18nTitle = QCoreApplication::translate("MainGUI", "Qudoku - Qt based cross platform sudoku solver (Version ");
+        const std::string versionTitle = _version + ")";
+        this->setWindowTitle(i18nTitle + QString::fromStdString(versionTitle));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
         this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
 
@@ -69,51 +79,74 @@ namespace sudoku
 
         // Title label
         _titleLabel->setObjectName(QStringLiteral("titleLabel"));
-        constexpr QRect titleLabelGeom(0, 0, 267, 50);
+        constexpr QRect titleLabelGeom(0, 25, 300, 25);
         _titleLabel->setGeometry(titleLabelGeom);
         _titleLabel->setStyleSheet(QStringLiteral("color: black; background: rgb(239, 239, 239)"));
-        const QFont titleFont(QStringLiteral("Open Sans"), 12, QFont::Bold, false);
+        const QFont titleFont(QStringLiteral("Open Sans"), 10, QFont::Bold, false);
         _titleLabel->setFont(titleFont);
         _titleLabel->setAlignment(Qt::AlignCenter);
-        _titleLabel->setText(QStringLiteral("Enter predefined fields"));
+        _titleLabel->setText(QCoreApplication::translate("MainGUI", "Enter predefined fields"));
 
-        const QFont buttonFont(QStringLiteral("Open Sans"), 10, QFont::Bold, false);
+        const QFont buttonFont(QStringLiteral("Open Sans"), 10, QFont::Normal, false);
 
         _languageLabel->setObjectName(QStringLiteral("languageLabel"));
-        constexpr QRect languageLabelGeom(267, 0, 100, 25);
+        constexpr QRect languageLabelGeom(50, 0, 125, 25);
         _languageLabel->setGeometry(languageLabelGeom);
         _languageLabel->setStyleSheet(QStringLiteral("color: black; background: rgb(239, 239, 239)"));
         _languageLabel->setFont(buttonFont);
-        _languageLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
-        _languageLabel->setText(QStringLiteral("Language:"));
+        _languageLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
+        _languageLabel->setText(QCoreApplication::translate("MainGUI", "Language: "));
+
+        // Read language from settings
+        _language = _settings->value(QStringLiteral("I18N/lang"), QVariant()).toString();
+
+        // Specify directory containing the translation "*.qm" files
+#ifdef _WIN32
+        // On Windows, the directory containing the translation files is next to the executable
+        _i18nDir = QStringLiteral("./i18n");
+#else
+        // On Linux, the directory containing the translation files is /opt/qudoku/i18n
+        _i18nDir = QStringLiteral("/opt/qudoku/i18n");
+#endif
 
         _languageComboBox->setObjectName(QStringLiteral("languageComboBox"));
-        constexpr QRect languageComboBoxGeom(267, 25, 100, 25);
+        constexpr QRect languageComboBoxGeom(175, 0, 125, 25);
         _languageComboBox->setGeometry(languageComboBoxGeom);
         _languageComboBox->setStyleSheet(QStringLiteral("color: black; background: rgb(239, 239, 239)"));
         _languageComboBox->setFont(buttonFont);
-        _languageComboBox->addItems(QStringList()
-                                    << QStringLiteral("cs_CZ")
-                                    << QStringLiteral("da_DK")
-                                    << QStringLiteral("de_DE")
-                                    << QStringLiteral("en_US")
-                                    << QStringLiteral("es_ES")
-                                    << QStringLiteral("fi_FI")
-                                    << QStringLiteral("fr_FR")
-                                    << QStringLiteral("it_IT")
-                                    << QStringLiteral("ja_JP")
-                                    << QStringLiteral("ko_KR")
-                                    << QStringLiteral("nb_NO")
-                                    << QStringLiteral("nl_NL")
-                                    << QStringLiteral("pl_PL")
-                                    << QStringLiteral("pt_BR")
-                                    << QStringLiteral("pt_PT")
-                                    << QStringLiteral("ru_RU")
-                                    << QStringLiteral("sv_SE")
-                                    << QStringLiteral("tr_TR")
-                                    << QStringLiteral("uk_UA")
-                                    << QStringLiteral("zh_CN"));
-        _languageComboBox->setCurrentText(QStringLiteral("en_US"));
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/CZ.png")), QStringLiteral("cs_CZ"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/DK.png")), QStringLiteral("da_DK"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/DE.png")), QStringLiteral("de_DE"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/US.png")), QStringLiteral("en_US"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/ES.png")), QStringLiteral("es_ES"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/FI.png")), QStringLiteral("fi_FI"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/FR.png")), QStringLiteral("fr_FR"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/IT.png")), QStringLiteral("it_IT"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/JP.png")), QStringLiteral("ja_JP"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/KR.png")), QStringLiteral("ko_KR"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/NO.png")), QStringLiteral("nb_NO"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/NL.png")), QStringLiteral("nl_NL"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/PL.png")), QStringLiteral("pl_PL"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/BR.png")), QStringLiteral("pt_BR"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/PT.png")), QStringLiteral("pt_PT"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/RU.png")), QStringLiteral("ru_RU"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/SE.png")), QStringLiteral("sv_SE"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/TR.png")), QStringLiteral("tr_TR"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/UA.png")), QStringLiteral("uk_UA"), QVariant());
+        _languageComboBox->addItem(QIcon(QStringLiteral(":/res/i18n/CN.png")), QStringLiteral("zh_CN"), QVariant());
+        constexpr QSize iconSize(28, 28);
+        _languageComboBox->setIconSize(iconSize);
+        _languageComboBox->setCurrentText(_language);
+        MainGUI::connect(_languageComboBox, static_cast<void (QComboBox::*)(const int)>(&QComboBox::currentIndexChanged),
+                         [this](const int langIdx)
+                         {
+                             _translator.load(_languageComboBox->itemText(langIdx), _i18nDir, QString(), ".qm");
+                             qApp->installTranslator(&_translator);
+                         });
+
+        // Load the translator
+        _translator.load(_language, _i18nDir, QString(), ".qm");
+        qApp->installTranslator(&_translator);
 
         // Set up the fields
         _gridWidget->setObjectName(QStringLiteral("gridWidget"));
@@ -174,21 +207,19 @@ namespace sudoku
 
         // Buttons
         _techniquesButton->setObjectName(QStringLiteral("techniquesButton"));
-        constexpr QRect tehniquesButtonGeom(367, 0, 100, 50);
+        constexpr QRect tehniquesButtonGeom(300, 0, 100, 50);
         _techniquesButton->setGeometry(tehniquesButtonGeom);
         _techniquesButton->setFont(buttonFont);
         _techniquesButton->setStyleSheet(buttonStyleSheet);
-        _techniquesButton->setText(QStringLiteral("Select\n&techniques"));
-        _techniquesButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_T, 0, 0, 0));
+        _techniquesButton->setText(QCoreApplication::translate("MainGUI", "Select\n&techniques"));
         MainGUI::connect(_techniquesButton, &QPushButton::clicked, this, &MainGUI::techniquesButtonClicked, Qt::AutoConnection);
 
         _loadButton->setObjectName(QStringLiteral("loadButton"));
-        constexpr QRect loadButtonGeom(467, 0, 70, 25);
+        constexpr QRect loadButtonGeom(400, 0, 137, 25);
         _loadButton->setGeometry(loadButtonGeom);
         _loadButton->setFont(buttonFont);
         _loadButton->setStyleSheet(buttonStyleSheet);
-        _loadButton->setText(QStringLiteral("Lo&ad"));
-        _loadButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_A, 0, 0, 0));
+        _loadButton->setText(QCoreApplication::translate("MainGUI", "Lo&ad"));
         MainGUI::connect(_loadButton, &QPushButton::clicked, this, &MainGUI::loadButtonClicked, Qt::AutoConnection);
 
         // validateButton = new QPushButton(this);
@@ -198,12 +229,11 @@ namespace sudoku
         // validateButton->setText("Validate");
 
         _saveButton->setObjectName(QStringLiteral("saveButton"));
-        constexpr QRect saveButtonGeom(467, 25, 70, 25);
+        constexpr QRect saveButtonGeom(400, 25, 137, 25);
         _saveButton->setGeometry(saveButtonGeom);
         _saveButton->setFont(buttonFont);
         _saveButton->setStyleSheet(buttonStyleSheet);
-        _saveButton->setText(QStringLiteral("&Save"));
-        _saveButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_S, 0, 0, 0));
+        _saveButton->setText(QCoreApplication::translate("MainGUI", "&Save"));
         MainGUI::connect(_saveButton, &QPushButton::clicked, this, &MainGUI::saveButtonClicked, Qt::AutoConnection);
 
         _candidatesButton->setObjectName(QStringLiteral("candidatesButton"));
@@ -211,8 +241,7 @@ namespace sudoku
         _candidatesButton->setGeometry(candidatesButtonGeom);
         _candidatesButton->setFont(buttonFont);
         _candidatesButton->setStyleSheet(buttonStyleSheet);
-        _candidatesButton->setText(QStringLiteral("&Candidates"));
-        _candidatesButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_C, 0, 0, 0));
+        _candidatesButton->setText(QCoreApplication::translate("MainGUI", "&Candidates"));
         MainGUI::connect(_candidatesButton, &QPushButton::clicked, this, &MainGUI::candidatesButtonClicked, Qt::AutoConnection);
 
         _stepByStepButton->setObjectName(QStringLiteral("stepByStepButton"));
@@ -220,8 +249,7 @@ namespace sudoku
         _stepByStepButton->setGeometry(stepByStepButtonGeom);
         _stepByStepButton->setFont(buttonFont);
         _stepByStepButton->setStyleSheet(buttonStyleSheet);
-        _stepByStepButton->setText(QStringLiteral("St&ep by Step"));
-        _stepByStepButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_E, 0, 0, 0));
+        _stepByStepButton->setText(QCoreApplication::translate("MainGUI", "St&ep by Step"));
         MainGUI::connect(_stepByStepButton, &QPushButton::clicked, this, &MainGUI::stepByStepButtonClicked, Qt::AutoConnection);
 
         _solveButton->setObjectName(QStringLiteral("solveButton"));
@@ -229,8 +257,7 @@ namespace sudoku
         _solveButton->setGeometry(solveButtonGeom);
         _solveButton->setFont(buttonFont);
         _solveButton->setStyleSheet(buttonStyleSheet);
-        _solveButton->setText(QStringLiteral("Sol&ve"));
-        _solveButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_V, 0, 0, 0));
+        _solveButton->setText(QCoreApplication::translate("MainGUI", "Sol&ve"));
         MainGUI::connect(_solveButton, &QPushButton::clicked, this, &MainGUI::solveButtonClicked, Qt::AutoConnection);
 
         _clearButton->setObjectName(QStringLiteral("clearButton"));
@@ -238,8 +265,7 @@ namespace sudoku
         _clearButton->setGeometry(clearButtonGeom);
         _clearButton->setFont(buttonFont);
         _clearButton->setStyleSheet(buttonStyleSheet);
-        _clearButton->setText(QStringLiteral("Clea&r"));
-        _clearButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_R, 0, 0, 0));
+        _clearButton->setText(QCoreApplication::translate("MainGUI", "Clea&r"));
         MainGUI::connect(_clearButton, &QPushButton::clicked, this, &MainGUI::clearButtonClicked, Qt::AutoConnection);
 
         _quitButton->setObjectName(QStringLiteral("quitButton"));
@@ -247,8 +273,7 @@ namespace sudoku
         _quitButton->setGeometry(quitButtonGeom);
         _quitButton->setFont(buttonFont);
         _quitButton->setStyleSheet(buttonStyleSheet);
-        _quitButton->setText(QStringLiteral("&Quit"));
-        _quitButton->setShortcut(QKeySequence(Qt::ALT + Qt::Key_Q, 0, 0, 0));
+        _quitButton->setText(QCoreApplication::translate("MainGUI", "&Quit"));
         MainGUI::connect(_quitButton, &QPushButton::clicked, [=]()
                          { QApplication::quit(); });
 
@@ -280,6 +305,24 @@ namespace sudoku
         }
     }
 
+    void MainGUI::changeEvent(QEvent* event)
+    {
+        if (event->type() == QEvent::LanguageChange)
+        {
+            QString i18nTitle = QCoreApplication::translate("MainGUI", "Qudoku - Qt based cross platform sudoku solver (Version ");
+            const std::string versionTitle = _version + ")";
+            this->setWindowTitle(i18nTitle + QString::fromStdString(versionTitle));
+            _titleLabel->setText(QCoreApplication::translate("MainGUI", "Enter predefined fields"));
+            _languageLabel->setText(QCoreApplication::translate("MainGUI", "Language: "));
+            _techniquesButton->setText(QCoreApplication::translate("MainGUI", "Select\n&techniques"));
+            _loadButton->setText(QCoreApplication::translate("MainGUI", "Lo&ad"));
+            _saveButton->setText(QCoreApplication::translate("MainGUI", "&Save"));
+
+            // Write changed language to ini file
+            _settings->setValue(QStringLiteral("I18N/lang"), _languageComboBox->currentText());
+        }
+    }
+
     // Button functions
 
     void MainGUI::techniquesButtonClicked()
@@ -305,17 +348,7 @@ namespace sudoku
     {
         const QString msgBoxStyleSheet = QStringLiteral("color: black; background: rgb(239, 239, 239)");
         // Read the data directory from the Qudoku.ini file created during installation
-#ifdef _WIN32
-        auto settings = QSettings(QStringLiteral("./Qudoku.ini"), QSettings::IniFormat, nullptr);
-#else
-        constexpr int16_t buffer = 4096;
-        std::array<char, buffer> path{};
-        const ssize_t len = readlink("/proc/self/exe", path.data(), sizeof(path) - 1);
-        path[len] = '\0';
-        std::string iniPath = std::string(path.data()) + ".ini";
-        auto settings = QSettings(QString::fromStdString(iniPath), QSettings::IniFormat, nullptr);
-#endif
-        auto dataDir = settings.value(QStringLiteral("DIRS/DataDir"), QVariant()).toString();
+        auto dataDir = _settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString();
         _logTextBrowser->append("Data directory: " + dataDir);
         const QString filepath = QFileDialog::getOpenFileName(this, QStringLiteral("Open Sudoku from file"), dataDir, QString(), nullptr, QFileDialog::Options());
         if (filepath.isEmpty())
@@ -422,18 +455,7 @@ namespace sudoku
 
     void MainGUI::saveButtonClicked() const
     {
-        // Read the data directory from the Qudoku.ini file created during installation
-#ifdef _WIN32
-        auto settings = QSettings(QStringLiteral("./Qudoku.ini"), QSettings::IniFormat, nullptr);
-#else
-        constexpr int16_t buffer = 4096;
-        std::array<char, buffer> path{};
-        const ssize_t len = readlink("/proc/self/exe", path.data(), sizeof(path) - 1);
-        path[len] = '\0';
-        std::string iniPath = std::string(path.data()) + ".ini";
-        auto settings = QSettings(QString::fromStdString(iniPath), QSettings::IniFormat, nullptr);
-#endif
-        const QString dataDir = settings.value(QStringLiteral("DIRS/DataDir"), QVariant()).toString();
+        const QString dataDir = _settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString();
         const QString filepath = QFileDialog::getSaveFileName(this->centralWidget(), QStringLiteral("Save Sudoku to file"), dataDir, QString(), nullptr, QFileDialog::Options());
 
         if (filepath.isEmpty())

@@ -6,5 +6,25 @@
         <file>res/next.png</file>
         <file>res/last.png</file>
         <file>res/loading.png</file>
+        <file>res/i18n/CZ.png</file>
+        <file>res/i18n/DK.png</file>
+        <file>res/i18n/DE.png</file>
+        <file>res/i18n/US.png</file>
+        <file>res/i18n/ES.png</file>
+        <file>res/i18n/FI.png</file>
+        <file>res/i18n/FR.png</file>
+        <file>res/i18n/IT.png</file>
+        <file>res/i18n/JP.png</file>
+        <file>res/i18n/KR.png</file>
+        <file>res/i18n/NO.png</file>
+        <file>res/i18n/NL.png</file>
+        <file>res/i18n/PL.png</file>
+        <file>res/i18n/BR.png</file>
+        <file>res/i18n/PT.png</file>
+        <file>res/i18n/RU.png</file>
+        <file>res/i18n/SE.png</file>
+        <file>res/i18n/TR.png</file>
+        <file>res/i18n/UA.png</file>
+        <file>res/i18n/CN.png</file>
     </qresource>
 </RCC>

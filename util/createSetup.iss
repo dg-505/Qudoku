@@ -199,3 +199,4 @@ Name: {code:GetDataDir}; Check: not DataDirExists; Flags: uninsneveruninstall; P
 
 [INI]
 Filename: "{app}/Qudoku.ini"; Section: "DIRS"; Key: "DataDir"; String: "{code:getDataDir}"; Flags: createkeyifdoesntexist uninsdeletesection
+Filename: "{app}/Qudoku.ini"; Section: "I18N"; Key: "lang"; String: "en_US"; Flags: createkeyifdoesntexist uninsdeletesection
