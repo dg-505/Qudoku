@@ -36,7 +36,7 @@ namespace sudoku
         const QFont messageFont(QStringLiteral("Open Sans"), 12, QFont::Bold, false);
         constexpr QRect stepFieldsGeom(0, 50, 537, 537);
         const QString msg = this->getStepMsg(_currentStep);
-        
+
         _fieldsWidget->setGeometry(stepFieldsGeom);
 
         _msgLabel->setObjectName(QStringLiteral("msgLabel"));
@@ -46,7 +46,7 @@ namespace sudoku
         _msgLabel->setAlignment(Qt::AlignCenter);
         _msgLabel->setText(msg);
 
-        _previewLabel->setObjectName(QStringLiteral("p"));
+        _previewLabel->setObjectName(QStringLiteral("previewLabel"));
         constexpr QRect previewLabelGeom(0, 0, 100, 25);
         _previewLabel->setGeometry(previewLabelGeom);
         _previewLabel->setStyleSheet(QStringLiteral("color: rgb(239, 239, 239); background-color: rgba(100, 100, 100, 1.0)"));
@@ -54,7 +54,7 @@ namespace sudoku
         _previewLabel->setAlignment(Qt::AlignCenter);
         _previewLabel->setText(QStringLiteral("Preview"));
         _previewLabel->hide();
-        
+
         SolvedGUI::drawFields(_sudoku->getSteps()->at(_currentStep), _sudoku->getSteps()->at(_currentStep), _initVals, _fieldsWidget);
         SolvedGUI::drawFrame(_fieldsWidget);
 
@@ -84,7 +84,7 @@ namespace sudoku
         const QString buttonStyleSheet = QStringLiteral("QPushButton {color: black; background: rgb(239, 239, 239)}"
                                                         "QPushButton:hover {color: black; background: rgb(171, 171, 171)}"
                                                         "QPushButton:pressed {color: black; background: rgb(171, 171, 171)}");
-        
+
         _firstButton->setIconSize(buttonIconSize);
         _firstButton->setObjectName(QStringLiteral("firstButton"));
         constexpr QRect firstButtonGeom(0, 602, 134, 35);
@@ -104,7 +104,7 @@ namespace sudoku
                 _isPreview = false;
                 _previewLabel->hide(); },
             Qt::AutoConnection);
-        
+
         _prevButton->setIconSize(buttonIconSize);
         _prevButton->setObjectName(QStringLiteral("prevButton"));
         constexpr QRect prevButtonGeom(134, 602, 134, 35);
@@ -114,7 +114,7 @@ namespace sudoku
         _prevButton->setAutoRepeat(true);
         _prevButton->setShortcut(QKeySequence(Qt::Key_PageUp, 0, 0, 0));
         QObject::connect(_prevButton, &QPushButton::clicked, this, &StepByStepGUI::drawPrevStep, Qt::AutoConnection);
-        
+
         _nextButton->setIconSize(buttonIconSize);
         _nextButton->setObjectName(QStringLiteral("nextButton"));
         constexpr QRect nextButtonGeom(269, 602, 134, 35);
@@ -124,7 +124,7 @@ namespace sudoku
         _nextButton->setAutoRepeat(true);
         _nextButton->setShortcut(QKeySequence(Qt::Key_PageDown, 0, 0, 0));
         QObject::connect(_nextButton, &QPushButton::clicked, this, &StepByStepGUI::drawNextStep, Qt::AutoConnection);
-        
+
         _lastButton->setIconSize(buttonIconSize);
         _lastButton->setObjectName(QStringLiteral("lastButton"));
         constexpr QRect lastButtonGeom(403, 602, 134, 35);
