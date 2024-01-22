@@ -3,15 +3,16 @@
 #include <QPainter>
 #include <QPdfWriter>
 #include <QPixmap>
+#include <utility>
 
 #include "globals.h"
 #include "gui/SolvedGUI.h"
 
 namespace sudoku
 {
-    SolvedGUI::SolvedGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, const std::string& name, QSettings* settings, QWidget* parent)
+    SolvedGUI::SolvedGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, std::string  name, QSettings* settings, QWidget* parent)
         : QMainWindow(parent, Qt::WindowFlags()),
-          _name(name),
+          _name(std::move(name)),
           _gridWidget(new QWidget(this, Qt::WindowFlags())),
           _settings(settings),
           _exportPngButton(new QPushButton(this)),

@@ -1,12 +1,13 @@
 #include <QString>
 #include <QTextStream>
+#include <utility>
 
 #include "sudoku/Sudoku.h"
 
 namespace sudoku
 {
-    Sudoku::Sudoku(const std::string& name, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser* logTextArea, const bool nakedSinglesEnabled, const bool hiddenSinglesEnabled, const bool nakedPairsEnabled, const bool hiddenPairsEnabled, const bool nakedTriplesEnabled, const bool hiddenTriplesEnabled, const bool blockLineChecksEnabled, const bool lineBlockChecksEnabled, const bool backtrackingEnabled)
-        : _name(name),
+    Sudoku::Sudoku(std::string  name, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser* logTextArea, const bool nakedSinglesEnabled, const bool hiddenSinglesEnabled, const bool nakedPairsEnabled, const bool hiddenPairsEnabled, const bool nakedTriplesEnabled, const bool hiddenTriplesEnabled, const bool blockLineChecksEnabled, const bool lineBlockChecksEnabled, const bool backtrackingEnabled)
+        : _name(std::move(name)),
           _logTextArea(logTextArea),
           _useNakedSingles(nakedSinglesEnabled),
           _useHiddenSingles(hiddenSinglesEnabled),

@@ -34,7 +34,7 @@ namespace sudoku
             bool _useBacktracking;
 
         public:
-            Sudoku(const std::string& name, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser* logTextArea, bool nakedSinglesEnabled, bool hiddenSinglesEnabled, bool nakedPairsEnabled, bool hiddenPairsEnabled, bool nakedTriplesEnabled, bool hiddenTriplesEnabled, bool blockLineChecksEnabled, bool lineBlockChecksEnabled, bool backtrackingEnabled);
+            Sudoku(std::string  name, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser* logTextArea, bool nakedSinglesEnabled, bool hiddenSinglesEnabled, bool nakedPairsEnabled, bool hiddenPairsEnabled, bool nakedTriplesEnabled, bool hiddenTriplesEnabled, bool blockLineChecksEnabled, bool lineBlockChecksEnabled, bool backtrackingEnabled);
 
             Sudoku(const Sudoku&) = default;
             Sudoku(Sudoku&&) = delete;
