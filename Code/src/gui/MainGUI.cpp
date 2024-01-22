@@ -551,8 +551,8 @@ namespace sudoku
 
         std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
         auto* sudoku = init(&initVals);
-        sudoku->solve(_filename);
-        auto* solvedGUI = std::make_unique<SolvedGUI>(sudoku, initVals, this).release();
+        sudoku->solve();
+        auto* solvedGUI = std::make_unique<SolvedGUI>(sudoku, initVals, _name, _settings, this).release();
         const QPoint solvedGUIpos(this->pos().x(), this->pos().y() + 50);
         solvedGUI->move(solvedGUIpos);
         solvedGUI->show();

@@ -28,6 +28,7 @@ auto main(int argc, char* argv[]) -> int
             QTextStream example(&exampleFile);
             example << ".3..........195.....8....6.8...6....4..8....1....2.....6....28....419..5.......7.";
         }
+        QDir(QString()).mkdir(cfgDir + QStringLiteral("/export"));
     }
 #endif
 

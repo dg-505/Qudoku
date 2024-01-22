@@ -1,22 +1,59 @@
+#include <QDateTime>
 #include <QLabel>
+#include <QPainter>
+#include <QPdfWriter>
+#include <QPixmap>
 
 #include "globals.h"
 #include "gui/SolvedGUI.h"
 
 namespace sudoku
 {
-    SolvedGUI::SolvedGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent)
-        : QMainWindow(parent, Qt::WindowFlags())
+    SolvedGUI::SolvedGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, const std::string& name, QSettings* settings, QWidget* parent)
+        : QMainWindow(parent, Qt::WindowFlags()),
+          _name(name),
+          _gridWidget(new QWidget(this, Qt::WindowFlags())),
+          _settings(settings),
+          _exportPngButton(new QPushButton(this)),
+          _exportPdfButton(new QPushButton(this))
     {
-        constexpr QSize guiDim(537, 537);
+        constexpr QSize guiDim(537, 587);
         this->setFixedSize(guiDim);
         this->setObjectName(QStringLiteral("SolvedGUI"));
         this->setWindowTitle(QStringLiteral("Solved Sudoku"));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
         this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
 
-        SolvedGUI::drawFields(sudoku->getSteps()->back(), sudoku->getSteps()->back(), initVals, this);
-        SolvedGUI::drawFrame(this);
+        _gridWidget->setObjectName(QStringLiteral("gridWidget"));
+        constexpr QRect gridWidgetGeom(0, 0, 537, 537);
+        _gridWidget->setGeometry(gridWidgetGeom);
+        _gridWidget->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
+
+        const QFont buttonFont(QStringLiteral("Open Sans"), 10, QFont::Bold, false);
+        const QString buttonStyleSheet = QStringLiteral("QPushButton {color: black; background: rgb(239, 239, 239)}"
+                                                        "QPushButton:hover {color: black; background: rgb(171, 171, 171)}"
+                                                        "QPushButton:pressed {color: black; background: rgb(171, 171, 171)}");
+
+        _exportPngButton->setObjectName(QStringLiteral("exportPngButton"));
+        constexpr QRect pngButtonGeom(0, 537, 268, 50);
+        _exportPngButton->setGeometry(pngButtonGeom);
+        _exportPngButton->setFont(buttonFont);
+        _exportPngButton->setStyleSheet(buttonStyleSheet);
+        _exportPngButton->setText(QStringLiteral("Export PN&G"));
+        SolvedGUI::connect(_exportPngButton, &QPushButton::clicked, this, [this]()
+                           { this->exportPNG(_gridWidget); }, Qt::AutoConnection);
+
+        _exportPdfButton->setObjectName(QStringLiteral("exportPdfButton"));
+        constexpr QRect pdfButtonGeom(269, 537, 268, 50);
+        _exportPdfButton->setGeometry(pdfButtonGeom);
+        _exportPdfButton->setFont(buttonFont);
+        _exportPdfButton->setStyleSheet(buttonStyleSheet);
+        _exportPdfButton->setText(QStringLiteral("Export PD&F"));
+        SolvedGUI::connect(_exportPdfButton, &QPushButton::clicked, this, [this]()
+                           { this->exportPDF(_gridWidget); }, Qt::AutoConnection);
+
+        SolvedGUI::drawFields(sudoku->getSteps()->back(), sudoku->getSteps()->back(), initVals, _gridWidget);
+        SolvedGUI::drawFrame(_gridWidget);
     }
 
     void SolvedGUI::keyPressEvent(QKeyEvent* event)
@@ -25,6 +62,50 @@ namespace sudoku
         {
             this->close();
         }
+    }
+
+    auto SolvedGUI::renderPixmap(QWidget* parent) -> QPixmap
+    {
+        // Generate pixmap with solved sudoku
+        auto dim = 2 * parent->size();
+        QPixmap pixmap(dim);
+        pixmap.setDevicePixelRatio(2);
+        parent->render(&pixmap, QPoint(), QRegion(), QWidget::DrawWindowBackground | QWidget::DrawChildren);
+        return pixmap;
+    }
+
+    auto SolvedGUI::exportPNG(QWidget* parent) -> void
+    {
+        auto pixmap = SolvedGUI::renderPixmap(parent);
+        if (_name.empty())
+        {
+            _name = "Sudoku";
+        }
+        pixmap.save(_settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString() + QStringLiteral("/../export/") + QString::fromStdString(_name) + QStringLiteral("-") + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + QStringLiteral(".png"), "png", 0);
+
+    }
+
+    auto SolvedGUI::exportPDF(QWidget* parent) -> void
+    {
+        auto pixmap = SolvedGUI::renderPixmap(parent);
+        if (_name.empty())
+        {
+            _name = "Sudoku";
+        }
+
+        // Create output pdf
+        QPdfWriter pdfWriter(_settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString() + QStringLiteral("/../export/") + QString::fromStdString(_name) + QStringLiteral("-") + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + QStringLiteral(".pdf"));
+        pdfWriter.setPageSize(QPageSize(2 * parent->size(), QPageSize::Point, QString(), QPageSize::FuzzyMatch));
+        pdfWriter.setPageMargins(QMarginsF(0, 0, 0, 0));
+
+        // Draw pixmap on pdf
+        QPainter painter(&pdfWriter);
+        painter.setRenderHint(QPainter::Antialiasing, true);
+        painter.setRenderHint(QPainter::TextAntialiasing, true);
+        painter.setRenderHint(QPainter::SmoothPixmapTransform, true);
+        painter.setRenderHint(QPainter::LosslessImageRendering, true);
+        painter.drawPixmap(QRect(0, 0, pdfWriter.width(), pdfWriter.height()), pixmap);
+        painter.end();
     }
 
     // Helper functions
