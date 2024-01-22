@@ -18,7 +18,8 @@ namespace sudoku
           _firstButton(new QPushButton(QIcon(QStringLiteral(":/res/first.png")), QStringLiteral("  (Home)"), this)),
           _prevButton(new QPushButton(QIcon(QStringLiteral(":/res/prev.png")), QStringLiteral("  (PgUp)"), this)),
           _nextButton(new QPushButton(QIcon(QStringLiteral(":/res/next.png")), QStringLiteral("  (PgDn)"), this)),
-          _lastButton(new QPushButton(QIcon(QStringLiteral(":/res/last.png")), QStringLiteral("  (End)"), this))
+          _lastButton(new QPushButton(QIcon(QStringLiteral(":/res/last.png")), QStringLiteral("  (End)"), this)),
+          _exportButton(new QPushButton(this))
     {
         constexpr QSize guiDim(537, 637);
         this->setFixedSize(guiDim);
@@ -144,6 +145,13 @@ namespace sudoku
                 _isPreview = false;
                 _previewLabel->hide(); },
             Qt::AutoConnection);
+
+        _exportButton->setObjectName(QStringLiteral("exportButton"));
+        constexpr QRect tehniquesButtonGeom(437, 0, 100, 25);
+        _exportButton->setGeometry(tehniquesButtonGeom);
+        _exportButton->setFont(buttonFont);
+        _exportButton->setStyleSheet(buttonStyleSheet);
+        _exportButton->setText(QStringLiteral("&Export"));
     }
 
 #pragma clang diagnostic push

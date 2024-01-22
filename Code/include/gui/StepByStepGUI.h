@@ -43,6 +43,7 @@ namespace sudoku
             QPushButton* _prevButton;
             QPushButton* _nextButton;
             QPushButton* _lastButton;
+            QPushButton* _exportButton;
 
         protected:
             void keyPressEvent(QKeyEvent* event) override;
