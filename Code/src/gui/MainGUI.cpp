@@ -443,15 +443,15 @@ namespace sudoku
         }
 
         // extract the raw file name
-        // size_t const lastSeparator = filepath.toStdString().find_last_of("/\\");
-        // size_t const lastDot = filepath.toStdString().find_last_of('.');
-        // filename = filepath.toStdString().substr(lastSeparator + 1, lastDot - lastSeparator - 1);
+        size_t const lastSeparator = filepath.toStdString().find_last_of("/\\", -1);
+        size_t const lastDot = filepath.toStdString().find_last_of('.', -1);
+        _name = filepath.toStdString().substr(lastSeparator + 1, lastDot - lastSeparator - 1);
 
         _logTextBrowser->clear();
         _logTextBrowser->append("Sudoku \"" + filepath + "\" successfully loaded");
         file.close();
 
-        return _filename;
+        return _name;
     }
 
     void MainGUI::saveButtonClicked() const
@@ -527,7 +527,7 @@ namespace sudoku
         //        workerThread->start();
 
         auto* sudoku = init(&initVals);
-        sudoku->solve(_filename);
+        sudoku->solve();
         auto* stepByStepGUI = std::make_unique<StepByStepGUI>(sudoku, initVals, this).release();
         stepByStepGUI->move(QPoint(this->pos().x(), this->pos().y()));
         stepByStepGUI->show();
@@ -583,7 +583,7 @@ namespace sudoku
             inputField->clear();
         }
         _logTextBrowser->clear();
-        _filename = "";
+        _name = "";
     }
 
     auto MainGUI::init(std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* initVals) const -> Sudoku*
@@ -600,6 +600,6 @@ namespace sudoku
                 initVals->at(i - 1) = 0;
             }
         }
-        return std::make_unique<Sudoku>(initVals, _logTextBrowser, _nakedSinglesEnabled, _hiddenSinglesEnabled, _nakedPairsEnabled, _hiddenPairsEnabled, _nakedTriplesEnabled, _hiddenTriplesEnabled, _blockLineChecksEnabled, _lineBlockChecksEnabled, _backtrackingEnabled).release();
+        return std::make_unique<Sudoku>(_name, initVals, _logTextBrowser, _nakedSinglesEnabled, _hiddenSinglesEnabled, _nakedPairsEnabled, _hiddenPairsEnabled, _nakedTriplesEnabled, _hiddenTriplesEnabled, _blockLineChecksEnabled, _lineBlockChecksEnabled, _backtrackingEnabled).release();
     }
 } // namespace sudoku

@@ -102,7 +102,7 @@ namespace sudoku
             QPushButton* _solveButton;
             QPushButton* _clearButton;
             QPushButton* _quitButton;
-            std::string _filename;
+            std::string _name;
 
             bool _nakedSinglesEnabled = true;
             bool _hiddenSinglesEnabled = true;

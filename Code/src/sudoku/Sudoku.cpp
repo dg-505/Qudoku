@@ -5,8 +5,9 @@
 
 namespace sudoku
 {
-    Sudoku::Sudoku(const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser* logTextArea, const bool nakedSinglesEnabled, const bool hiddenSinglesEnabled, const bool nakedPairsEnabled, const bool hiddenPairsEnabled, const bool nakedTriplesEnabled, const bool hiddenTriplesEnabled, const bool blockLineChecksEnabled, const bool lineBlockChecksEnabled, const bool backtrackingEnabled)
-        : _logTextArea(logTextArea),
+    Sudoku::Sudoku(const std::string& name, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* vals, QLogTextBrowser* logTextArea, const bool nakedSinglesEnabled, const bool hiddenSinglesEnabled, const bool nakedPairsEnabled, const bool hiddenPairsEnabled, const bool nakedTriplesEnabled, const bool hiddenTriplesEnabled, const bool blockLineChecksEnabled, const bool lineBlockChecksEnabled, const bool backtrackingEnabled)
+        : _name(name),
+          _logTextArea(logTextArea),
           _useNakedSingles(nakedSinglesEnabled),
           _useHiddenSingles(hiddenSinglesEnabled),
           _useNakedPairs(nakedPairsEnabled),
@@ -1167,10 +1168,10 @@ namespace sudoku
     }
 
     // Main Solving routine
-    void Sudoku::solve(const std::string& name)
+    void Sudoku::solve()
     {
         _logTextArea->clear();
-        _logTextArea->append("START SOLVING SUDOKU '" + QString::fromStdString(name) + "'");
+        _logTextArea->append("START SOLVING SUDOKU '" + QString::fromStdString(_name) + "'");
         _logTextArea->append("Initial free fields: " + QString::number(this->getFreeFields().size(), global::base));
         _logTextArea->append("Initial candidates: " + QString::number(this->countCandidates(), global::base) + "\n");
 
@@ -1401,11 +1402,11 @@ namespace sudoku
 
         if (this->getFreeFields().empty())
         {
-            _logTextArea->append("SUDOKU '" + QString::fromStdString(name) + "' SUCESSFULLY SOLVED!\n");
+            _logTextArea->append("SUDOKU '" + QString::fromStdString(_name) + "' SUCESSFULLY SOLVED!\n");
         }
         else
         {
-            _logTextArea->append("SOLVING SUDOKU '" + QString::fromStdString(name) + "' FAILED!\n");
+            _logTextArea->append("SOLVING SUDOKU '" + QString::fromStdString(_name) + "' FAILED!\n");
             _logTextArea->append(QStringLiteral("\nAbort status:"));
             this->print();
             this->printFields();
