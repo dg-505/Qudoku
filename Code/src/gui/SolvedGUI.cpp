@@ -80,10 +80,9 @@ namespace sudoku
         auto pixmap = SolvedGUI::renderPixmap(parent);
         if (_name.empty())
         {
-            _name = "Sudoku";
+            _name = "sudoku";
         }
-        pixmap.save(_settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString() + QStringLiteral("/../export/") + QString::fromStdString(_name) + QStringLiteral("-") + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + QStringLiteral(".png"), "png", 0);
-
+        pixmap.save(_settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString() + QStringLiteral("/../export/") + QString::fromStdString(_name) + QStringLiteral("-solution-") + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + QStringLiteral(".png"), "png", 0);
     }
 
     auto SolvedGUI::exportPDF(QWidget* parent) -> void
@@ -91,11 +90,11 @@ namespace sudoku
         auto pixmap = SolvedGUI::renderPixmap(parent);
         if (_name.empty())
         {
-            _name = "Sudoku";
+            _name = "sudoku";
         }
 
         // Create output pdf
-        QPdfWriter pdfWriter(_settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString() + QStringLiteral("/../export/") + QString::fromStdString(_name) + QStringLiteral("-") + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + QStringLiteral(".pdf"));
+        QPdfWriter pdfWriter(_settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString() + QStringLiteral("/../export/") + QString::fromStdString(_name) + QStringLiteral("-solution-") + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + QStringLiteral(".pdf"));
         pdfWriter.setPageSize(QPageSize(2 * parent->size(), QPageSize::Point, QString(), QPageSize::FuzzyMatch));
         pdfWriter.setPageMargins(QMarginsF(0, 0, 0, 0));
 
