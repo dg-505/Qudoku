@@ -349,7 +349,7 @@ namespace sudoku
     {
         const QString msgBoxStyleSheet = QStringLiteral("color: black; background: rgb(239, 239, 239)");
         // Read the data directory from the Qudoku.ini file created during installation
-        auto dataDir = _settings->value(QStringLiteral("DIRS/HomeDir"), QVariant()).toString() + QStringLiteral("/data");
+        const QString dataDir = _settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString() + QStringLiteral("/data");
         _logTextBrowser->append("Data directory: " + dataDir);
         const QString filepath = QFileDialog::getOpenFileName(this, QStringLiteral("Open Sudoku from file"), dataDir, QString(), nullptr, QFileDialog::Options());
         if (filepath.isEmpty())
@@ -456,7 +456,7 @@ namespace sudoku
 
     void MainGUI::saveButtonClicked() const
     {
-        const QString dataDir = _settings->value(QStringLiteral("DIRS/HomeDir"), QVariant()).toString() + QStringLiteral("/data");
+        const QString dataDir = _settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString() + QStringLiteral("/data");
         const QString filepath = QFileDialog::getSaveFileName(this->centralWidget(), QStringLiteral("Save Sudoku to file"), dataDir, QString(), nullptr, QFileDialog::Options());
 
         if (filepath.isEmpty())

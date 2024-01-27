@@ -48,108 +48,117 @@ Type: filesandordirs; Name: "{app}"
 
 [Code]
 var
-    HomeDirPage: TInputDirWizardPage;
-    HomeDirLabel: TLabel;
-procedure UpdateHomeDirLabel; // update the entry at the "Ready to install memo" page
+    DataDirPage: TInputDirWizardPage;
+    DataDirLabel: TLabel;
+procedure UpdateDataDirLabel; // update the entry at the "Ready to install memo" page
 begin
-    if HomeDirPage.Values[0] <> '' then
-        HomeDirLabel.Caption := 'Home directory:' + #13#10 + #9 + HomeDirPage.Values[0]
+    if DataDirPage.Values[0] <> '' then
+        DataDirLabel.Caption := 'Data directory:' + #13#10 + #9 + DataDirPage.Values[0]
     else
-        HomeDirLabel.Caption := '';
+        DataDirLabel.Caption := '';
 end;
 
 // New Setup Page: Set data directory
 procedure InitializeWizard();
 begin
-    HomeDirPage := CreateInputDirPage(wpSelectDir, 'Select Home Location', 'Where should Qudoku''s home directory be?', 'Setup will specify the following folder as Qudoku''s home directory.', True, 'Qudoku');
-    HomeDirPage.Add('To continue, click Next. If you would like to select a different folder, click Browse:');
-    HomeDirPage.Values[0] := ExpandConstant('{userdocs}/Qudoku');
+    DataDirPage := CreateInputDirPage(wpSelectDir, 'Select Data Location', 'Where should Qudoku''s data directory be?', 'Setup will specify the following folder as Qudoku''s data directory.', True, 'Qudoku');
+    DataDirPage.Add('To continue, click Next. If you would like to select a different folder, click Browse:');
+    DataDirPage.Values[0] := ExpandConstant('{userdocs}/Qudoku');
     // Create a label on the ReadyForInstallationPage
-    HomeDirLabel := TLabel.Create(WizardForm);
-    HomeDirLabel.Parent := WizardForm.ReadyMemo;
-    HomeDirLabel.Left := WizardForm.ReadyMemo.Left + 5;
-    HomeDirLabel.Top := WizardForm.ReadyMemo.Top + WizardForm.ReadyMemo.Height - ScaleY(10);
-    HomeDirLabel.Caption := 'Home directory:' + #13#10 + #9 + HomeDirPage.Values[0];
+    DataDirLabel := TLabel.Create(WizardForm);
+    DataDirLabel.Parent := WizardForm.ReadyMemo;
+    DataDirLabel.Left := WizardForm.ReadyMemo.Left + 5;
+    DataDirLabel.Top := WizardForm.ReadyMemo.Top + WizardForm.ReadyMemo.Height - ScaleY(10);
+    DataDirLabel.Caption := 'Data directory:' + #13#10 + #9 + DataDirPage.Values[0];
     // Update the label text
-    UpdateHomeDirLabel;
+    UpdateDataDirLabel;
 end;
 
 procedure CurPageChanged(CurPageID: Integer);
 begin
   // Update the label text whenever the page changes
   if CurPageID = wpReady then
-    UpdateHomeDirLabel;
+    UpdateDataDirLabel;
 end;
 
 // Return the specified data directory from the additional wizard page
+function GetDataDir(Param: String): String;
+var
+    DataDir: String;
+begin
+    DataDir := DataDirPage.Values[0];
+    StringChangeEx(DataDir, '\', '/', True); // Exchange backslashes '\' with forward slashes '/'
+    Result := DataDir;
+end;
+
 function GetHomeDir(Param: String): String;
 var
     HomeDir: String;
 begin
-    HomeDir := HomeDirPage.Values[0];
+    HomeDir := ExpandConstant('{app}');
     StringChangeEx(HomeDir, '\', '/', True); // Exchange backslashes '\' with forward slashes '/'
     Result := HomeDir;
 end;
 
 // Check if the specified data directory aleady exists on the file system
-function HomeDirExists(): Boolean;
+function DataDirExists(): Boolean;
 begin
     { Find out if data dir already exists }
-    Result := DirExists(GetHomeDir(''));
+    Result := DirExists(GetDataDir(''));
 end;
 
-// Show the home directory in Windows Explorer
-procedure OpenHomeDirInExplorer(Sender: TObject);
+// Show the data directory in Windows Explorer
+procedure OpenDataDirInExplorer(Sender: TObject);
 var
     ErrorCode: Integer;
-    IniHomeDir: String;
+    IniDataDir: String;
 begin
-    IniHomeDir := GetIniString('DIRS', 'HomeDir', '', ExpandConstant('{app}/Qudoku.ini'));
-    ShellExec('', IniHomeDir, '', '', SW_SHOWNORMAL, ewNoWait, ErrorCode);
+    IniDataDir := GetIniString('DIRS', 'DataDir', '', ExpandConstant('{app}/Qudoku.ini'));
+    ShellExec('', IniDataDir, '', '', SW_SHOWNORMAL, ewNoWait, ErrorCode);
 end;
 
 // Add page to Uninstaller to optionally remove the data directory
 var
-    RemoveHomeDirUninstallPage: TNewNotebookPage;
+    RemoveDataDirUninstallPage: TNewNotebookPage;
     UninstallNextButton: TNewButton;
-    ShowHomeDirInExplorerButton: TNewButton;
-    RemoveHomeDirCheckbox: TNewCheckBox;
-    RemoveHomeDirLabel: TNewStaticText;
+    ShowDataDirInExplorerButton: TNewButton;
+    RemoveDataDirCheckbox: TNewCheckBox;
+    RemoveDataDirLabel: TNewStaticText;
 procedure InitializeUninstallProgressForm();
 begin
-    RemoveHomeDirUninstallPage := TNewNotebookPage.Create(UninstallProgressForm);
-    RemoveHomeDirUninstallPage.Notebook := UninstallProgressForm.InnerNotebook;
-    RemoveHomeDirUninstallPage.Parent := UninstallProgressForm.InnerNotebook;
-    RemoveHomeDirUninstallPage.Align := alClient
+    RemoveDataDirUninstallPage := TNewNotebookPage.Create(UninstallProgressForm);
+    RemoveDataDirUninstallPage.Notebook := UninstallProgressForm.InnerNotebook;
+    RemoveDataDirUninstallPage.Parent := UninstallProgressForm.InnerNotebook;
+    RemoveDataDirUninstallPage.Align := alClient
 
-    RemoveHomeDirCheckbox := TNewCheckBox.Create(UninstallProgressForm);
-    RemoveHomeDirCheckbox.Parent := RemoveHomeDirUninstallPage;
-    RemoveHomeDirCheckbox.Caption := '&Remove home directory';
-    RemoveHomeDirCheckbox.Left := ScaleX(10);
-    RemoveHomeDirCheckbox.Top := ScaleY(10);
-    RemoveHomeDirCheckbox.Checked := True;
-    RemoveHomeDirCheckbox.Width := UninstallProgressForm.InnerNotebook.Width / 3;
-    RemoveHomeDirCheckbox.Height := ScaleY(20);
+    RemoveDataDirCheckbox := TNewCheckBox.Create(UninstallProgressForm);
+    RemoveDataDirCheckbox.Parent := RemoveDataDirUninstallPage;
+    RemoveDataDirCheckbox.Caption := '&Remove data directory';
+    RemoveDataDirCheckbox.Left := ScaleX(10);
+    RemoveDataDirCheckbox.Top := ScaleY(10);
+    RemoveDataDirCheckbox.Checked := True;
+    RemoveDataDirCheckbox.Width := UninstallProgressForm.InnerNotebook.Width / 3;
+    RemoveDataDirCheckbox.Height := ScaleY(20);
  
-    ShowHomeDirInExplorerButton := TNewButton.Create(UninstallProgressForm);
-    ShowHomeDirInExplorerButton.Parent := RemoveHomeDirUninstallPage;
-    ShowHomeDirInExplorerButton.Caption := 'Show home directory in Windows Explorer';
-    ShowHomeDirInExplorerButton.Top := RemoveHomeDirCheckbox.Top;
-    ShowHomeDirInExplorerButton.Left := RemoveHomeDirCheckbox.Left + RemoveHomeDirCheckbox.Width;
-    ShowHomeDirInExplorerButton.Width := UninstallProgressForm.InnerNotebook.Width - RemoveHomeDirCheckbox.Width - ScaleX(50);
-    ShowHomeDirInExplorerButton.Height := RemoveHomeDirCheckbox.Height;
-    ShowHomeDirInExplorerButton.OnClick := @OpenHomeDirInExplorer;
+    ShowDataDirInExplorerButton := TNewButton.Create(UninstallProgressForm);
+    ShowDataDirInExplorerButton.Parent := RemoveDataDirUninstallPage;
+    ShowDataDirInExplorerButton.Caption := 'Show data directory in Windows Explorer';
+    ShowDataDirInExplorerButton.Top := RemoveDataDirCheckbox.Top;
+    ShowDataDirInExplorerButton.Left := RemoveDataDirCheckbox.Left + RemoveDataDirCheckbox.Width;
+    ShowDataDirInExplorerButton.Width := UninstallProgressForm.InnerNotebook.Width - RemoveDataDirCheckbox.Width - ScaleX(50);
+    ShowDataDirInExplorerButton.Height := RemoveDataDirCheckbox.Height;
+    ShowDataDirInExplorerButton.OnClick := @OpenDataDirInExplorer;
  
-    RemoveHomeDirLabel := TNewStaticText.Create(UninstallProgressForm);
-    RemoveHomeDirLabel.Parent := RemoveHomeDirUninstallPage;
-    RemoveHomeDirLabel.Top := RemoveHomeDirCheckbox.Top + RemoveHomeDirCheckbox.Height + ScaleY(10);
-    RemoveHomeDirLabel.Left := RemoveHomeDirCheckbox.Left;
-    RemoveHomeDirLabel.Width := UninstallProgressForm.InnerNotebook.Width;
-    RemoveHomeDirLabel.Height := RemoveHomeDirLabel.AdjustHeight();
-    RemoveHomeDirLabel.WordWrap := True;
-    RemoveHomeDirLabel.Caption := 'This will remove the home directory (Current location is ''' + GetIniString('DIRS', 'HomeDir', '', ExpandConstant('{app}') + '/Qudoku.ini') + ''')' + #13#10 + #13#10 + 'CAUTION: This will permanently delete the entire folder ''' + GetIniString('DIRS', 'HomeDir', '', ExpandConstant('{app}') + '/Qudoku.ini') + '''' + #13#10 + 'WITHOUT asking for confirmation!' + #13#10 + 'This cannot be undone, so make sure that you know what you''re doing!!!';
+    RemoveDataDirLabel := TNewStaticText.Create(UninstallProgressForm);
+    RemoveDataDirLabel.Parent := RemoveDataDirUninstallPage;
+    RemoveDataDirLabel.Top := RemoveDataDirCheckbox.Top + RemoveDataDirCheckbox.Height + ScaleY(10);
+    RemoveDataDirLabel.Left := RemoveDataDirCheckbox.Left;
+    RemoveDataDirLabel.Width := UninstallProgressForm.InnerNotebook.Width;
+    RemoveDataDirLabel.Height := RemoveDataDirLabel.AdjustHeight();
+    RemoveDataDirLabel.WordWrap := True;
+    RemoveDataDirLabel.Caption := 'This will remove the data directory (Current location is ''' + GetIniString('DIRS', 'DataDir', '', ExpandConstant('{app}') + '/Qudoku.ini') + ''')' + #13#10 + #13#10 + 'CAUTION: This will permanently delete the entire folder ''' + GetIniString('DIRS', 'DataDir', '', ExpandConstant('{app}') + '/Qudoku.ini') + '''' + #13#10 + 'WITHOUT asking for confirmation!' + #13#10 + 'This cannot be undone, so make sure that you know what you''re doing!!!';
 
-    UninstallProgressForm.InnerNotebook.ActivePage := RemoveHomeDirUninstallPage;
+    UninstallProgressForm.InnerNotebook.ActivePage := RemoveDataDirUninstallPage;
 
     UninstallNextButton := TNewButton.Create(UninstallProgressForm);
     UninstallNextButton.Caption := 'Uninstall';
@@ -171,21 +180,21 @@ end;
 
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 var
-    IniHomeDir: String;
+    IniDataDir: String;
 begin
     if CurUninstallStep = usUninstall then
     begin
-         if RemoveHomeDirCheckbox.Checked = True then
+         if RemoveDataDirCheckbox.Checked = True then
          begin
-                 IniHomeDir := GetIniString('DIRS', 'HomeDir', '', ExpandConstant('{app}/Qudoku.ini'));
-                 DelTree(IniHomeDir, True, True, True);
+                 IniDataDir := GetIniString('DIRS', 'DataDir', '', ExpandConstant('{app}/Qudoku.ini'));
+                 DelTree(IniDataDir, True, True, True);
          end;
     end;
 end;
 
 [Files]
 Source: "../release/WindowsInstaller/*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs;
-Source: "../release/WindowsInstaller/data/example.txt"; DestDir: "{code:GetHomeDir}\data"; Flags: confirmoverwrite recursesubdirs uninsneveruninstall
+Source: "../release/WindowsInstaller/data/example.txt"; DestDir: "{code:GetDataDir}\data"; Flags: confirmoverwrite recursesubdirs uninsneveruninstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -197,10 +206,11 @@ Name: "{userdesktop}\{#Name}"; Filename: "{app}\{#ExeName}"; IconFilename: "{app
 Filename: "{app}\{#ExeName}"; Description: "{cm:LaunchProgram,{#StringChange(Name, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
 [Dirs]
-Name: {code:GetHomeDir}; Check: not HomeDirExists; Flags: uninsneveruninstall; Permissions: users-modify
-Name: "{code:GetHomeDir}\data"; Flags: uninsneveruninstall; Permissions: users-modify
-Name: "{code:GetHomeDir}\export"; Flags: uninsneveruninstall; Permissions: users-modify
+Name: {code:GetDataDir}; Check: not DataDirExists; Flags: uninsneveruninstall; Permissions: users-modify
+Name: "{code:GetDataDir}\data"; Flags: uninsneveruninstall; Permissions: users-modify
+Name: "{code:GetDataDir}\export"; Flags: uninsneveruninstall; Permissions: users-modify
 
 [INI]
+Filename: "{app}/Qudoku.ini"; Section: "DIRS"; Key: "DataDir"; String: "{code:getDataDir}"; Flags: createkeyifdoesntexist uninsdeletesection
 Filename: "{app}/Qudoku.ini"; Section: "DIRS"; Key: "HomeDir"; String: "{code:getHomeDir}"; Flags: createkeyifdoesntexist uninsdeletesection
 Filename: "{app}/Qudoku.ini"; Section: "I18N"; Key: "lang"; String: "en_US"; Flags: createkeyifdoesntexist uninsdeletesection
