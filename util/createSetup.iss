@@ -91,15 +91,6 @@ begin
     Result := DataDir;
 end;
 
-function GetHomeDir(Param: String): String;
-var
-    HomeDir: String;
-begin
-    HomeDir := ExpandConstant('{app}');
-    StringChangeEx(HomeDir, '\', '/', True); // Exchange backslashes '\' with forward slashes '/'
-    Result := HomeDir;
-end;
-
 // Check if the specified data directory aleady exists on the file system
 function DataDirExists(): Boolean;
 begin
@@ -212,5 +203,4 @@ Name: "{code:GetDataDir}\export"; Flags: uninsneveruninstall; Permissions: users
 
 [INI]
 Filename: "{app}/Qudoku.ini"; Section: "DIRS"; Key: "DataDir"; String: "{code:getDataDir}"; Flags: createkeyifdoesntexist uninsdeletesection
-Filename: "{app}/Qudoku.ini"; Section: "DIRS"; Key: "HomeDir"; String: "{code:getHomeDir}"; Flags: createkeyifdoesntexist uninsdeletesection
 Filename: "{app}/Qudoku.ini"; Section: "I18N"; Key: "lang"; String: "en_US"; Flags: createkeyifdoesntexist uninsdeletesection
