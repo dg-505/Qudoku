@@ -9,7 +9,7 @@ namespace sudoku
 {
     class TechniquesDialog : public QDialog
     {
-            Q_OBJECT
+            Q_OBJECT // NOLINT
         public:
             TechniquesDialog(const TechniquesDialog&) = delete;
             TechniquesDialog(TechniquesDialog&&) = delete;

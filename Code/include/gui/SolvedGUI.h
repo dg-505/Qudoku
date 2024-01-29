@@ -10,7 +10,7 @@ namespace sudoku
 {
     class SolvedGUI : public QMainWindow
     {
-            Q_OBJECT
+            Q_OBJECT // NOLINT
         public:
             SolvedGUI(const SolvedGUI&) = delete;
             SolvedGUI(SolvedGUI&&) = delete;

@@ -12,7 +12,7 @@ namespace sudoku
 {
     class StepByStepGUI : public QMainWindow
     {
-            Q_OBJECT
+            Q_OBJECT // NOLINT
         public:
             StepByStepGUI(const StepByStepGUI&) = delete;
             StepByStepGUI(StepByStepGUI&&) = delete;

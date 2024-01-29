@@ -8,7 +8,7 @@ namespace sudoku
 {
     class CandidatesGUI : public QMainWindow
     {
-            Q_OBJECT
+            Q_OBJECT // NOLINT
         public:
             CandidatesGUI(const CandidatesGUI&) = delete;
             CandidatesGUI(CandidatesGUI&&) = delete;

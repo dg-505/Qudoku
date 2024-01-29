@@ -7,7 +7,7 @@ namespace sudoku
 {
     class QInputField : public QLineEdit
     {
-            Q_OBJECT
+            Q_OBJECT // NOLINT
         public:
             explicit QInputField(QWidget* parent);
             QInputField(const QInputField&) = delete;

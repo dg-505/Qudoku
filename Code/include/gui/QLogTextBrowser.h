@@ -7,7 +7,7 @@ namespace sudoku
 {
     class QLogTextBrowser : public QTextBrowser
     {
-            Q_OBJECT
+            Q_OBJECT // NOLINT
         public:
             explicit QLogTextBrowser(QWidget* parent);
             QLogTextBrowser(const QLogTextBrowser&) = delete;

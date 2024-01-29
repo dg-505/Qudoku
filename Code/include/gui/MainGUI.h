@@ -74,7 +74,7 @@ namespace sudoku
 
     class MainGUI : public QMainWindow
     {
-            Q_OBJECT
+            Q_OBJECT // NOLINT
         public:
             MainGUI(const MainGUI&) = delete;
             MainGUI(MainGUI&&) = delete;
