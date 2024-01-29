@@ -3,6 +3,7 @@
 #include <QFileDialog>
 #include <QTextStream>
 
+#include "gui/DataDirDialog.h"
 #include "gui/MainGUI.h"
 
 auto main(int argc, char* argv[]) -> int
@@ -20,7 +21,18 @@ auto main(int argc, char* argv[]) -> int
     if (!iniFile.exists())
     {
         QDir(QString()).mkdir(homeDir);
-        auto dataDir = QFileDialog::getExistingDirectory(nullptr, "Specify data directory", homeDir, QFileDialog::ShowDirsOnly);
+
+        QString dataDir;
+        sudoku::DataDirDialog dataDirDialog(nullptr);
+        if (dataDirDialog.exec() == QDialog::Accepted)
+        {
+                dataDir = dataDirDialog.getDataDir();
+        }
+        else
+        {
+            return 1;
+        }
+
         if (dataDir.isEmpty())
         {
             dataDir = homeDir;

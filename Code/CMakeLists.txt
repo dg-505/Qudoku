@@ -29,9 +29,9 @@ set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/res/Qudoku.rc")
 
 add_executable(Qudoku
         src/main.cpp ${app_icon_resource_windows} include/globals.h
-        src/gui/TechniquesDialog.cpp include/gui/CandidatesGUI.h include/gui/MainGUI.h include/gui/QInputField.h include/gui/QLogTextBrowser.h include/gui/SolvedGUI.h include/gui/StepByStepGUI.h
+        src/gui/DataDirDialog.cpp src/gui/TechniquesDialog.cpp include/gui/CandidatesGUI.h include/gui/MainGUI.h include/gui/QInputField.h include/gui/QLogTextBrowser.h include/gui/SolvedGUI.h include/gui/StepByStepGUI.h
         include/sudoku/Field.h include/sudoku/HiddenSingle.h include/sudoku/HiddenSubset.h include/sudoku/NakedPair.h include/sudoku/NakedTriple.h src/sudoku/Step.cpp include/sudoku/Sudoku.h
-        include/gui/TechniquesDialog.h src/gui/CandidatesGUI.cpp src/gui/MainGUI.cpp src/gui/QInputField.cpp src/gui/QLogTextBrowser.cpp src/gui/SolvedGUI.cpp src/gui/StepByStepGUI.cpp
+        include/gui/DataDirDialog.h include/gui/TechniquesDialog.h src/gui/CandidatesGUI.cpp src/gui/MainGUI.cpp src/gui/QInputField.cpp src/gui/QLogTextBrowser.cpp src/gui/SolvedGUI.cpp src/gui/StepByStepGUI.cpp
         src/sudoku/Field.cpp src/sudoku/HiddenSingle.cpp src/sudoku/HiddenSubset.cpp src/sudoku/NakedPair.cpp src/sudoku/NakedTriple.cpp include/sudoku/Step.h src/sudoku/Sudoku.cpp
         resources.qrc
 )

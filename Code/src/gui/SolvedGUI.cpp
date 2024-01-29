@@ -82,7 +82,7 @@ namespace sudoku
         {
             _name = "sudoku";
         }
-        pixmap.save(_settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString() + QStringLiteral("/export/") + QString::fromStdString(_name) + QStringLiteral("-solution-") + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + QStringLiteral(".png"), "png", 0);
+        pixmap.save(_settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString() + QStringLiteral("/export/") + QString::fromStdString(_name) + QStringLiteral("-solution-") + QDateTime::currentDateTime().toString(QStringLiteral("yyyyMMdd_hhmmss")) + QStringLiteral(".png"), "png", 0);
     }
 
     auto SolvedGUI::exportPDF(QWidget* parent) -> void
@@ -94,7 +94,7 @@ namespace sudoku
         }
 
         // Create output pdf
-        QPdfWriter pdfWriter(_settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString() + QStringLiteral("/export/") + QString::fromStdString(_name) + QStringLiteral("-solution-") + QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") + QStringLiteral(".pdf"));
+        QPdfWriter pdfWriter(_settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString() + QStringLiteral("/export/") + QString::fromStdString(_name) + QStringLiteral("-solution-") + QDateTime::currentDateTime().toString(QStringLiteral("yyyyMMdd_hhmmss")) + QStringLiteral(".pdf"));
         pdfWriter.setPageSize(QPageSize(2 * parent->size(), QPageSize::Point, QString(), QPageSize::FuzzyMatch));
         pdfWriter.setPageMargins(QMarginsF(0, 0, 0, 0));
 
@@ -112,7 +112,8 @@ namespace sudoku
     void SolvedGUI::drawFields(Step& currStep, Step& nextStep, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent)
     {
 #pragma unroll static_cast<short>(global::order * global::order * global::order)
-        for (QLabel* label : parent->findChildren<QLabel*>(QString(), Qt::FindChildrenRecursively)) {
+        for (QLabel* label : parent->findChildren<QLabel*>(QString(), Qt::FindChildrenRecursively))
+        {
             label->deleteLater();
         }
         const QFont fieldsFont(QStringLiteral("Liberation Mono"), 28, QFont::Bold, false);

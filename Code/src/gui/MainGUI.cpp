@@ -5,9 +5,6 @@
 #include <QScreen>
 #include <QShortcut>
 #include <QTextStream>
-#ifndef _WIN32
-#include <unistd.h>
-#endif
 
 #include "globals.h"
 #include "gui/CandidatesGUI.h"
@@ -36,7 +33,8 @@ namespace sudoku
           _solveButton(new QPushButton(this)),
           _clearButton(new QPushButton(this)),
           _quitButton(new QPushButton(this)),
-          _version(std::move(version))
+          _version(std::move(version)),
+          _translator(parent)
     {
 
         // Read settings from ini file
@@ -138,15 +136,15 @@ namespace sudoku
         constexpr QSize iconSize(28, 28);
         _languageComboBox->setIconSize(iconSize);
         _languageComboBox->setCurrentText(_language);
-        MainGUI::connect(_languageComboBox, static_cast<void (QComboBox::*)(const int)>(&QComboBox::currentIndexChanged),
+        MainGUI::connect(_languageComboBox, static_cast<void (QComboBox::*)(const int)>(&QComboBox::currentIndexChanged), this,
                          [this](const int langIdx)
                          {
-                             _translator.load(_languageComboBox->itemText(langIdx), _i18nDir, QString(), ".qm");
+                             _translator.load(_languageComboBox->itemText(langIdx), _i18nDir, QString(), QStringLiteral(".qm"));
                              qApp->installTranslator(&_translator);
-                         });
+                         }, Qt::AutoConnection);
 
         // Load the translator
-        _translator.load(_language, _i18nDir, QString(), ".qm");
+        _translator.load(_language, _i18nDir, QString(), QStringLiteral(".qm"));
         qApp->installTranslator(&_translator);
 
         // Set up the fields
@@ -310,7 +308,7 @@ namespace sudoku
     {
         if (event->type() == QEvent::LanguageChange)
         {
-            QString i18nTitle = QCoreApplication::translate("MainGUI", "Qudoku - Qt based cross platform sudoku solver (Version ");
+            const QString i18nTitle = QCoreApplication::translate("MainGUI", "Qudoku - Qt based cross platform sudoku solver (Version ");
             const std::string versionTitle = _version + ")";
             this->setWindowTitle(i18nTitle + QString::fromStdString(versionTitle));
             _titleLabel->setText(QCoreApplication::translate("MainGUI", "Enter predefined fields"));
