@@ -34,7 +34,29 @@ EOF
 set -e
 
 if [ "\$1" == "purge" ]; then
-    rm -rf "home/\${SUDO_USER}/.qudoku"
+    homeDir="/home/\${SUDO_USER}/.qudoku"
+    if [ -d "\${homeDir}" ]; then
+        iniFile=\${homeDir}/Qudoku.ini
+        if [ -f "\${iniFile}" ]; then
+            dataDir=\$(awk -F= '/^\[DIRS\]/{flag=1; next} /^\[/{flag=0} flag && /^[^#;]/{print \$2}' "\${iniFile}")
+
+            echo -e "To prevent unintentional loss of data, the data directory under \n\n\\"\${dataDir}\\"\n\nwas not deleted during the uninstallation process.\nConsider removing it manually if wanted." > "/home/\${SUDO_USER}/qudoku-uninstall.log"
+            chown \${SUDO_USER}:\${SUDO_USER} "/home/\${SUDO_USER}/qudoku-uninstall.log"
+            echo -e "To prevent unintentional loss of data, the data directory under \n\n\\"\${dataDir}\\"\n\nwas not deleted during the uninstallation process.\nConsider removing it manually if wanted.\n\nSee also the 'qudoku-uninstall.log' in your home directory\n(/home/\${SUDO_USER}/qudoku-uninstall.log)"
+
+            set +e
+            zenity --info --no-wrap --text="To prevent unintentional loss of data, the data directory under \n\n\\"\${dataDir}\\"\n\nwas not deleted during the uninstallation process.\nConsider removing it manually if wanted.\n\nSee also the 'qudoku-uninstall.log' in your home directory\n(/home/\${SUDO_USER}/qudoku-uninstall.log)"
+            set -e
+
+            if [ \${homeDir} == \${dataDir} ]; then
+                rm \${iniFile}
+            else
+                rm -rf "\${homeDir}"
+            fi
+        else
+            rm -rf "\${homeDir}"
+        fi
+    fi
 fi
 EOF
 )
