@@ -38,7 +38,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"
 
-
 ; remove entire program directory when installing or uninstalling
 [UninstallDelete]
 Type: filesandordirs; Name: "{app}"
@@ -204,3 +203,12 @@ Name: "{code:GetDataDir}\export"; Flags: uninsneveruninstall; Permissions: users
 [INI]
 Filename: "{app}/Qudoku.ini"; Section: "DIRS"; Key: "DataDir"; String: "{code:getDataDir}"; Flags: createkeyifdoesntexist uninsdeletesection
 Filename: "{app}/Qudoku.ini"; Section: "I18N"; Key: "lang"; String: "en_US"; Flags: createkeyifdoesntexist uninsdeletesection
+Filename: "{app}/Qudoku.ini"; Section: "TECHNIQUES"; Key: "UseNakedSingles"; String: "true"; Flags: createkeyifdoesntexist uninsdeletesection
+Filename: "{app}/Qudoku.ini"; Section: "TECHNIQUES"; Key: "UseHiddenSingles"; String: "true"; Flags: createkeyifdoesntexist uninsdeletesection
+Filename: "{app}/Qudoku.ini"; Section: "TECHNIQUES"; Key: "UseNakedPairs"; String: "true"; Flags: createkeyifdoesntexist uninsdeletesection
+Filename: "{app}/Qudoku.ini"; Section: "TECHNIQUES"; Key: "UseHiddenPairs"; String: "true"; Flags: createkeyifdoesntexist uninsdeletesection
+Filename: "{app}/Qudoku.ini"; Section: "TECHNIQUES"; Key: "UseNakedTriples"; String: "true"; Flags: createkeyifdoesntexist uninsdeletesection
+Filename: "{app}/Qudoku.ini"; Section: "TECHNIQUES"; Key: "UseHiddenTriples"; String: "true"; Flags: createkeyifdoesntexist uninsdeletesection
+Filename: "{app}/Qudoku.ini"; Section: "TECHNIQUES"; Key: "UseBlockLineChecks"; String: "true"; Flags: createkeyifdoesntexist uninsdeletesection
+Filename: "{app}/Qudoku.ini"; Section: "TECHNIQUES"; Key: "UseLineBlockChecks"; String: "true"; Flags: createkeyifdoesntexist uninsdeletesection
+Filename: "{app}/Qudoku.ini"; Section: "TECHNIQUES"; Key: "UseBacktracking"; String: "true"; Flags: createkeyifdoesntexist uninsdeletesection

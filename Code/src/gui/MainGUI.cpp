@@ -43,8 +43,18 @@ namespace sudoku
         _settings = std::make_unique<QSettings>(QStringLiteral("./Qudoku.ini"), QSettings::IniFormat, nullptr).release();
 #else
         // On Linux, ini location is /home/<USER>/.qudoku/Qudoku.ini
-        _settings = std::make_unique<QSettings>(QDir::homePath() + "/.qudoku/Qudoku.ini", QSettings::IniFormat, nullptr).release();
+        _settings = std::make_unique<QSettings>(QDir::homePath() + QStringLiteral("/.qudoku/Qudoku.ini"), QSettings::IniFormat, nullptr).release();
 #endif
+
+        _nakedSinglesEnabled = _settings->value(QStringLiteral("TECHNIQUES/UseNakedSingles"), QVariant()).toBool();
+        _hiddenSinglesEnabled = _settings->value(QStringLiteral("TECHNIQUES/UseHiddenSingles"), QVariant()).toBool();
+        _nakedPairsEnabled = _settings->value(QStringLiteral("TECHNIQUES/UseNakedPairs"), QVariant()).toBool();
+        _hiddenPairsEnabled = _settings->value(QStringLiteral("TECHNIQUES/UseHiddenPairs"), QVariant()).toBool();
+        _nakedTriplesEnabled = _settings->value(QStringLiteral("TECHNIQUES/UseNakedTriples"), QVariant()).toBool();
+        _hiddenTriplesEnabled = _settings->value(QStringLiteral("TECHNIQUES/UseHiddenTriples"), QVariant()).toBool();
+        _blockLineChecksEnabled = _settings->value(QStringLiteral("TECHNIQUES/UseBlockLineChecks"), QVariant()).toBool();
+        _lineBlockChecksEnabled = _settings->value(QStringLiteral("TECHNIQUES/UseLineBlockChecks"), QVariant()).toBool();
+        _backtrackingEnabled = _settings->value(QStringLiteral("TECHNIQUES/UseBacktracking"), QVariant()).toBool();
 
         // Main window properties
         constexpr QSize guiDim(1025, 637);
@@ -340,6 +350,18 @@ namespace sudoku
             _logTextBrowser->append(QStringLiteral("Block-Line-Interactions: ") + (_blockLineChecksEnabled ? QStringLiteral("true") : QStringLiteral("false")));
             _logTextBrowser->append(QStringLiteral("Line-Block-Interactions: ") + (_lineBlockChecksEnabled ? QStringLiteral("true") : QStringLiteral("false")));
             _logTextBrowser->append(QStringLiteral("Try & Error: ") + (_backtrackingEnabled ? QStringLiteral("            true") : QStringLiteral("            false")));
+
+            _settings->beginGroup("TECHNIQUES");
+            _settings->setValue(QStringLiteral("UseNakedSingles"), _nakedSinglesEnabled);
+            _settings->setValue(QStringLiteral("UseHiddenSingles"), _hiddenSinglesEnabled);
+            _settings->setValue(QStringLiteral("UseNakedPairs"), _nakedPairsEnabled);
+            _settings->setValue(QStringLiteral("UseHiddenPairs"), _hiddenPairsEnabled);
+            _settings->setValue(QStringLiteral("UseNakedTriples"), _nakedTriplesEnabled);
+            _settings->setValue(QStringLiteral("UseHiddenTriples"), _hiddenTriplesEnabled);
+            _settings->setValue(QStringLiteral("UseBlockLineChecks"), _blockLineChecksEnabled);
+            _settings->setValue(QStringLiteral("UseLineBlockChecks"), _lineBlockChecksEnabled);
+            _settings->setValue(QStringLiteral("UseBacktracking"), _backtrackingEnabled);
+            _settings->endGroup();
         }
     }
 

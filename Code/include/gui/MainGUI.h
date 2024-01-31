@@ -104,15 +104,15 @@ namespace sudoku
             QPushButton* _quitButton;
             std::string _name;
 
-            bool _nakedSinglesEnabled = true;
-            bool _hiddenSinglesEnabled = true;
-            bool _nakedPairsEnabled = true;
-            bool _hiddenPairsEnabled = true;
-            bool _nakedTriplesEnabled = true;
-            bool _hiddenTriplesEnabled = true;
-            bool _blockLineChecksEnabled = true;
-            bool _lineBlockChecksEnabled = true;
-            bool _backtrackingEnabled = true;
+            bool _nakedSinglesEnabled;
+            bool _hiddenSinglesEnabled;
+            bool _nakedPairsEnabled;
+            bool _hiddenPairsEnabled;
+            bool _nakedTriplesEnabled;
+            bool _hiddenTriplesEnabled;
+            bool _blockLineChecksEnabled;
+            bool _lineBlockChecksEnabled;
+            bool _backtrackingEnabled;
 
             std::string _version;
             QSettings* _settings;

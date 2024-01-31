@@ -41,7 +41,7 @@ auto main(int argc, char* argv[]) -> int
         if (iniFile.open(QFile::WriteOnly | QFile::Truncate))
         {
             QTextStream ini(&iniFile);
-            ini << "[DIRS]\nDataDir=" << dataDir << "\n\n[I18N]\nlang=en_US\n";
+            ini << "[DIRS]\nDataDir=" << dataDir << "\n\n[I18N]\nlang=en_US\n\n[TECHNIQUES]\nUseNakedSingles=true\nUseHiddenSingles=true\nUseNakedPairs=true\nUseHiddenPairs=true\nUseNakedTriples=true\nUseHiddenTriples=true\nUseBlockLineChecks=true\nUseLineBlockChecks=true\nUseBacktracking=true\n";
         }
         iniFile.close();
         QFile exampleFile(dataDir + QStringLiteral("/data/example.txt"));
