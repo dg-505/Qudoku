@@ -10,10 +10,10 @@ namespace sudoku
         : QDialog(parent, Qt::WindowFlags()),
           _descLabel(new QLabel(QStringLiteral("Specify a directory to store data and exported files:"), this, Qt::WindowFlags())),
           _lineEdit(new QLineEdit(this)),
-          _browseButton(new QPushButton(QStringLiteral("Browse"), this)),
-          _defaultButton(new QPushButton(QStringLiteral("Use default"), this)),
-          _cancelButton(new QPushButton(QStringLiteral("Cancel"), this)),
-          _proceedButton(new QPushButton(QStringLiteral("Proceed"), this)),
+          _browseButton(new QPushButton(QStringLiteral("&Browse"), this)),
+          _defaultButton(new QPushButton(QStringLiteral("Use &default"), this)),
+          _cancelButton(new QPushButton(QStringLiteral("&Cancel"), this)),
+          _proceedButton(new QPushButton(QStringLiteral("P&roceed"), this)),
           _defaultDir(QDir::homePath() + QStringLiteral("/.qudoku")),
           _dataDir(_defaultDir)
     {
