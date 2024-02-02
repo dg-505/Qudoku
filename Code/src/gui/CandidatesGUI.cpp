@@ -4,13 +4,13 @@
 
 namespace sudoku
 {
-    CandidatesGUI::CandidatesGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent)
+    CandidatesGUI::CandidatesGUI(Sudoku* sudoku, const std::string& name, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent)
         : QMainWindow(parent, Qt::WindowFlags())
     {
         constexpr QSize guiDim(537, 537);
         this->setFixedSize(guiDim);
         this->setObjectName(QStringLiteral("CandidatesGUI"));
-        this->setWindowTitle(QStringLiteral("Candidates"));
+        this->setWindowTitle(QStringLiteral("'") + QString::fromStdString(name) + QStringLiteral("' - Candidates"));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
         this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
 

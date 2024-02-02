@@ -16,7 +16,7 @@ namespace sudoku
             SolvedGUI(SolvedGUI&&) = delete;
             auto operator=(const SolvedGUI&) -> SolvedGUI& = delete;
             auto operator=(SolvedGUI&&) -> SolvedGUI& = delete;
-            SolvedGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, std::string  name, QSettings* settings, QWidget* parent);
+            SolvedGUI(Sudoku* sudoku, std::string name, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QSettings* settings, QWidget* parent);
             ~SolvedGUI() override = default;
 
             static auto renderPixmap(QWidget* parent) -> QPixmap;

@@ -10,7 +10,7 @@
 
 namespace sudoku
 {
-    SolvedGUI::SolvedGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, std::string  name, QSettings* settings, QWidget* parent)
+    SolvedGUI::SolvedGUI(Sudoku* sudoku, std::string name, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QSettings* settings, QWidget* parent)
         : QMainWindow(parent, Qt::WindowFlags()),
           _name(std::move(name)),
           _gridWidget(new QWidget(this, Qt::WindowFlags())),
@@ -21,7 +21,7 @@ namespace sudoku
         constexpr QSize guiDim(537, 587);
         this->setFixedSize(guiDim);
         this->setObjectName(QStringLiteral("SolvedGUI"));
-        this->setWindowTitle(QStringLiteral("Solved Sudoku"));
+        this->setWindowTitle(QStringLiteral("'") + QString::fromStdString(_name) + QStringLiteral("' - Solved Sudoku"));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
         this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
 
@@ -78,20 +78,12 @@ namespace sudoku
     auto SolvedGUI::exportPNG(QWidget* parent) -> void
     {
         auto pixmap = SolvedGUI::renderPixmap(parent);
-        if (_name.empty())
-        {
-            _name = "sudoku";
-        }
         pixmap.save(_settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString() + QStringLiteral("/export/") + QString::fromStdString(_name) + QStringLiteral("-solution-") + QDateTime::currentDateTime().toString(QStringLiteral("yyyyMMdd_hhmmss")) + QStringLiteral(".png"), "png", 0);
     }
 
     auto SolvedGUI::exportPDF(QWidget* parent) -> void
     {
         auto pixmap = SolvedGUI::renderPixmap(parent);
-        if (_name.empty())
-        {
-            _name = "sudoku";
-        }
 
         // Create output pdf
         QPdfWriter pdfWriter(_settings->value(QStringLiteral("DIRS/DataDir"), QVariant()).toString() + QStringLiteral("/export/") + QString::fromStdString(_name) + QStringLiteral("-solution-") + QDateTime::currentDateTime().toString(QStringLiteral("yyyyMMdd_hhmmss")) + QStringLiteral(".pdf"));

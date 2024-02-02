@@ -18,6 +18,7 @@ namespace sudoku
     // Main GUI setup
     MainGUI::MainGUI(std::string version, QWidget* parent)
         : QMainWindow(parent, Qt::WindowFlags()),
+          _name("untitled"),
           _logScrollArea(new QScrollArea(this)),
           _logTextBrowser(new QLogTextBrowser(_logScrollArea)),
           _titleLabel(new QLabel(this, Qt::WindowFlags())),
@@ -517,7 +518,7 @@ namespace sudoku
     {
         std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
         auto* sudoku = init(&initVals);
-        auto* candidatesGUI = std::make_unique<CandidatesGUI>(sudoku, initVals, this).release();
+        auto* candidatesGUI = std::make_unique<CandidatesGUI>(sudoku, _name, initVals, this).release();
         const QPoint candidatesGUIpos(this->pos().x(), this->pos().y() + 50);
         candidatesGUI->move(candidatesGUIpos);
         candidatesGUI->show();
@@ -548,7 +549,7 @@ namespace sudoku
 
         auto* sudoku = init(&initVals);
         sudoku->solve();
-        auto* stepByStepGUI = std::make_unique<StepByStepGUI>(sudoku, initVals, this).release();
+        auto* stepByStepGUI = std::make_unique<StepByStepGUI>(sudoku, _name, initVals, this).release();
         stepByStepGUI->move(QPoint(this->pos().x(), this->pos().y()));
         stepByStepGUI->show();
     }
@@ -572,7 +573,7 @@ namespace sudoku
         std::array<uint8_t, static_cast<uint8_t>(global::order * global::order)> initVals{};
         auto* sudoku = init(&initVals);
         sudoku->solve();
-        auto* solvedGUI = std::make_unique<SolvedGUI>(sudoku, initVals, _name, _settings, this).release();
+        auto* solvedGUI = std::make_unique<SolvedGUI>(sudoku, _name, initVals, _settings, this).release();
         const QPoint solvedGUIpos(this->pos().x(), this->pos().y() + 50);
         solvedGUI->move(solvedGUIpos);
         solvedGUI->show();
@@ -603,7 +604,7 @@ namespace sudoku
             inputField->clear();
         }
         _logTextBrowser->clear();
-        _name = "";
+        _name = "untitled";
     }
 
     auto MainGUI::init(std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>* initVals) const -> Sudoku*

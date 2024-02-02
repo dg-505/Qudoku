@@ -3,7 +3,7 @@
 
 namespace sudoku
 {
-    StepByStepGUI::StepByStepGUI(Sudoku* sudoku, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent)
+    StepByStepGUI::StepByStepGUI(Sudoku* sudoku, const std::string& name, const std::array<uint8_t, static_cast<uint8_t>(global::order* global::order)>& initVals, QWidget* parent)
         : QMainWindow(parent, Qt::WindowFlags()),
           _sudoku(sudoku),
           _initVals(initVals),
@@ -24,7 +24,7 @@ namespace sudoku
         constexpr QSize guiDim(537, 637);
         this->setFixedSize(guiDim);
         this->setObjectName(QStringLiteral("StepByStepGUI"));
-        this->setWindowTitle(QStringLiteral("Step-by-step solution"));
+        this->setWindowTitle(QStringLiteral("'") + QString::fromStdString(name) + QStringLiteral("' - Step-by-step solution"));
         this->setWindowIcon(QIcon(QStringLiteral(":/res/Qudoku.ico")));
         this->setStyleSheet(QStringLiteral("background: rgb(239, 239, 239)"));
 
